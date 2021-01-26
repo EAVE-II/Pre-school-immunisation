@@ -179,53 +179,13 @@ TukeyHSD(Anova_first6in1) #suggests only significant difference is btw preLD and
 plot(Anova_first6in1, 1)
 plot(Anova_first6in1, 2)
 
-###Logistric regression method
-#select out time periods for comparison
-Baseline_2019_and_Pre_LD = weekly_results_LDperiod %>% 
-  filter(!(lockdown.factor %in% c("LD_2020", "Post_LD_2020")))
+###Logistic regression method
 
-Baseline_2019_and_LD = weekly_results_LDperiod %>% 
-  filter(!(lockdown.factor %in% c("Pre_LD_2020", "Post_LD_2020")))
+##Set up a single tibble- have the baseline as 2019
 
-Baseline_2019_and_Post_LD = weekly_results_LDperiod %>% 
-  filter(!(lockdown.factor %in% c("Pre_LD_2020", "LD_2020")))
-
-# Extract columns of total immun and not immun for 2019  and specified time period
-tbl_2019_PreLD <- cbind(Baseline_2019_and_Pre_LD$uptake_12weeks_num, Baseline_2019_and_Pre_LD$unvaccinated)
-
-tbl_2019_LD <- cbind(Baseline_2019_and_LD$uptake_12weeks_num, Baseline_2019_and_LD$unvaccinated)
-
-tbl_2019_PostLD <- cbind(Baseline_2019_and_Post_LD$uptake_12weeks_num, Baseline_2019_and_Post_LD$unvaccinated)
-
-#Regression
-
-model_scotland_2019_preLD = glm(tbl_2019_PreLD ~ Baseline_2019_and_Pre_LD$lockdown.factor,
-                                  family="binomial")
-
-summary(model_scotland_2019_preLD)
-
-exp(model_scotland_2019_preLD$coefficients)
-
-exp(confint(model_scotland_2019_preLD))
-
-
-model_scotland_2019_LD <- glm(tbl_2019_LD ~ Baseline_2019_and_LD$lockdown.factor,
-                               family="binomial")
-summary(model_scotland_2019_LD)
-
-exp(model_scotland_2019_LD$coefficients)
-
-exp(confint(model_scotland_2019_LD))
-
-model_scotland_2019_postLD  <- glm(tbl_2019_PostLD ~ Baseline_2019_and_Post_LD$lockdown.factor,
-                                   family="binomial")
-summary(model_scotland_2019_postLD)
-
-exp(model_scotland_2019_postLD$coefficients)
-
-exp(confint(model_scotland_2019_postLD))
-
-##try to do more efficiently- Set up a single tibble ####WORKS!
+weekly_results_LDperiod = weekly_results_LDperiod %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("Baseline_2019"))
 
 Single_regression_tbl = cbind(weekly_results_LDperiod$uptake_12weeks_num, weekly_results_LDperiod$unvaccinated)
 
@@ -236,10 +196,10 @@ summary(model_scotland_2019_overall)
 
 exp(model_scotland_2019_overall$coefficients)
 
-exp(confint(model_scotland_2019_overall))
+exp(confint(model_scotland_2019_overall)) ##Baseline 2019 is only significantly different to the LD period
 
 
-##Try to change the baseline comparison ie compare all to LD period
+##Change the baseline comparison- compare all to LD period
 
 weekly_results_LDperiod = weekly_results_LDperiod %>% 
   mutate(lockdown.factor = lockdown.factor %>%
@@ -255,4 +215,49 @@ summary(model_scotland_2019_overall)
 exp(model_scotland_2019_overall$coefficients)
 
 exp(confint(model_scotland_2019_overall)) ## suggests that LD was sig different to all other time periods
+
+##Change the baseline comparison- compare all to pre LD
+weekly_results_LDperiod = weekly_results_LDperiod %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("Pre_LD_2020"))
+
+Single_regression_tbl = cbind(weekly_results_LDperiod$uptake_12weeks_num, weekly_results_LDperiod$unvaccinated)                                 
+
+model_scotland_2019_overall = glm(Single_regression_tbl ~ weekly_results_LDperiod$lockdown.factor,
+                                  family="binomial")
+
+summary(model_scotland_2019_overall)
+
+exp(model_scotland_2019_overall$coefficients)
+
+exp(confint(model_scotland_2019_overall)) ##Pre LD was sig different to LD only
+
+##Change the baseline comparison - compare all to Post LD
+weekly_results_LDperiod = weekly_results_LDperiod %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("Post_LD_2020"))
+
+Single_regression_tbl = cbind(weekly_results_LDperiod$uptake_12weeks_num, weekly_results_LDperiod$unvaccinated)                                 
+
+model_scotland_2019_overall = glm(Single_regression_tbl ~ weekly_results_LDperiod$lockdown.factor,
+                                  family="binomial")
+
+summary(model_scotland_2019_overall)
+
+exp(model_scotland_2019_overall$coefficients)
+
+exp(confint(model_scotland_2019_overall)) ##Post LD was sig different to LD only
+
+###To summarise, using logistical regression; the number of infants vaccinated vs not vaccinated within 4 weeks of being eligible for their first dose of 6in1 vaccine was significantly higher during the LD period compared to all other time periods. There were no significant differences between other time periods.
+
+### Proportions test (see http://www.sthda.com/english/wiki/two-proportions-z-test-in-r)
+# Proportion test of 2019 vs LD
+
+Prop_2019_LD = prop.test(x = c(47469,16293), n = c(50555,17164))
+Prop_2019_LD
+
+Prop_2019_LD = prop.test(x = c(Data_summary_by_LDperiod[1,3],Data_summary_by_LDperiod[3,3]),n = c(Data_summary_by_LDperiod[1,2],Data_summary_by_LDperiod[3,2]))
+Prop_2019_LD
+
+
                                  
