@@ -124,7 +124,8 @@ Fig3 = Data_summary_by_LDperiod %>%
   theme(legend.position="none")+
   labs(x = "Lockdown period",
        y = "Percent Uptake within 4 weeks",
-       title = "First dose 6in1 Scotland by week by LD period")
+       title = "First dose 6in1 Scotland by week by LD period")+
+  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))
 
 Fig3 + geom_hline(yintercept = 93.9, linetype="dashed", 
                   color = "blue", size=1)
@@ -195,9 +196,40 @@ model_scotland_2019_overall = glm(Single_regression_tbl ~ weekly_results_LDperio
 summary(model_scotland_2019_overall)
 
 exp(model_scotland_2019_overall$coefficients)
+exp(confint(model_scotland_2019_overall))  ##Baseline 2019 is only significantly different to the LD period
 
-exp(confint(model_scotland_2019_overall)) ##Baseline 2019 is only significantly different to the LD period
+#make a CI tbl then add OR and change labels
+Baseline_2019_OR_tbl = tibble(exp(model_scotland_2019_overall$coefficients))
+Baseline_2019_CI_tbl = exp(confint(model_scotland_2019_overall)
+                          
+Baseline_2019_ORandCI_tbl = Baseline_2019_CI_tbl %>% 
+  mutate(odds_ratio = tibble(exp(model_scotland_2019_overall$coefficients))
+                           
+##Boxplot
+library(ggplot2)
 
+# Create labels
+
+boxLabels = c("Pre lockdown","Lockdown", "Post lockdown")
+
+# Enter summary data. boxOdds are the odds ratios (calculated elsewhere), boxCILow is the lower bound of the CI, boxCIHigh is the upper bound.
+
+Plot_ORandCI <- data.frame(
+  yAxis = length(boxLabels):1,
+  boxOdds = c(0.9565882, 1.2160985, 1.0364477),
+  boxCILow = c(0.8788044, 1.1262115, 0.9416241),
+  boxCIHigh = c(1.042670, 1.314471, 1.143088)
+)
+
+# Plot
+p <- ggplot(Plot_ORandCI, aes(x = boxOdds, y = boxLabels))
+p + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()+
+  labs(x = "Odds of being vaccinated",
+       y = NULL,
+       title = "Odds of First dose 6in1 Scotland by week by LD period")
 
 ##Change the baseline comparison- compare all to LD period
 
@@ -254,10 +286,186 @@ exp(confint(model_scotland_2019_overall)) ##Post LD was sig different to LD only
 # Proportion test of 2019 vs LD
 
 Prop_2019_LD = prop.test(x = c(47469,16293), n = c(50555,17164))
-Prop_2019_LD
+Prop_2019_LD##works
 
 Prop_2019_LD = prop.test(x = c(Data_summary_by_LDperiod[1,3],Data_summary_by_LDperiod[3,3]),n = c(Data_summary_by_LDperiod[1,2],Data_summary_by_LDperiod[3,2]))
-Prop_2019_LD
+Prop_2019_LD ###doesn't work
 
 
+#############Geographical comparisons
+#Select out the NHS health boards ####NOTE: Orkney, Western Isles and Shetland Don't have weekly data therefore LD time period will have to be done manually somehow
+
+data_6in1_first_time_period_HSCP <- Full_firstdose_6in1_download_Jan21 %>%
+  filter(str_detect(area_name,"NHS", negate=TRUE))
+
+###Decide whether or not to include scotland- using this filter(str_detect(area_name,"Scotland", negate = TRUE))%>% 
+
+data_6in1_first_time_period_HSCP = data_6in1_first_time_period_HSCP %>% 
+  filter(str_detect(area_name,"Scotland", negate = TRUE))%>%
+  select(area_name, cohort, denominator, uptake_12weeks_num, uptake_12weeks_percent)%>% 
+  mutate(unvaccinated = denominator-uptake_12weeks_num) 
+ 
+#Filter out unwanted rows
+    
+data_6in1_first_time_period_HSCP = data_6in1_first_time_period_HSCP %>% 
+    filter(!(cohort %in% c("Mar-20","Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "W/B 05-OCT-20", "W/B 12-OCT-20", "W/B 19-OCT-20")))
+
+data_6in1_first_time_period_HSCP = data_6in1_first_time_period_HSCP %>%
+  mutate(time.factor = 
+           cohort %>% 
+           factor()) 
+
+#Recode time.factor to LD period
+data_6in1_first_time_period_HSCP = data_6in1_first_time_period_HSCP %>%
+  mutate (lockdown.factor = 
+            time.factor %>% 
+            factor() %>% 
+            fct_recode("Baseline_2019"="2019", "Pre_LD_2020"="Jan-20", "Pre_LD_2020"="Feb-20", "Pre_LD_2020"="W/B 02-MAR-20","Pre_LD_2020"="W/B 09-MAR-20", "Pre_LD_2020"="W/B 16-MAR-20", "LD_2020"="W/B 23-MAR-20","LD_2020"="W/B 30-MAR-20","LD_2020"="W/B 06-APR-20","LD_2020"="W/B 13-APR-20","LD_2020"="W/B 20-APR-20","LD_2020"="W/B 27-APR-20","LD_2020"="W/B 04-MAY-20","LD_2020"="W/B 11-MAY-20","LD_2020"="W/B 18-MAY-20","LD_2020"="W/B 25-MAY-20","LD_2020"="W/B 01-JUN-20","LD_2020"="W/B 08-JUN-20","LD_2020"="W/B 15-JUN-20","LD_2020"="W/B 22-JUN-20","LD_2020"="W/B 29-JUN-20","LD_2020"="W/B 06-JUL-20","LD_2020"="W/B 13-JUL-20","LD_2020"="W/B 20-JUL-20","LD_2020"="W/B 27-JUL-20", "Post_LD_2020"="W/B 03-AUG-20","Post_LD_2020"="W/B 10-AUG-20","Post_LD_2020"="W/B 17-AUG-20","Post_LD_2020"="W/B 24-AUG-20","Post_LD_2020"="W/B 31-AUG-20","Post_LD_2020"="W/B 07-SEP-20","Post_LD_2020"="W/B 14-SEP-20","Post_LD_2020"="W/B 21-SEP-20","Post_LD_2020"="W/B 28-SEP-20"))
+
+#Select 2019 and LD only
+data_6in1_first_time_period_HSCP = data_6in1_first_time_period_HSCP %>%
+  filter(lockdown.factor %in% c("Baseline_2019", "LD_2020")) 
+
+data_6in1_first_time_period_HSCP = data_6in1_first_time_period_HSCP %>%
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("Baseline_2019"))
+
+#Plot 2019 by area
+data_6in1_first_time_period_HSCP_2019 = data_6in1_first_time_period_HSCP %>% 
+  filter(cohort == 2019)
+data_6in1_first_time_period_HSCP_2019 %>% 
+  ggplot(aes(fill=lockdown.factor, y=uptake_12weeks_percent, x=area_name)) + 
+  geom_bar(position="dodge", stat="identity")+
+  coord_flip()+
+  geom_hline(yintercept = 93.9, linetype="dashed", 
+             color = "blue", size=0.5)
+#Plot LD by area
+data_6in1_first_time_period_HSCP_LD2020 = data_6in1_first_time_period_HSCP %>% 
+  filter(!(cohort == 2019))
+
+data_6in1_first_time_period_HSCP_LD2020 = data_6in1_first_time_period_HSCP_LD2020 %>%
+  group_by(area_name) %>% 
+  summarise(mean_percentuptake_LD = mean(uptake_12weeks_percent))
+ 
+  
+  data_6in1_first_time_period_HSCP_LD2020 %>% 
+  ggplot(aes(y=mean_percentuptake_LD, x=area_name)) + 
+  geom_bar(position="dodge", stat="identity")+
+  coord_flip()+
+  geom_hline(yintercept = 94.9, linetype="dashed", 
+             color = "blue", size=0.5)
+  
+  
+###Find the percentage change btw LD and 2019 by area
+
+HSCP_2019_percent = data_6in1_first_time_period_HSCP_2019 %>% 
+ select(area_name, uptake_12weeks_percent)
+
+HSPC_percentchange_2019andLD = full_join(data_6in1_first_time_period_HSCP_LD2020, HSCP_2019_percent) 
+colnames(HSPC_percentchange_2019andLD) <- c("Area", "LD2020", "Uptake2019") #has been cross checked with excel for aberdeenshire and aberdeen city
+
+HSPC_percentchange_2019andLD = HSPC_percentchange_2019andLD %>% 
+  mutate(percent_change = LD2020- Uptake2019)
+
+## Plot percentage change
+
+HSPC_percentchange_2019andLD %>% 
+  ggplot(aes(y=percent_change, x=Area)) + 
+  geom_bar(position="dodge", stat="identity")+
+  coord_flip()
+
+##Log regression for HSCP following rachels code
+
+tbl_immun_hb <- cbind(data_6in1_first_time_period_HSCP$uptake_12weeks_num, data_6in1_first_time_period_HSCP$unvaccinated)
+
+# Column for time-period
+tp <- data_6in1_first_time_period_HSCP$lockdown.factor
+# Column for HSCP
+hscp <- data_6in1_first_time_period_HSCP$area_name
+# Put into GLM with interaction
+model_hscp<- glm(tbl_immun_hb ~ tp*hscp,
+               family="binomial")                                 
                                  
+summary(model_hscp)
+
+
+exp(model_hscp$coefficients)
+HSCP_OR = tibble(exp(model_hscp$coefficients))
+
+exp(confint(model_hscp))
+
+HSCP_tbl_CI = tibble(exp(confint(model_hscp)))
+
+library(broom)
+HSPC_tbl_model_hscp = model_hscp%>% 
+  tidy(conf.int = TRUE, exp = TRUE)
+
+##Try to do forest of HSCP
+library(ggplot2)
+
+# Create labels
+
+boxLabels = c(HSPC_tbl_model_hscp$term)
+
+# Enter summary data. boxOdds are the odds ratios (calculated elsewhere), boxCILow is the lower bound of the CI, boxCIHigh is the upper bound.
+
+Plot_ORandCI_HSCP <- data.frame(
+  yAxis = length(boxLabels):1,
+  boxOdds = c(HSPC_tbl_model_hscp$estimate),
+  boxCILow = c(HSPC_tbl_model_hscp$conf.low),
+  boxCIHigh = c(HSPC_tbl_model_hscp$conf.high)
+)
+
+# Plot
+HSPC <- ggplot(Plot_ORandCI_HSCP, aes(x = boxOdds, y = boxLabels))
+HSPC + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()
+
+write_csv(HSPC_tbl_model_hscp, file = "Exported tables/HSCP_OR_CI.csv")
+               
+anova(model_hscp, test="LRT")
+
+###Separate above forest plot into 2019 and 2019 vs LD
+
+HSCP_comparisons_2019 = HSPC_tbl_model_hscp %>% 
+  slice(3:32)
+
+HSCP_2019 = ggplot(HSCP_comparisons_2019, aes(x = estimate, y = term))
+HSCP_2019 + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = conf.high, xmin = conf.low), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()
+##This shows that in 2019, there were quite a few significant differences in the odds of being vaccinated by HSCP
+
+
+HSCP_comparisons_LDv2019 = HSPC_tbl_model_hscp %>% 
+  slice(33:62)
+##Not sure this next bit is correct 
+HSCP_2019vLD = ggplot(HSCP_comparisons_LDv2019, aes(x = estimate, y = term))
+HSCP_2019vLD + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = conf.high, xmin = conf.low), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()
+#This shows that most HSCP changed their uptake by a similar amount (up or down) with no stat sig difference except for S Ayrshire, Clack and Stir and Argyll and Bute who got sig better compared to the others
+
+##Based on https://yury-zablotski.netlify.app/post/multiple-logistic-regression-with-interactions/
+library(interactions)
+library(effects)
+results = allEffects(model_hscp)
+# not sure what this line does results$`tp:hscp`$fit %>% summary()
+allEffects(model_hscp) %>% summary() ###this makes the list of ?OR or log OR and CIs
+
+plot(allEffects(model_hscp))
+
+library(sjPlot)
+
+plot_model(model_hscp, type = "int") ###doesn't work
+
+
+
+
+
+
+
