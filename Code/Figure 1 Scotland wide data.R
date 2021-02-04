@@ -664,7 +664,7 @@ SecondMMR_forest ####Change the order
 
 anova(model_secondMMR_scotland_2019, test="LRT")
 
-#Explot forest style plots in one pdf
+#Export forest style plots in one pdf
 
 ORandCI_plots_byLDperiod = ggarrange(First6in1_forest, Second6in1_forest, Third6in1_forest,FirstMMR_forest,SecondMMR_forest,
                                      labels = c("First 6in1","Second 6in1","Third 6in1","First MMR","Second MMR"),
@@ -673,3 +673,143 @@ ORandCI_plots_byLDperiod = ggarrange(First6in1_forest, Second6in1_forest, Third6
 ORandCI_plots_byLDperiod
 
 
+####Potential supplementary figure
+
+
+#Loading datasets (pre load modification, removed "NHS" from Orkney, Shetland and Western Isles)
+Full_firstdose_6in1 = read.csv(here("Data", "First_dose_6in1_3_feb_21.csv"))
+Full_seconddose_6in1 = read.csv(here("Data", "Second_dose_6in1_3_feb_21.csv"))
+Full_thirddose_6in1 = read.csv(here("Data", "Third_dose_6in1_3_feb_21.csv"))
+Full_firstdose_MMR = read.csv(here("Data", "First_dose_MMR_3_feb_21.csv"))
+Full_seconddose_MMR = read.csv(here("Data", "Second_dose_MMR_3_feb_21.csv"))
+
+#Selecting out Scotland wide data and monthly rows +++have lef in Oct and Nov for interest, turn cohort into time.factor and relevel to be non alphabetical
+MonthlyScotland_firstdose_6in1 = Full_firstdose_6in1 %>% 
+  filter(area_name == "Scotland") %>% 
+  filter(cohort %in% c("2019", "Jan-20","Feb-20", "Mar-20", "Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20")) %>% 
+  mutate(time.factor = 
+         cohort %>% 
+         factor() %>% 
+         fct_recode("2019" = "2019", "Jan-20" = "Jan-20", "Feb-20" = "Feb-20", "Mar-20" = "Mar-20","Apr-20"= "Apr-20", "May-20" = "May-20", "Jun-20" = "Jun-20", "Jul-20" = "Jul-20", "Aug-20" = "Aug-20", "Sep-20" = "Sep-20", "Oct-20" = "Oct-20", "Nov-20" = "Nov-20")) 
+
+MonthlyScotland_firstdose_6in1$time.factor = factor(MonthlyScotland_firstdose_6in1$time.factor, levels = MonthlyScotland_firstdose_6in1$time.factor)
+
+
+MonthlyScotland_seconddose_6in1 = Full_seconddose_6in1%>% 
+  filter(area_name == "Scotland")%>% 
+  filter(cohort %in% c("2019", "Jan-20","Feb-20", "Mar-20", "Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20"))%>% 
+  mutate(time.factor = 
+           cohort %>% 
+           factor() %>% 
+           fct_recode("2019" = "2019", "Jan-20" = "Jan-20", "Feb-20" = "Feb-20", "Mar-20" = "Mar-20","Apr-20"= "Apr-20", "May-20" = "May-20", "Jun-20" = "Jun-20", "Jul-20" = "Jul-20", "Aug-20" = "Aug-20", "Sep-20" = "Sep-20", "Oct-20" = "Oct-20", "Nov-20" = "Nov-20")) 
+
+MonthlyScotland_seconddose_6in1$time.factor = factor(MonthlyScotland_seconddose_6in1$time.factor, levels = MonthlyScotland_seconddose_6in1$time.factor)
+
+MonthlyScotland_thirddose_6in1 = Full_thirddose_6in1%>% 
+  filter(area_name == "Scotland")%>% 
+  filter(cohort %in% c("2019", "Jan-20","Feb-20", "Mar-20", "Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20"))%>% 
+  mutate(time.factor = 
+           cohort %>% 
+           factor() %>% 
+           fct_recode("2019" = "2019", "Jan-20" = "Jan-20", "Feb-20" = "Feb-20", "Mar-20" = "Mar-20","Apr-20"= "Apr-20", "May-20" = "May-20", "Jun-20" = "Jun-20", "Jul-20" = "Jul-20", "Aug-20" = "Aug-20", "Sep-20" = "Sep-20", "Oct-20" = "Oct-20", "Nov-20" = "Nov-20")) 
+
+MonthlyScotland_thirddose_6in1$time.factor = factor(MonthlyScotland_thirddose_6in1$time.factor, levels = MonthlyScotland_thirddose_6in1$time.factor)
+
+MonthlyScotland_firstdose_MMR = Full_firstdose_MMR%>% 
+  filter(area_name == "Scotland")%>% 
+  filter(cohort %in% c("2019", "Jan-20","Feb-20", "Mar-20", "Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20"))%>% 
+  mutate(time.factor = 
+           cohort %>% 
+           factor() %>% 
+           fct_recode("2019" = "2019", "Jan-20" = "Jan-20", "Feb-20" = "Feb-20", "Mar-20" = "Mar-20","Apr-20"= "Apr-20", "May-20" = "May-20", "Jun-20" = "Jun-20", "Jul-20" = "Jul-20", "Aug-20" = "Aug-20", "Sep-20" = "Sep-20", "Oct-20" = "Oct-20", "Nov-20" = "Nov-20")) 
+
+MonthlyScotland_firstdose_MMR$time.factor = factor(MonthlyScotland_firstdose_MMR$time.factor, levels = MonthlyScotland_firstdose_MMR$time.factor)
+
+MonthlyScotland_seconddose_MMR = Full_seconddose_MMR%>% 
+  filter(area_name == "Scotland")%>% 
+  filter(cohort %in% c("2019", "Jan-20","Feb-20", "Mar-20", "Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20"))%>% 
+  mutate(time.factor = 
+           cohort %>% 
+           factor() %>% 
+           fct_recode("2019" = "2019", "Jan-20" = "Jan-20", "Feb-20" = "Feb-20", "Mar-20" = "Mar-20","Apr-20"= "Apr-20", "May-20" = "May-20", "Jun-20" = "Jun-20", "Jul-20" = "Jul-20", "Aug-20" = "Aug-20", "Sep-20" = "Sep-20", "Oct-20" = "Oct-20", "Nov-20" = "Nov-20")) 
+
+MonthlyScotland_seconddose_MMR$time.factor = factor(MonthlyScotland_seconddose_MMR$time.factor, levels = MonthlyScotland_seconddose_MMR$time.factor)
+
+
+#Select relevant columns to join, add a column for vaccine type and rename columns in preparatino for joining
+
+MonthlyScotland_firstdose_6in1 = MonthlyScotland_firstdose_6in1 %>% 
+  select(time.factor, uptake_12weeks_percent) %>% 
+  mutate("Vaccine"="First6in1")
+colnames(MonthlyScotland_firstdose_6in1) = c("Month", "Percent_4weeks", "Vaccine")
+
+MonthlyScotland_seconddose_6in1 = MonthlyScotland_seconddose_6in1 %>% 
+  select(time.factor, uptake_16weeks_percent)%>% 
+  mutate("Vaccine"="Second6in1")
+colnames(MonthlyScotland_seconddose_6in1) = c("Month", "Percent_4weeks", "Vaccine")
+
+MonthlyScotland_thirddose_6in1 = MonthlyScotland_thirddose_6in1 %>% 
+  select(time.factor, uptake_20weeks_percent)%>% 
+  mutate("Vaccine"="Third6in1")
+colnames(MonthlyScotland_thirddose_6in1) = c("Month", "Percent_4weeks", "Vaccine")
+
+MonthlyScotland_firstdose_MMR = MonthlyScotland_firstdose_MMR %>% 
+  select(time.factor, uptake_13m_percent) %>% 
+  mutate("Vaccine"="FirstMMR")
+colnames(MonthlyScotland_firstdose_MMR) = c("Month", "Percent_4weeks", "Vaccine")
+
+MonthlyScotland_seconddose_MMR = MonthlyScotland_seconddose_MMR %>% 
+  select(time.factor, uptake_3y5m_percent)%>% 
+  mutate("Vaccine"="SecondMMR")
+colnames(MonthlyScotland_seconddose_MMR) = c("Month", "Percent_4weeks", "Vaccine")
+
+#Join 6in1 doses and plot
+All_6in1_bymonth = full_join(MonthlyScotland_firstdose_6in1, MonthlyScotland_seconddose_6in1)
+All_6in1_bymonth = full_join(All_6in1_bymonth, MonthlyScotland_thirddose_6in1)
+
+
+MonthlyScotland_6in1_line = All_6in1_bymonth %>%
+  ggplot(aes(x=Month, y=Percent_4weeks, group=Vaccine, color=Vaccine)) +
+  geom_line()+
+  theme_bw()+
+  labs(x = NULL,
+       y = "% vaccinated (4 weeks)",
+       title = "All doses6in1")+
+  scale_y_continuous(breaks = c(70,75,80,85,90,95,100))
+
+MonthlyScotland_6in1_line = MonthlyScotland_6in1_line + geom_vline(xintercept = "Apr-20", linetype="dotted", 
+                                                                                       color = "blue", size=1)
+
+MonthlyScotland_6in1_line = MonthlyScotland_6in1_line + geom_vline(xintercept = "Aug-20", linetype="dotted", 
+                                                                                      color = "blue", size=1)
+MonthlyScotland_6in1_line
+
+#Join MMR doses and plot
+All_MMR_bymonth = full_join(MonthlyScotland_firstdose_MMR, MonthlyScotland_seconddose_MMR)
+
+MonthlyScotland_MMR_line = All_MMR_bymonth %>%
+  ggplot(aes(x=Month, y=Percent_4weeks, group=Vaccine, color=Vaccine)) +
+  geom_line()+
+  theme_bw()+
+  labs(x = NULL,
+       y = "% vaccinated (4 weeks)",
+       title = "All doses MMR")+
+  scale_y_continuous(breaks = c(50,55,60,65,70,75,80,85,90,95,100))
+
+MonthlyScotland_MMR_line = MonthlyScotland_MMR_line + geom_vline(xintercept = "Apr-20", linetype="dotted", 
+                                                                   color = "blue", size=1)
+
+MonthlyScotland_MMR_line = MonthlyScotland_MMR_line + geom_vline(xintercept = "Aug-20", linetype="dotted", 
+                                                                   color = "blue", size=1)
+MonthlyScotland_MMR_line
+
+#Export
+library(ggplot2)
+library(ggpubr)
+theme_set(theme_pubr())
+
+Line_plots_bymonth = ggarrange(MonthlyScotland_6in1_line, MonthlyScotland_MMR_line,
+                                  labels = NULL,
+                                  legend=NULL,
+                                  ncol = 1, nrow = 2)
+Line_plots_bymonth
