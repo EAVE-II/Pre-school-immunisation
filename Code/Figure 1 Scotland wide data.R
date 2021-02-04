@@ -172,43 +172,71 @@ Weekly_by_vaccine
 
 
 ##Combine data by LD period
-#New tbl of data by LD, add unvaccinated column and summarise by LD period
+#New tbl of data by LD, add unvaccinated column, summarise by LD period and turn vaccinated and unvaccianted into factors
 First_6in1_by_LDperiod = Scotland_firstdose_6in1 %>%
   group_by(lockdown.factor) %>% 
   summarise(denominator, uptake_12weeks_num, uptake_12weeks_percent) %>% 
   mutate(unvaccinated = denominator-uptake_12weeks_num)%>% 
   group_by(lockdown.factor)%>% 
-  summarise(total_eligable = sum(denominator), total_vaccinated = sum(uptake_12weeks_num), total_unvaccinated = sum(unvaccinated), mean_percent = mean(uptake_12weeks_percent))
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(uptake_12weeks_num), total_unvaccinated = sum(unvaccinated), mean_percent = mean(uptake_12weeks_percent)) %>% 
+  mutate (vaccinated.factor = total_vaccinated %>% 
+            factor())%>%
+  mutate (unvaccinated.factor = 
+            total_unvaccinated %>% 
+            factor()) 
+
 
 Second_6in1_by_LDperiod = Scotland_seconddose_6in1 %>%
   group_by(lockdown.factor) %>% 
   summarise(denominator, uptake_16weeks_num, uptake_16weeks_percent) %>% 
   mutate(unvaccinated = denominator-uptake_16weeks_num)%>% 
   group_by(lockdown.factor)%>% 
-  summarise(total_eligable = sum(denominator), total_vaccinated = sum(uptake_16weeks_num), total_unvaccinated = sum(unvaccinated), mean_percent = mean(uptake_16weeks_percent))
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(uptake_16weeks_num), total_unvaccinated = sum(unvaccinated), mean_percent = mean(uptake_16weeks_percent)) %>% 
+  mutate (vaccinated.factor = total_vaccinated %>% 
+          factor())%>%
+  mutate (unvaccinated.factor = 
+            total_unvaccinated %>% 
+            factor())
 
 Third_6in1_by_LDperiod = Scotland_thirddose_6in1 %>%
   group_by(lockdown.factor) %>% 
   summarise(denominator, uptake_20weeks_num, uptake_20weeks_percent) %>% 
   mutate(unvaccinated = denominator-uptake_20weeks_num)%>% 
   group_by(lockdown.factor)%>% 
-  summarise(total_eligable = sum(denominator), total_vaccinated = sum(uptake_20weeks_num), total_unvaccinated = sum(unvaccinated), mean_percent = mean(uptake_20weeks_percent))
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(uptake_20weeks_num), total_unvaccinated = sum(unvaccinated), mean_percent = mean(uptake_20weeks_percent)) %>% 
+  mutate (vaccinated.factor = total_vaccinated %>% 
+          factor())%>%
+  mutate (unvaccinated.factor = 
+            total_unvaccinated %>% 
+            factor())
 
 First_MMR_by_LDperiod = Scotland_firstdose_MMR %>%
   group_by(lockdown.factor) %>% 
   summarise(denominator, uptake_13m_num, uptake_13m_percent) %>% 
   mutate(unvaccinated = denominator-uptake_13m_num)%>% 
   group_by(lockdown.factor)%>% 
-  summarise(total_eligable = sum(denominator), total_vaccinated = sum(uptake_13m_num), total_unvaccinated = sum(unvaccinated), mean_percent = mean(uptake_13m_percent))
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(uptake_13m_num), total_unvaccinated = sum(unvaccinated), mean_percent = mean(uptake_13m_percent)) %>% 
+  mutate (vaccinated.factor = total_vaccinated %>% 
+          factor())%>%
+  mutate (unvaccinated.factor = 
+            total_unvaccinated %>% 
+            factor())
+
 
 Second_MMR_by_LDperiod = Scotland_seconddose_MMR %>%
   group_by(lockdown.factor) %>% 
   summarise(denominator, uptake_3y5m_num, uptake_3y5m_percent) %>% 
   mutate(unvaccinated = denominator-uptake_3y5m_num)%>% 
   group_by(lockdown.factor)%>% 
-  summarise(total_eligable = sum(denominator), total_vaccinated = sum(uptake_3y5m_num), total_unvaccinated = sum(unvaccinated), mean_percent = mean(uptake_3y5m_percent))
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(uptake_3y5m_num), total_unvaccinated = sum(unvaccinated), mean_percent = mean(uptake_3y5m_percent)) %>% 
+  mutate (vaccinated.factor = total_vaccinated %>% 
+          factor())%>%
+  mutate (unvaccinated.factor = 
+            total_unvaccinated %>% 
+            factor())
 
-#Plot mean percent uptake by lockdown period from above tibbles
+
+#Plot mean percent uptake by lockdown period from above tibbles ++++++++++++++++++=need to change limets on y axis
 #First dose 6in1
 First_6in1_LDplot = First_6in1_by_LDperiod %>% 
   ggplot(aes(x=lockdown.factor, y=mean_percent, fill = lockdown.factor)) +
@@ -218,7 +246,8 @@ First_6in1_LDplot = First_6in1_by_LDperiod %>%
   labs(x = "Lockdown period",
        y = "% vaccinated (4 weeks)",
        title = "First dose 6in1")+
-  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))
+  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
+  scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))
 
 First_6in1_LDplot= First_6in1_LDplot + geom_hline(yintercept = 93.9, linetype="dashed", 
                   color = "blue", size=1)
@@ -233,7 +262,8 @@ Second_6in1_LDplot = Second_6in1_by_LDperiod %>%
   labs(x = "Lockdown period",
        y = "% vaccinated (4 weeks)",
        title = "Second dose 6in1")+
-  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))
+  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
+  scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))
 
 Second_6in1_LDplot= Second_6in1_LDplot + geom_hline(yintercept = 84.8, linetype="dashed", 
                                                   color = "blue", size=1)
@@ -248,7 +278,8 @@ Third_6in1_LDplot = Third_6in1_by_LDperiod %>%
   labs(x = "Lockdown period",
        y = "% vaccinated (4 weeks)",
        title = "Third dose 6in1")+
-  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))
+  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
+  scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))
 
 Third_6in1_LDplot= Third_6in1_LDplot + geom_hline(yintercept = 73, linetype="dashed", 
                                                     color = "blue", size=1)
@@ -262,8 +293,9 @@ First_MMR_LDplot = First_MMR_by_LDperiod %>%
   theme(legend.position="none")+
   labs(x = "Lockdown period",
        y = "% vaccinated (4 weeks)",
-       title = "Second dose 6in1")+
-  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))
+       title = "First dose MMR")+
+  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
+  scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))
 
 First_MMR_LDplot= First_MMR_LDplot + geom_hline(yintercept = 65.2, linetype="dashed", 
                                                     color = "blue", size=1)
@@ -277,8 +309,9 @@ Second_MMR_LDplot = Second_MMR_by_LDperiod %>%
   theme(legend.position="none")+
   labs(x = "Lockdown period",
        y = "% vaccinated (4 weeks)",
-       title = "Second dose 6in1")+
-  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))
+       title = "Second dose MMR")+
+  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
+  scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))
 
 Second_MMR_LDplot= Second_MMR_LDplot + geom_hline(yintercept = 51.8, linetype="dashed", 
                                                 color = "blue", size=1)
@@ -288,8 +321,355 @@ Second_MMR_LDplot
 
 LD_periods_by_vaccine = ggarrange(First_6in1_LDplot,Second_6in1_LDplot,Third_6in1_LDplot,First_MMR_LDplot,Second_MMR_LDplot,
                                   labels = NULL,
-                                  common.legend = TRUE, legend="bottom",
+                                  legend=NULL,
                                   ncol = 3, nrow = 2)
 LD_periods_by_vaccine
+
+##Logistic regression
+#Set up required tbls, weekly data by LD period, add unvaccinated column, change vaccinated and unvaccinated into factors and do a boxplot if you want
+#First dose 6in1
+Weekly_first6in1_LDperiod = Scotland_firstdose_6in1 %>% 
+  group_by(lockdown.factor) %>% 
+  summarise(cohort, denominator, uptake_12weeks_num, uptake_12weeks_percent)%>% 
+  mutate(unvaccinated = denominator-uptake_12weeks_num) %>% 
+  mutate (vaccinated.factor = 
+            uptake_12weeks_num %>% 
+            factor()) %>% 
+  mutate (unvaccinated.factor = 
+            unvaccinated %>% 
+            factor())
+
+Boxplot_first6in1_LDperiod = Weekly_first6in1_LDperiod %>% 
+  ggplot(aes(x = lockdown.factor, y=uptake_12weeks_percent)) +
+  geom_boxplot(fill="slateblue", alpha=0.2)+
+  ylab("% vaccinated (4weeks)")+
+  xlab(NULL)+
+  ylim(70,100)+
+  scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))
+
+Boxplot_first6in1_LDperiod
+
+#Second dose 6in1
+Weekly_second6in1_LDperiod = Scotland_seconddose_6in1 %>% 
+  group_by(lockdown.factor) %>% 
+  summarise(cohort, denominator, uptake_16weeks_num, uptake_16weeks_percent)%>% 
+  mutate(unvaccinated = denominator-uptake_16weeks_num) %>% 
+  mutate (vaccinated.factor = 
+            uptake_16weeks_num %>% 
+            factor()) %>% 
+  mutate (unvaccinated.factor = 
+            unvaccinated %>% 
+            factor())
+
+Boxplot_second6in1_LDperiod = Weekly_second6in1_LDperiod %>% 
+  ggplot(aes(x = lockdown.factor, y=uptake_16weeks_percent)) +
+  geom_boxplot(fill="slateblue", alpha=0.2)+
+  ylab("% vaccinated (4weeks)")+
+  xlab(NULL)+
+  ylim(70,100)+
+  scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))
+
+Boxplot_second6in1_LDperiod
+
+#Third dose 6in1
+Weekly_third6in1_LDperiod = Scotland_thirddose_6in1 %>% 
+  group_by(lockdown.factor) %>% 
+  summarise(cohort, denominator, uptake_20weeks_num, uptake_20weeks_percent)%>% 
+  mutate(unvaccinated = denominator-uptake_20weeks_num) %>% 
+  mutate (vaccinated.factor = 
+            uptake_20weeks_num %>% 
+            factor()) %>% 
+  mutate (unvaccinated.factor = 
+            unvaccinated %>% 
+            factor())
+
+Boxplot_third6in1_LDperiod = Weekly_third6in1_LDperiod %>% 
+  ggplot(aes(x = lockdown.factor, y=uptake_20weeks_percent)) +
+  geom_boxplot(fill="slateblue", alpha=0.2)+
+  ylab("% vaccinated (4weeks)")+
+  xlab(NULL)+
+  ylim(70,100)+
+  scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))
+
+Boxplot_third6in1_LDperiod
+
+#First dose MMR
+Weekly_firstMMR_LDperiod = Scotland_firstdose_MMR %>% 
+  group_by(lockdown.factor) %>% 
+  summarise(cohort, denominator, uptake_13m_num, uptake_13m_percent)%>% 
+  mutate(unvaccinated = denominator-uptake_13m_num) %>% 
+  mutate (vaccinated.factor = 
+            uptake_13m_num %>% 
+            factor()) %>% 
+  mutate (unvaccinated.factor = 
+            unvaccinated %>% 
+            factor())
+
+Boxplot_firstMMR_LDperiod = Weekly_firstMMR_LDperiod %>% 
+  ggplot(aes(x = lockdown.factor, y=uptake_13m_percent)) +
+  geom_boxplot(fill="slateblue", alpha=0.2)+
+  ylab("% vaccinated (4weeks)")+
+  xlab(NULL)+
+  ylim(40,100)+
+  scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))
+
+Boxplot_firstMMR_LDperiod
+
+#Second dose MMR
+Weekly_secondMMR_LDperiod = Scotland_seconddose_MMR %>% 
+  group_by(lockdown.factor) %>% 
+  summarise(cohort, denominator, uptake_3y5m_num, uptake_3y5m_percent)%>% 
+  mutate(unvaccinated = denominator-uptake_3y5m_num) %>% 
+  mutate (vaccinated.factor = 
+            uptake_3y5m_num %>% 
+            factor()) %>% 
+  mutate (unvaccinated.factor = 
+            unvaccinated %>% 
+            factor())
+
+Boxplot_secondMMR_LDperiod = Weekly_secondMMR_LDperiod %>% 
+  ggplot(aes(x = lockdown.factor, y=uptake_3y5m_percent)) +
+  geom_boxplot(fill="slateblue", alpha=0.2)+
+  ylab("% vaccinated (4weeks)")+
+  xlab(NULL)+
+  ylim(40,100)+
+  scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))
+
+Boxplot_secondMMR_LDperiod
+
+#Export boxplots ++++++++++++++++need to change plot label position
+
+Boxplots_percentbyLDperiod = ggarrange(Boxplot_first6in1_LDperiod,Boxplot_second6in1_LDperiod,Boxplot_third6in1_LDperiod,Boxplot_firstMMR_LDperiod,Boxplot_secondMMR_LDperiod,
+                                  labels = c("First 6in1","Second 6in1","Third 6in1","First MMR","Second MMR"),
+                                  ncol = 3, nrow = 2)
+Boxplots_percentbyLDperiod
+
+##Set baseline level as 2019
+
+Weekly_first6in1_LDperiod = Weekly_first6in1_LDperiod %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+         fct_relevel("Baseline_2019"))
+
+Weekly_second6in1_LDperiod = Weekly_second6in1_LDperiod %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("Baseline_2019"))
+
+Weekly_third6in1_LDperiod = Weekly_third6in1_LDperiod %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("Baseline_2019"))
+
+Weekly_firstMMR_LDperiod = Weekly_firstMMR_LDperiod %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("Baseline_2019"))
+
+Weekly_secondMMR_LDperiod = Weekly_secondMMR_LDperiod %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("Baseline_2019"))
+
+##Set up the models for each vaccine
+#First 6in1
+First6in1_Single_regression_tbl = cbind(Weekly_first6in1_LDperiod$uptake_12weeks_num, Weekly_first6in1_LDperiod$unvaccinated)
+
+model_first6in1_scotland_2019 = glm(First6in1_Single_regression_tbl ~ Weekly_first6in1_LDperiod$lockdown.factor,
+                                  family="binomial")
+
+summary(model_first6in1_scotland_2019)
+
+exp(model_first6in1_scotland_2019$coefficients)
+exp(confint(model_first6in1_scotland_2019))  
+
+#Second 6in1
+Second6in1_Single_regression_tbl = cbind(Weekly_second6in1_LDperiod$uptake_16weeks_num, Weekly_second6in1_LDperiod$unvaccinated)
+
+model_second6in1_scotland_2019 = glm(Second6in1_Single_regression_tbl ~ Weekly_second6in1_LDperiod$lockdown.factor,
+                                    family="binomial")
+
+summary(model_second6in1_scotland_2019)
+
+exp(model_second6in1_scotland_2019$coefficients)
+exp(confint(model_second6in1_scotland_2019)) 
+
+#Third 6in1
+Third6in1_Single_regression_tbl = cbind(Weekly_third6in1_LDperiod$uptake_20weeks_num, Weekly_third6in1_LDperiod$unvaccinated)
+
+model_third6in1_scotland_2019 = glm(Third6in1_Single_regression_tbl ~ Weekly_third6in1_LDperiod$lockdown.factor,
+                                     family="binomial")
+
+summary(model_third6in1_scotland_2019)
+
+exp(model_third6in1_scotland_2019$coefficients)
+exp(confint(model_third6in1_scotland_2019))
+
+#First MMR
+FirstMMR_Single_regression_tbl = cbind(Weekly_firstMMR_LDperiod$uptake_13m_num, Weekly_firstMMR_LDperiod$unvaccinated)
+
+model_firstMMR_scotland_2019 = glm(FirstMMR_Single_regression_tbl ~ Weekly_firstMMR_LDperiod$lockdown.factor,
+                                     family="binomial")
+
+summary(model_firstMMR_scotland_2019)
+
+exp(model_firstMMR_scotland_2019$coefficients)
+exp(confint(model_firstMMR_scotland_2019))
+
+#Second MMR
+SecondMMR_Single_regression_tbl = cbind(Weekly_secondMMR_LDperiod$uptake_3y5m_num, Weekly_secondMMR_LDperiod$unvaccinated)
+
+model_secondMMR_scotland_2019 = glm(SecondMMR_Single_regression_tbl ~ Weekly_secondMMR_LDperiod$lockdown.factor,
+                                     family="binomial")
+
+summary(model_secondMMR_scotland_2019)
+
+exp(model_secondMMR_scotland_2019$coefficients)
+exp(confint(model_secondMMR_scotland_2019))
+
+##Make a plot showing OR and CI compared to baseline 2019
+#Make the OR and CI tbls, remove the intercept
+library(broom)
+First6in1_model_tbl = model_first6in1_scotland_2019%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE)) %>% 
+  mutate(lockdown.factor = term) 
+
+
+Second6in1_model_tbl = model_second6in1_scotland_2019%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low)%>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+Third6in1_model_tbl = model_third6in1_scotland_2019%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low)%>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+FirstMMR_model_tbl = model_firstMMR_scotland_2019%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low)%>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+SecondMMR_model_tbl = model_secondMMR_scotland_2019%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low)%>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))         
+
+#Create labels and enter summary data from above tbls
+boxLabels = c("Pre lockdown","Lockdown", "Post lockdown")
+
+#First 6in1 plot
+Plot_ORandCI_first6in1 <- data.frame(
+  yAxis = length(boxLabels):1,
+  boxOdds = c(First6in1_model_tbl$OR),
+  boxCILow = c(First6in1_model_tbl$upperCI),
+  boxCIHigh = c(First6in1_model_tbl$lowerCI))
+
+First6in1_forest <- ggplot(Plot_ORandCI_first6in1, aes(x = boxOdds, y = boxLabels))
+First6in1_forest = First6in1_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()+
+  labs(x = "OR compared to 2019",
+     y = NULL,
+     title = NULL)
+  
+
+First6in1_forest ####Change the order
+
+
+anova(model_first6in1_scotland_2019, test="LRT")
+
+
+#Second 6in1 plot
+Plot_ORandCI_second6in1 <- data.frame(
+  yAxis = length(boxLabels):1,
+  boxOdds = c(Second6in1_model_tbl$OR),
+  boxCILow = c(Second6in1_model_tbl$upperCI),
+  boxCIHigh = c(Second6in1_model_tbl$lowerCI))
+
+Second6in1_forest <- ggplot(Plot_ORandCI_second6in1, aes(x = boxOdds, y = boxLabels))
+Second6in1_forest = Second6in1_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()+
+  labs(x = "OR compared to 2019",
+       y = NULL,
+       title = NULL)
+
+
+Second6in1_forest ####Change the order
+
+
+anova(model_second6in1_scotland_2019, test="LRT")
+
+#Third 6in1 plot
+Plot_ORandCI_third6in1 <- data.frame(
+  yAxis = length(boxLabels):1,
+  boxOdds = c(Third6in1_model_tbl$OR),
+  boxCILow = c(Third6in1_model_tbl$upperCI),
+  boxCIHigh = c(Third6in1_model_tbl$lowerCI))
+
+Third6in1_forest <- ggplot(Plot_ORandCI_third6in1, aes(x = boxOdds, y = boxLabels))
+Third6in1_forest = Third6in1_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()+
+  labs(x = "OR compared to 2019",
+       y = NULL,
+       title = NULL)
+
+
+Third6in1_forest ####Change the order
+
+
+anova(model_third6in1_scotland_2019, test="LRT")
+
+#First MMR plot
+Plot_ORandCI_firstMMR <- data.frame(
+  yAxis = length(boxLabels):1,
+  boxOdds = c(FirstMMR_model_tbl$OR),
+  boxCILow = c(FirstMMR_model_tbl$upperCI),
+  boxCIHigh = c(FirstMMR_model_tbl$lowerCI))
+
+FirstMMR_forest <- ggplot(Plot_ORandCI_firstMMR, aes(x = boxOdds, y = boxLabels))
+FirstMMR_forest = FirstMMR_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()+
+  labs(x = "OR compared to 2019",
+       y = NULL,
+       title = NULL)
+
+
+FirstMMR_forest ####Change the order
+
+
+anova(model_firstMMR_scotland_2019, test="LRT")
+
+#Second MMR plot
+Plot_ORandCI_secondMMR <- data.frame(
+  yAxis = length(boxLabels):1,
+  boxOdds = c(SecondMMR_model_tbl$OR),
+  boxCILow = c(SecondMMR_model_tbl$upperCI),
+  boxCIHigh = c(SecondMMR_model_tbl$lowerCI))
+
+SecondMMR_forest <- ggplot(Plot_ORandCI_secondMMR, aes(x = boxOdds, y = boxLabels))
+SecondMMR_forest = SecondMMR_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()+
+  labs(x = "OR compared to 2019",
+       y = NULL,
+       title = NULL)
+
+SecondMMR_forest ####Change the order
+
+anova(model_secondMMR_scotland_2019, test="LRT")
+
+#Explot forest style plots in one pdf
+
+ORandCI_plots_byLDperiod = ggarrange(First6in1_forest, Second6in1_forest, Third6in1_forest,FirstMMR_forest,SecondMMR_forest,
+                                     labels = c("First 6in1","Second 6in1","Third 6in1","First MMR","Second MMR"),
+                                     ncol = 3, nrow = 2)
+
+ORandCI_plots_byLDperiod
 
 
