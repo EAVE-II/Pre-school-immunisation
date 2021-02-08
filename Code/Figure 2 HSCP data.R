@@ -92,3 +92,4 @@ First_MMR_2019_map = tm_shape(newPolyMMR)+
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 First_MMR_2019_map
+
