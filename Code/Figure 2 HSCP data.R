@@ -16,10 +16,6 @@ library(rgdal)
 library(tmap)
 library(viridis)
 
-phs_main <- rgb(67,53,139, maxColorValue = 255)
-phs_purple<- rgb(150,64,145, maxColorValue = 255)
-phs_purple2 <- rgb(208,145,205, maxColorValue = 255)
-phs_spec2 <- colorRampPalette(c(phs_main, phs_purple2))
 
 #Loading datasets (pre load modification, removed "NHS" from Orkney, Shetland and Western Isles)
 Full_firstdose_6in1 = read.csv(here("Data", "First_dose_6in1_3_feb_21.csv"))
@@ -137,6 +133,17 @@ First_6in1_percentchange_map = tm_shape(First6in1_percentchange_poly)+
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 First_6in1_percentchange_map
+#Bar chart plot
+library(RColorBrewer)
+First6in1_HSPC_percentchange_bar = First6in1_HSPC_percentchange_2019andLD %>% 
+  ggplot(aes(y=percent_change, x=area_name)) + 
+  geom_bar(position="dodge", stat="identity", color=rgb(0.1,0.4,0.5,0.7), fill= rgb(0.1,0.4,0.5,0.7))+
+  theme(legend.position="none")+
+  labs(x=NULL)+
+  theme_bw()+
+  theme(axis.text.y = element_text(size = 7))+
+  coord_flip()
+First6in1_HSPC_percentchange_bar
 
 #Second 6in1
 
@@ -175,7 +182,16 @@ Second_6in1_percentchange_map = tm_shape(Second6in1_percentchange_poly)+
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 Second_6in1_percentchange_map
-
+#Bar chart plot
+Second6in1_HSPC_percentchange_bar = Second6in1_HSPC_percentchange_2019andLD %>% 
+  ggplot(aes(y=percent_change, x=area_name)) + 
+  geom_bar(position="dodge", stat="identity", color=rgb(0.1,0.4,0.5,0.7), fill= rgb(0.1,0.4,0.5,0.7))+
+  theme(legend.position="none")+
+  theme_bw()+
+  theme(axis.text.y = element_text(size = 7))+
+  labs(x=NULL)+
+  coord_flip()
+Second6in1_HSPC_percentchange_bar
 #Third 6in1
 
 HSCP_2019data_Third6in1 <- Full_thirddose_6in1 %>%
@@ -214,6 +230,17 @@ Third_6in1_percentchange_map = tm_shape(Third6in1_percentchange_poly)+
 
 Third_6in1_percentchange_map
 
+#Bar chart plot
+Third6in1_HSPC_percentchange_bar = Third6in1_HSPC_percentchange_2019andLD %>% 
+  ggplot(aes(y=percent_change, x=area_name)) + 
+  geom_bar(position="dodge", stat="identity", color=rgb(0.1,0.4,0.5,0.7), fill= rgb(0.1,0.4,0.5,0.7))+
+  theme(legend.position="none")+
+  theme_bw()+
+  theme(axis.text.y = element_text(size = 7))+
+  labs(x=NULL)+
+  coord_flip()
+Third6in1_HSPC_percentchange_bar
+
 #First MMR
 HSCP_2019data_FirstMMR <- Full_firstdose_MMR %>%
   filter(str_detect(area_name,"NHS", negate=TRUE)) %>% 
@@ -250,6 +277,16 @@ First_MMR_percentchange_map = tm_shape(FirstMMR_percentchange_poly)+
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 First_MMR_percentchange_map ##NOte change in pallet as none fell. Cross checked for Moray
+#Bar chart plot
+FirstMMR_HSPC_percentchange_bar = FirstMMR_HSPC_percentchange_2019andLD %>% 
+  ggplot(aes(y=percent_change, x=area_name)) + 
+  geom_bar(position="dodge", stat="identity", color=rgb(0.1,0.4,0.5,0.7), fill= rgb(0.1,0.4,0.5,0.7))+
+  theme(legend.position="none")+
+  theme_bw()+
+  labs(x=NULL)+
+  theme(axis.text.y = element_text(size = 7))+
+  coord_flip()
+FirstMMR_HSPC_percentchange_bar
 
 #Second MMR ++++excludes Aberdeen city, Aberdeenshire and Moray as given second MMR at different time, hese were removed pre enering into dashboard
 
@@ -288,6 +325,190 @@ Second_MMR_percentchange_map = tm_shape(SecondMMR_percentchange_poly)+
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 Second_MMR_percentchange_map
+#Bar chart plot
+SecondMMR_HSPC_percentchange_bar = SecondMMR_HSPC_percentchange_2019andLD %>% 
+  ggplot(aes(y=percent_change, x=area_name)) + 
+  geom_bar(position="dodge", stat="identity", color=rgb(0.1,0.4,0.5,0.7), fill= rgb(0.1,0.4,0.5,0.7))+
+  theme(legend.position="none")+
+  theme_bw()+
+  labs(x=NULL)+
+  theme(axis.text.y = element_text(size = 7))+
+  coord_flip()
+SecondMMR_HSPC_percentchange_bar
 
-##Export the % change maps in one pdf
+##Export the % change maps and bar charts in one pdf
 tmap_arrange(First_6in1_percentchange_map, Second_6in1_percentchange_map, Third_6in1_percentchange_map, First_MMR_percentchange_map, Second_MMR_percentchange_map)
+
+library(ggplot2)
+library(ggpubr)
+theme_set(theme_pubr())
+
+Percent_change_bar_HSCP_6in1 = ggarrange(First6in1_HSPC_percentchange_bar, Second6in1_HSPC_percentchange_bar, Third6in1_HSPC_percentchange_bar,
+                               labels = c("First6in1", "Second6in1", "Third6in1"), hjust = -1,
+                               legend=NULL,
+                               ncol = 2, nrow = 2)
+
+Percent_change_bar_HSCP_6in1
+
+Percent_change_bar_HSCP_MMR = ggarrange(FirstMMR_HSPC_percentchange_bar, SecondMMR_HSPC_percentchange_bar, 
+                                         labels = c("First MMR","Second MMR"), hjust = -1.5,
+                                         legend=NULL,
+                                         ncol = 2, nrow = 1)
+
+Percent_change_bar_HSCP_MMR
+
+
+##To get a grouped bar chart+++Just done for First dose 6in1 at present
+
+#First 6in1
+
+First6in1_HSCP_2019_percent = First6in1_HSCP_2019_percent %>% 
+  mutate("Time period" = "2019")
+colnames(First6in1_HSCP_2019_percent)=c("Area","Uptake","Time period")
+First6in1_HSCP_LD_percent = First6in1_HSCP_LD_percent %>% 
+  mutate("Time period" = "LD")
+colnames(First6in1_HSCP_LD_percent)=c("Area","Uptake","Time period")
+
+First6in1_Absolute_percentage = full_join(First6in1_HSCP_2019_percent, First6in1_HSCP_LD_percent)
+
+Grouped_First6in1_2019LDpercentages = First6in1_Absolute_percentage %>%
+  ggplot(aes(fill=`Time period` , y=Uptake, x=Area)) +
+  geom_bar(position="dodge", stat="identity")+
+  theme_bw()+
+  coord_flip()+
+  labs(x = NULL,
+       y = "% vaccinated (4 weeks)",
+       title = "First dose6in1")+
+  geom_hline(yintercept = 93.9, linetype="dotted", ##Scotland wide mean uptake 2019
+             color = "red", size=1)+
+  geom_hline(yintercept = 94.9, linetype="dotted", ##Scotland wide mean uptake LD
+             color = "blue", size=1)
+
+Grouped_First6in1_2019LDpercentages
+
+####Logistic regression analysis of uptake rates between HSCP for 2019 and LD
+##First 6in1 2019
+#Set up tbl with vaccinated and unvaccianted factors
+
+HSCP_2019data_First6in1 = HSCP_2019data_First6in1 %>% 
+  mutate(unvaccinated = denominator-uptake_12weeks_num) %>% 
+  mutate (vaccinated.factor = 
+            uptake_12weeks_num %>% 
+            factor()) %>% 
+  mutate (unvaccinated.factor = 
+            unvaccinated %>% 
+            factor()) %>% 
+  mutate(area.factor = area_name)
+#Relevel to comparison with Midlothian as it follows the Scottish pattern (alternative could be the borders)
+
+HSCP_2019data_First6in1 = HSCP_2019data_First6in1 %>% 
+  mutate(area.factor = area.factor %>%
+           fct_relevel("Midlothian"))
+#Set up regression tbls
+  
+First6in1_HSCP2019_regression_tbl = cbind(HSCP_2019data_First6in1$vaccinated.factor, HSCP_2019data_First6in1$unvaccinated.factor)
+
+model_first6in1_HSCP_2019 = glm(First6in1_HSCP2019_regression_tbl ~ HSCP_2019data_First6in1$area.factor,
+                                    family="binomial")
+
+summary(model_first6in1_HSCP_2019)
+
+exp(model_first6in1_HSCP_2019$coefficients)
+exp(confint(model_first6in1_HSCP_2019)) 
+##Make a plot showing OR and CI compared to baseline Midlothian in 2019
+#Make the OR and CI tbls, remove the intercept
+library(broom)
+First6in1_HSCP2019model_tbl = model_first6in1_HSCP_2019%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+#Create labels and enter summary data from above tbls
+boxLabelsHSCP = c("Aberdeen City", "Aberdeenshire", "Angus", "Argyll&Bute", "C'shire&Stirling", "Dumfries&G'way", "Dundee city", "East Ayrshire", "East Dunbartonshire", "East Lothian", "East R'shire", "Edinburgh", "Falkirk", "Fife", "Glasgow city", "Highland", "Inverclyde", "Moray", "North Ayrshire", "North L'shire", "Orkney", "Perth&Kinross", "Renfrewshire", "Scottish Borders", "Shetland", "South Ayrshire", "South L'shire", "West D'shire", "West Lothian", "Western Isles")
+
+#First 6in1 plot
+ORandCI_first6in1_HSCP2019 <- data.frame(
+  yAxis = length(boxLabelsHSCP):1,
+  boxOdds = c(First6in1_HSCP2019model_tbl$OR),
+  boxCILow = c(First6in1_HSCP2019model_tbl$upperCI),
+  boxCIHigh = c(First6in1_HSCP2019model_tbl$lowerCI))
+
+First6in1_HSCP2019_forest <- ggplot(ORandCI_first6in1_HSCP2019, aes(x = boxOdds, y = boxLabelsHSCP))
+First6in1_HSCP2019_forest = First6in1_HSCP2019_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()+
+  labs(x = "2019 OR compared to Midlothian",
+       y = NULL,
+       title = NULL)
+
+First6in1_HSCP2019_forest
+
+anova(model_first6in1_HSCP_2019, test="LRT")
+
+##First 6in1 LD2020
+##Summarise data before entering into the model- you have to do this to get he correct results ? as using agregate data
+
+#Set up tbl with vaccinated and unvaccinated factors
+
+HSCP_LDdata_First6in1 = HSCP_LDdata_First6in1 %>% 
+  mutate(unvaccinated = denominator-uptake_12weeks_num) %>% 
+  mutate (vaccinated.factor = 
+            uptake_12weeks_num %>% 
+            factor()) %>% 
+  mutate (unvaccinated.factor = 
+            unvaccinated %>% 
+            factor()) %>% 
+  mutate(area.factor = area_name)
+#Summarise the data
+
+SummaryHSCP_LDdata_First6in1 = HSCP_LDdata_First6in1 %>% 
+  select(area.factor, uptake_12weeks_num, unvaccinated) %>% 
+  group_by(area.factor) %>% 
+  summarise(total_vaccinated = sum(uptake_12weeks_num), total_unvaccinated = sum(unvaccinated))
+#Relevel to comparison with Midlothian as it follows the Scottish pattern (alternative could be the borders)
+
+SummaryHSCP_LDdata_First6in1 = SummaryHSCP_LDdata_First6in1 %>% 
+  mutate(area.factor = area.factor %>%
+           fct_relevel("Midlothian"))
+
+#Set up regression tbls
+SummaryFirst6in1_HSCPLD_regression_tbl = cbind(SummaryHSCP_LDdata_First6in1$total_vaccinated, SummaryHSCP_LDdata_First6in1$total_unvaccinated)
+
+Summarymodel_first6in1_HSCP_LD = glm(SummaryFirst6in1_HSCPLD_regression_tbl ~ SummaryHSCP_LDdata_First6in1$area.factor,
+                              family="binomial")
+
+summary(Summarymodel_first6in1_HSCP_LD)
+
+exp(Summarymodel_first6in1_HSCP_LD$coefficients)
+exp(confint(Summarymodel_first6in1_HSCP_LD))
+
+###Make a plot showing OR and CI compared to baseline Midlothian in LD
+#Make the OR and CI tbls, remove the intercept
+library(broom)
+SummaryFirst6in1_HSCPLDmodel_tbl = Summarymodel_first6in1_HSCP_LD%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+#Create labels and enter summary data from above tbls
+boxLabelsHSCPLD = c("Aberdeen City", "Aberdeenshire", "Angus", "Argyll&Bute", "C'shire&Stirling", "Dumfries&G'way", "Dundee city", "East Ayrshire", "East Dunbartonshire", "East Lothian", "East R'shire", "Edinburgh", "Falkirk", "Fife", "Glasgow city", "Highland", "Inverclyde", "Moray", "North Ayrshire", "North L'shire", "Perth&Kinross", "Renfrewshire", "Scottish Borders", "South Ayrshire", "South L'shire", "West D'shire", "West Lothian") ##not shetland, W isles and orkney
+
+SummaryORandCI_first6in1_HSCPLD <- data.frame(
+  yAxis = length(boxLabelsHSCPLD):1,
+  boxOdds = c(SummaryFirst6in1_HSCPLDmodel_tbl$OR),
+  boxCILow = c(SummaryFirst6in1_HSCPLDmodel_tbl$upperCI),
+  boxCIHigh = c(SummaryFirst6in1_HSCPLDmodel_tbl$lowerCI))
+
+SummaryFirst6in1_HSCPLD_forest <- ggplot(SummaryORandCI_first6in1_HSCPLD, aes(x = boxOdds, y = boxLabelsHSCPLD))
+SummaryFirst6in1_HSCPLD_forest = SummaryFirst6in1_HSCPLD_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()+
+  labs(x = "SummaryLD OR compared to Midlothian",
+       y = NULL,
+       title = NULL)
+
+SummaryFirst6in1_HSCPLD_forest
+
+anova(Summarymodel_first6in1_HSCP_LD, test="LRT")
