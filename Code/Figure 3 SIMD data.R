@@ -16,6 +16,9 @@ library(rgdal)
 library(tmap)
 library(viridis)
 library(forcats)
+library(ggplot2)
+library(ggpubr)
+theme_set(theme_pubr())
 
 #Loading datasets
 
@@ -2090,3 +2093,56 @@ SecondMMR_SIMDinteraction_tbl_BL2 = model_SIMD_SecondMMR_BL2%>%
 SecondMMR_SIMDinteraction_tbl_BL2
 write_csv(SecondMMR_SIMDinteraction_tbl_BL2, file = "Exported tables/SecondMMR_SIMDinteraction_tbl_BL2.csv")
 
+######EXporting graphs in single PDFS
+library(ggplot2)
+library(ggpubr)
+theme_set(theme_pubr())
+#Grouped bar charts
+
+Grouped_bar_6in1_SMID_all_periods = ggarrange(First6in1_SIMD_grouped, Second6in1_SIMD_grouped, Third6in1_SIMD_grouped, 
+                                                      common.legend = TRUE, legend="bottom",
+                                                      labels = NULL,
+                                                      ncol = 2, nrow = 2)
+Grouped_bar_6in1_SMID_all_periods
+
+
+Grouped_bar_MMR_SMID_all_periods = ggarrange(FirstMMR_SIMD_grouped, SecondMMR_SIMD_grouped, 
+                                              common.legend = TRUE, legend="bottom",
+                                              labels = NULL,
+                                              ncol = 2, nrow = 1)
+Grouped_bar_MMR_SMID_all_periods
+
+#Grouped line plots
+Grouped_line_6in1_SMID_all_periods = ggarrange(First6in1_groupedSIMD_line, Second6in1_groupedSIMD_line, Third6in1_groupedSIMD_line, 
+                                              common.legend = TRUE, legend="bottom",
+                                              labels = NULL,
+                                              ncol = 2, nrow = 2)
+Grouped_line_6in1_SMID_all_periods
+
+
+Grouped_line_MMR_SMID_all_periods = ggarrange(FirstMMR_groupedSIMD_line, SecondMMR_groupedSIMD_line, 
+                                             common.legend = TRUE, legend="bottom",
+                                             labels = NULL,
+                                             ncol = 2, nrow = 1)
+Grouped_line_MMR_SMID_all_periods
+
+#Comparison of OR btw LD and 2019
+OR2019vsLD_6in1_SMID_all_periods = ggarrange(MergeLD2019ORandCI_first6in1_SIMD_forest, MergeLD2019ORandCI_second6in1_SIMD_forest, MergeLD2019ORandCI_Third6in1_SIMD_forest, MergeLD2019ORandCI_FirstMMR_SIMD_forest, MergeLD2019ORandCI_SecondMMR_SIMD_forest,
+                                               legend=NULL,
+                                               labels = NULL,
+                                               ncol = 2, nrow = 3)
+OR2019vsLD_6in1_SMID_all_periods
+
+#percentage change plots
+
+Percentchange_2019vsLD_SMID_6in1 = ggarrange(First6in1_SIMD_percentchange_bar, Second6in1_SIMD_percentchange_bar, Third6in1_SIMD_percentchange_bar,
+                                             legend=NULL,
+                                             labels = NULL,
+                                             ncol = 2, nrow = 2)
+Percentchange_2019vsLD_SMID_6in1
+
+Percentchange_2019vsLD_SMID_MMR = ggarrange(FirstMMR_SIMD_percentchange_bar, SecondMMR_SIMD_percentchange_bar, 
+                                             legend=NULL,
+                                             labels = NULL,
+                                             ncol = 2, nrow = 1)
+Percentchange_2019vsLD_SMID_MMR
