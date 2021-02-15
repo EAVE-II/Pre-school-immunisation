@@ -871,3 +871,1222 @@ Second6in1_SIMDinteraction_tbl_BL2 = model_SIMD_Second6in1_BL2%>%
   filter(str_detect(term,"(Intercept)", negate = TRUE))
 Second6in1_SIMDinteraction_tbl_BL2
 write_csv(Second6in1_SIMDinteraction_tbl_BL2, file = "Exported tables/Second6in1_SIMDinteraction_tbl_BL2.csv")
+
+####################################################################
+######As above but for third dose 6in1. Removed monthly plots
+Full_SIMD_Third6in1 = read.csv(here("Data", "Deprivation_Third_6in1_11_feb_21.csv"))
+#Select out 2019 data
+SIMD_Third6in1_2019 = Full_SIMD_Third6in1 %>% 
+  select("cohort", "deprivation_quintile", "children_turn_16weeks_2019_num", "children_rec_imm_20weeks_2019_num", "uptake_20weeks_2019_percent")
+colnames(SIMD_Third6in1_2019) = c("cohort", "deprivation_quintile", "total_eligable", "total_vaccinated", "mean_percent")
+SIMD_Third6in1_2019 = SIMD_Third6in1_2019 %>%  
+  filter(cohort=="Jan-20") %>% 
+  select("deprivation_quintile", "total_eligable", "total_vaccinated", "mean_percent") %>% 
+  mutate(lockdown.factor = "2019")
+
+#Select out 2020 data
+SIMD_Third6in1_2020 = Full_SIMD_Third6in1 %>% 
+  select("cohort", "deprivation_quintile", "children_turn_16weeks_num", "children_rec_imm_20weeks_num", "uptake_20weeks_percent")
+colnames(SIMD_Third6in1_2020) = c("cohort", "deprivation_quintile", "denominator", "num_vaccinated", "percent_uptake")
+SIMD_Third6in1_2020 = SIMD_Third6in1_2020 %>% 
+  filter(!(cohort %in% c("Mar-20","Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20", "W/B 05-OCT-20", "W/B 12-OCT-20", "W/B 19-OCT-20", "W/B 26-OCT-20", "W/B 02-NOV-20", "W/B 09-NOV-20", "W/B 16-NOV-20", "W/B 23-NOV-20", "W/B 30-NOV-20", "W/B 07-DEC-20")))
+SIMD_Third6in1_2020 = SIMD_Third6in1_2020 %>% 
+  mutate (lockdown.factor = 
+            cohort %>%
+            factor() %>% 
+            fct_recode("Pre_LD_2020"="Jan-20", "Pre_LD_2020"="Feb-20", "Pre_LD_2020"="W/B 02-MAR-20","Pre_LD_2020"="W/B 09-MAR-20", "Pre_LD_2020"="W/B 16-MAR-20", "LD_2020"="W/B 23-MAR-20","LD_2020"="W/B 30-MAR-20","LD_2020"="W/B 06-APR-20","LD_2020"="W/B 13-APR-20","LD_2020"="W/B 20-APR-20","LD_2020"="W/B 27-APR-20","LD_2020"="W/B 04-MAY-20","LD_2020"="W/B 11-MAY-20","LD_2020"="W/B 18-MAY-20","LD_2020"="W/B 25-MAY-20","LD_2020"="W/B 01-JUN-20","LD_2020"="W/B 08-JUN-20","LD_2020"="W/B 15-JUN-20","LD_2020"="W/B 22-JUN-20","LD_2020"="W/B 29-JUN-20","LD_2020"="W/B 06-JUL-20","LD_2020"="W/B 13-JUL-20","LD_2020"="W/B 20-JUL-20","LD_2020"="W/B 27-JUL-20", "Post_LD_2020"="W/B 03-AUG-20","Post_LD_2020"="W/B 10-AUG-20","Post_LD_2020"="W/B 17-AUG-20","Post_LD_2020"="W/B 24-AUG-20","Post_LD_2020"="W/B 31-AUG-20","Post_LD_2020"="W/B 07-SEP-20","Post_LD_2020"="W/B 14-SEP-20","Post_LD_2020"="W/B 21-SEP-20","Post_LD_2020"="W/B 28-SEP-20")) 
+#Select time periods
+SIMD_Third6in1_preLD = SIMD_Third6in1_2020 %>% 
+  filter(lockdown.factor=="Pre_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(num_vaccinated), mean_percent = mean(percent_uptake)) %>% 
+  mutate(lockdown.factor="PreLD")
+SIMD_Third6in1_LD = SIMD_Third6in1_2020 %>% 
+  filter(lockdown.factor=="LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(num_vaccinated), mean_percent = mean(percent_uptake)) %>% 
+  mutate(lockdown.factor="LD")
+SIMD_Third6in1_PostLD = SIMD_Third6in1_2020 %>% 
+  filter(lockdown.factor=="Post_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(num_vaccinated), mean_percent = mean(percent_uptake)) %>% 
+  mutate(lockdown.factor="PostLD")
+
+#Group together then plot
+
+SIMD_Third6in1_grouped = full_join(SIMD_Third6in1_2019, SIMD_Third6in1_preLD)  
+SIMD_Third6in1_grouped = full_join(SIMD_Third6in1_grouped, SIMD_Third6in1_LD)
+SIMD_Thirdin1_grouped = full_join(SIMD_Third6in1_grouped, SIMD_Third6in1_PostLD)
+SIMD_Third6in1_grouped = SIMD_Third6in1_grouped %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("2019"))
+
+SIMD_Third6in1_grouped$lockdown.factor = factor(SIMD_Third6in1_grouped$lockdown.factor, levels = c('2019', 'PreLD', 'LD', 'PostLD'))
+
+
+Third6in1_SIMD_grouped = SIMD_Third6in1_grouped %>%
+  ggplot(aes(fill=lockdown.factor, y=mean_percent, x=deprivation_quintile)) +
+  geom_bar(position="dodge", stat="identity")+
+  theme_bw()+
+  scale_fill_brewer(palette = "Greens")+
+  labs(x = NULL,
+       y = "% vaccinated (4 weeks)",
+       title = "Third dose6in1")+
+  theme(axis.text.y = element_text(size = 7))+
+  geom_hline(yintercept = 73, linetype="dotted", ##Scotland wide mean uptake 2019
+             color = "Green", size=0.75)+
+  geom_hline(yintercept = 82, linetype="dotted", ##Scotland wide mean uptake LD
+             color = "black", size=0.75)
+
+Third6in1_SIMD_grouped ##############for some reason hasn't plotted postLD
+
+#Plot grouped by SIMD on line plot
+
+Third6in1_groupedSIMD_line = SIMD_Third6in1_grouped %>%
+  ggplot(aes(x=lockdown.factor, y=mean_percent, group=deprivation_quintile, color=deprivation_quintile)) +
+  geom_line()+
+  theme_bw()+
+  labs(x = NULL,
+       y = "% vaccinated (4 weeks)",
+       title = "Thirddose6in1")+
+  expand_limits(y=70)+
+  scale_y_continuous(breaks = c(70,75,80,85,90,95,100))
+Third6in1_groupedSIMD_line
+
+
+##Plot percent change
+#Third6in1, first format tables of percent only then join 2019 and LD
+SIMD_Third6in1_percent_2019 = SIMD_Third6in1_2019 %>% 
+  select(deprivation_quintile, mean_percent)
+colnames(SIMD_Third6in1_percent_2019)= c("deprivation_quintile", "uptake_2019_percent")
+
+SIMD_Third6in1_percent_LD = SIMD_Third6in1_LD %>% 
+  select(deprivation_quintile, mean_percent)
+colnames(SIMD_Third6in1_percent_LD)= c("deprivation_quintile", "uptake_LD_percent")
+
+SIMD_Third6in1_percentchange = full_join(SIMD_Third6in1_percent_2019, SIMD_Third6in1_percent_LD) 
+SIMD_Third6in1_percentchange = SIMD_Third6in1_percentchange %>% 
+  mutate(percent_change = uptake_LD_percent - uptake_2019_percent)
+#Plot percent change Second 6in1 NBB to get the significant levels you need to do the regression below
+library(RColorBrewer)
+Third6in1_SIMD_percentchange_bar = SIMD_Third6in1_percentchange %>% 
+  ggplot(aes(y=percent_change, x=deprivation_quintile)) + 
+  geom_bar(position="dodge", stat="identity", color=rgb(0.1,0.4,0.5,0.7), fill= rgb(0.1,0.4,0.5,0.7))+
+  theme(legend.position="none")+
+  labs(x=NULL,y="Absolute % change 2019 vs LD")+
+  theme_bw()+
+  theme(axis.text.y = element_text(size = 10))+
+  annotate("text", x = 1, y = 11.2, label = "***")+
+  annotate("text", x = 2, y = 11.2, label = "***")+
+  annotate("text", x = 3, y = 9.5, label = "***")+
+  annotate("text", x = 4, y = 9.5, label = "***")+
+  annotate("text", x = 5, y = 9.5, label = "***")+
+  annotate("text", x = 4, y = 10, label = "Third 6in1")
+Third6in1_SIMD_percentchange_bar
+
+#### regression analysis for Second 6in1 SIMD
+#Comparison in 2019- Add unvaccianted column and relevel to most deprived
+
+SIMD_Third6in1_2019 = SIMD_Third6in1_2019 %>% 
+  mutate(unvaccinated = total_eligable-total_vaccinated) %>% 
+  mutate(SIMD.factor =  
+           deprivation_quintile %>% 
+           factor())
+
+SIMD_Third6in1_2019 = SIMD_Third6in1_2019 %>%
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("1 - most deprived"))
+
+
+#Set up regression tbls
+
+Summary_Third6in1_SIMD_regression_tbl_2019 = cbind(SIMD_Third6in1_2019$total_vaccinated, SIMD_Third6in1_2019$unvaccinated)
+
+Summarymodel_Third6in1_SIMD_2019 = glm(Summary_Third6in1_SIMD_regression_tbl_2019 ~ SIMD_Third6in1_2019$SIMD.factor,
+                                        family="binomial")
+
+summary(Summarymodel_Third6in1_SIMD_2019)
+
+exp(Summarymodel_Third6in1_SIMD_2019$coefficients)
+exp(confint(Summarymodel_Third6in1_SIMD_2019))
+
+###Make a plot showing OR and CI compared to baseline most deprived
+#Make the OR and CI tbls, remove the intercept
+library(broom)
+SummaryThird6in1_SIMD2019model_tbl = Summarymodel_Third6in1_SIMD_2019%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+#Create labels and enter summary data from above tbls
+boxLabelsSIMD = c("2","3","4","5")
+
+SummaryORandCI_Third6in1_SIMD2019 <- data.frame(
+  yAxis = length(boxLabelsSIMD):1,
+  boxOdds = c(SummaryThird6in1_SIMD2019model_tbl$OR),
+  boxCILow = c(SummaryThird6in1_SIMD2019model_tbl$upperCI),
+  boxCIHigh = c(SummaryThird6in1_SIMD2019model_tbl$lowerCI))
+
+SummaryThird6in1_SIMD2019_forest <- ggplot(SummaryORandCI_Third6in1_SIMD2019, aes(x = boxOdds, y = boxLabelsSIMD))
+SummaryThird6in1_SIMD2019_forest = SummaryThird6in1_SIMD2019_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()+
+  labs(x = "Summary2019 OR compared to most deprived",
+       y = NULL,
+       title = NULL)
+
+SummaryThird6in1_SIMD2019_forest
+
+anova(Summarymodel_Third6in1_SIMD_2019, test="LRT")
+
+#Comparison in LD- Add unvaccinated column and relevel to most deprived
+
+SIMD_Third6in1_LD = SIMD_Third6in1_LD %>% 
+  mutate(unvaccinated = total_eligable-total_vaccinated) %>% 
+  mutate(SIMD.factor =  
+           deprivation_quintile %>% 
+           factor())
+
+SIMD_Third6in1_LD = SIMD_Third6in1_LD %>%
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("1 - most deprived"))
+
+
+#Set up regression tbls
+
+Summary_Third6in1_SIMD_regression_tbl_LD = cbind(SIMD_Third6in1_LD$total_vaccinated, SIMD_Third6in1_LD$unvaccinated)
+
+Summarymodel_Third6in1_SIMD_LD = glm(Summary_Third6in1_SIMD_regression_tbl_LD ~ SIMD_Third6in1_LD$SIMD.factor,
+                                      family="binomial")
+
+summary(Summarymodel_Third6in1_SIMD_LD)
+
+exp(Summarymodel_Third6in1_SIMD_LD$coefficients)
+exp(confint(Summarymodel_Third6in1_SIMD_LD))
+
+###Make a plot showing OR and CI compared to baseline most deprived
+#Make the OR and CI tbls, remove the intercept
+library(broom)
+SummaryThird6in1_SIMDLDmodel_tbl = Summarymodel_Third6in1_SIMD_LD%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+#Create labels and enter summary data from above tbls
+boxLabelsSIMD = c("2","3","4","5")
+
+SummaryORandCIThird6in1_SIMDLD <- data.frame(
+  yAxis = length(boxLabelsSIMD):1,
+  boxOdds = c(SummaryThird6in1_SIMDLDmodel_tbl$OR),
+  boxCILow = c(SummaryThird6in1_SIMDLDmodel_tbl$upperCI),
+  boxCIHigh = c(SummaryThird6in1_SIMDLDmodel_tbl$lowerCI))
+
+SummaryThird6in1_SIMDLD_forest <- ggplot(SummaryORandCIThird6in1_SIMDLD, aes(x = boxOdds, y = boxLabelsSIMD))
+SummaryThird6in1_SIMDLD_forest = SummaryThird6in1_SIMDLD_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()+
+  labs(x = "SummaryLD OR compared to most deprived",
+       y = NULL,
+       title = NULL)
+
+SummaryThird6in1_SIMDLD_forest
+
+anova(Summarymodel_Third6in1_SIMD_LD, test="LRT")
+
+##Try to plot the forest plots together
+SummaryThird6in1_SIMD2019model_tbl= SummaryThird6in1_SIMD2019model_tbl %>% 
+  mutate(time.factor =  
+           "2019" %>% 
+           factor())
+SummaryThird6in1_SIMDLDmodel_tbl= SummaryThird6in1_SIMDLDmodel_tbl %>% 
+  mutate(time.factor =  
+           "LD" %>% 
+           factor())
+
+
+Merge_Third6in1_ORCI_df = rbind(SummaryThird6in1_SIMD2019model_tbl, SummaryThird6in1_SIMDLDmodel_tbl) %>% 
+  mutate("label" = c("2-2019", "3-2019", "4-2019", "5-2019","2-LD", "3-LD", "4-LD", "5-LD"))
+
+boxLabelsSIMDmerge = c("2-2019", "3-2019", "4-2019", "5-2019","2-LD", "3-LD", "4-LD", "5-LD")
+
+MergeLD2019ORandCI_Third6in1_SIMD <- data.frame(
+  yAxis = length(boxLabelsSIMDmerge):1,
+  boxOdds = c(Merge_Third6in1_ORCI_df$OR),
+  boxCILow = c(Merge_Third6in1_ORCI_df$upperCI),
+  boxCIHigh = c(Merge_Third6in1_ORCI_df$lowerCI), 
+  time = c(Merge_Third6in1_ORCI_df$time.factor))
+
+MergeLD2019ORandCI_Third6in1_SIMD_forest <- ggplot(MergeLD2019ORandCI_Third6in1_SIMD, aes(x = boxOdds, y = boxLabelsSIMDmerge, colour = time))
+MergeLD2019ORandCI_Third6in1_SIMD_forest = MergeLD2019ORandCI_Third6in1_SIMD_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5) +
+  theme_bw()+
+  labs(x = "Third6in1 OR compared to most deprived",
+       y = NULL,
+       title = NULL)+
+  theme(legend.position="none")
+
+MergeLD2019ORandCI_Third6in1_SIMD_forest
+
+##Log regression to compare change btw 2019 and LD with interaction of SIMD 
+
+SIMD_Third6in1_grouped = SIMD_Third6in1_grouped %>% 
+  mutate(unvaccinated = total_eligable-total_vaccinated) %>% 
+  mutate(SIMD.factor =  
+           deprivation_quintile %>% 
+           factor())
+SIMD_Third6in1_grouped = SIMD_Third6in1_grouped %>% 
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("1 - most deprived"))
+
+
+Third6in1_interaction_tbl <- cbind(SIMD_Third6in1_grouped$total_vaccinated, SIMD_Third6in1_grouped$unvaccinated)
+
+# Column for time-period
+tp <- SIMD_Third6in1_grouped$lockdown.factor
+# Column for HSCP
+SIMD <- SIMD_Third6in1_grouped$SIMD.factor
+# Put into GLM with interaction
+model_SIMD_Third6in1<- glm(Third6in1_interaction_tbl ~ tp*SIMD,
+                            family="binomial")                                 
+
+summary(model_SIMD_Third6in1) ##cf 2019, change for SIMD1 was sig increase during LD but ns for pre LD
+exp(model_SIMD_Third6in1$coefficients)
+exp(confint(model_SIMD_Third6in1))
+
+library(broom)
+Third6in1_SIMDinteraction_tbl = model_SIMD_Third6in1%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+write_csv(Third6in1_SIMDinteraction_tbl, file = "Exported tables/Third6in1_SIMDinteraction_tbl.csv")
+
+##Run the interaction model again but change the baseline to different SIMD levels. Will give you the comparisons for that level btw tp and the other SIMD
+#Baseline least deprived:
+
+SIMD_Third6in1_grouped = SIMD_Third6in1_grouped %>% 
+  mutate(unvaccinated = total_eligable-total_vaccinated) %>% 
+  mutate(SIMD.factor =  
+           deprivation_quintile %>% 
+           factor())
+SIMD_Third6in1_grouped_BL5 = SIMD_Third6in1_grouped %>% 
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("5 - least deprived"))
+
+Third6in1_interaction_tbl_BL5 <- cbind(SIMD_Third6in1_grouped_BL5$total_vaccinated, SIMD_Third6in1_grouped_BL5$unvaccinated)
+
+# Column for time-period
+tp <- SIMD_Third6in1_grouped_BL5$lockdown.factor
+# Column for HSCP
+SIMD <- SIMD_Third6in1_grouped_BL5$SIMD.factor
+# Put into GLM with interaction
+model_SIMD_Third6in1_BL5<- glm(Third6in1_interaction_tbl_BL5 ~ tp*SIMD,
+                                family="binomial")                                 
+
+summary(model_SIMD_Third6in1_BL5) ##cf 2019, change for SIMD5 was ns for preLD but sig for LD***
+exp(model_SIMD_Third6in1_BL5$coefficients)
+exp(confint(model_SIMD_Third6in1_BL5))
+
+library(broom)
+Third6in1_SIMDinteraction_tbl_BL5 = model_SIMD_Third6in1_BL5%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+write_csv(Third6in1_SIMDinteraction_tbl_BL5, file = "Exported tables/Third6in1_SIMDinteraction_tbl_BL5.csv")
+
+#Baseline SIMD4
+SIMD_Third6in1_grouped_BL4 = SIMD_Third6in1_grouped %>% 
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("4"))
+
+Third6in1_interaction_tbl_BL4 <- cbind(SIMD_Third6in1_grouped_BL4$total_vaccinated, SIMD_Third6in1_grouped_BL4$unvaccinated)
+
+# Column for time-period
+tp <- SIMD_Third6in1_grouped_BL4$lockdown.factor
+# Column for HSCP
+SIMD <- SIMD_Third6in1_grouped_BL4$SIMD.factor
+# Put into GLM with interaction
+model_SIMD_Third6in1_BL4<- glm(Third6in1_interaction_tbl_BL4 ~ tp*SIMD,
+                                family="binomial")                                 
+
+summary(model_SIMD_Third6in1_BL4) ##cf 2019, change for SIMD 4 was ns for preLD but sig for LD ***
+exp(model_SIMD_Third6in1_BL4$coefficients)
+exp(confint(model_SIMD_Third6in1_BL4))
+
+library(broom)
+Third6in1_SIMDinteraction_tbl_BL4 = model_SIMD_Third6in1_BL4%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+write_csv(Third6in1_SIMDinteraction_tbl_BL4, file = "Exported tables/Third6in1_SIMDinteraction_tbl_BL4.csv")
+
+#Baseline SIMD3
+SIMD_Third6in1_grouped_BL3 = SIMD_Third6in1_grouped %>% 
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("3"))
+
+Third6in1_interaction_tbl_BL3 <- cbind(SIMD_Third6in1_grouped_BL3$total_vaccinated, SIMD_Third6in1_grouped_BL3$unvaccinated)
+
+# Column for time-period
+tp <- SIMD_Third6in1_grouped_BL3$lockdown.factor
+# Column for HSCP
+SIMD <- SIMD_Third6in1_grouped_BL3$SIMD.factor
+# Put into GLM with interaction
+model_SIMD_Third6in1_BL3<- glm(Third6in1_interaction_tbl_BL3 ~ tp*SIMD,
+                                family="binomial")                                 
+
+summary(model_SIMD_Third6in1_BL3) ##cf 2019, change for SIMD 3  sig increase during LD *** no change preLD
+exp(model_SIMD_Third6in1_BL3$coefficients)
+exp(confint(model_SIMD_Third6in1_BL3))
+
+library(broom)
+Third6in1_SIMDinteraction_tbl_BL3 = model_SIMD_Third6in1_BL3%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+Third6in1_SIMDinteraction_tbl_BL3
+write_csv(Third6in1_SIMDinteraction_tbl_BL3, file = "Exported tables/Third6in1_SIMDinteraction_tbl_BL3.csv")
+
+#Baseline SIMD2
+SIMD_Third6in1_grouped_BL2 = SIMD_Third6in1_grouped %>% 
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("2"))
+
+Third6in1_interaction_tbl_BL2 <- cbind(SIMD_Third6in1_grouped_BL2$total_vaccinated, SIMD_Third6in1_grouped_BL2$unvaccinated)
+
+# Column for time-period
+tp <- SIMD_Third6in1_grouped_BL2$lockdown.factor
+# Column for HSCP
+SIMD <- SIMD_Third6in1_grouped_BL2$SIMD.factor
+# Put into GLM with interaction
+model_SIMD_Third6in1_BL2<- glm(Third6in1_interaction_tbl_BL2 ~ tp*SIMD,
+                                family="binomial")                                 
+
+summary(model_SIMD_Third6in1_BL2) ##cf 2019, change for SIMD 2 ns for preLD, sig increase during LD 
+exp(model_SIMD_Third6in1_BL2$coefficients)
+exp(confint(model_SIMD_Third6in1_BL2))
+
+library(broom)
+Third6in1_SIMDinteraction_tbl_BL2 = model_SIMD_Third6in1_BL2%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+Third6in1_SIMDinteraction_tbl_BL2
+write_csv(Third6in1_SIMDinteraction_tbl_BL2, file = "Exported tables/Third6in1_SIMDinteraction_tbl_BL2.csv")
+
+####################################################################
+######As above but for first dose MMR. Removed monthly plots
+Full_SIMD_FirstMMR = read.csv(here("Data", "Deprivation_First_MMR_11_feb_21.csv"))
+#Select out 2019 data
+SIMD_FirstMMR_2019 = Full_SIMD_FirstMMR %>% 
+  select("cohort", "deprivation_quintile", "children_turn_12months_2019_num", "children_rec_imm_13months_2019_num", "uptake_13months_2019_percent")
+colnames(SIMD_FirstMMR_2019) = c("cohort", "deprivation_quintile", "total_eligable", "total_vaccinated", "mean_percent")
+SIMD_FirstMMR_2019 = SIMD_FirstMMR_2019 %>%  
+  filter(cohort=="Jan-20") %>% 
+  select("deprivation_quintile", "total_eligable", "total_vaccinated", "mean_percent") %>% 
+  mutate(lockdown.factor = "2019")
+
+#Select out 2020 data
+SIMD_FirstMMR_2020 = Full_SIMD_FirstMMR %>% 
+  select("cohort", "deprivation_quintile", "children_turn_12months_num", "children_rec_imm_13months_num", "uptake_13months_percent")
+colnames(SIMD_FirstMMR_2020) = c("cohort", "deprivation_quintile", "denominator", "num_vaccinated", "percent_uptake")
+SIMD_FirstMMR_2020 = SIMD_FirstMMR_2020 %>% 
+  filter(!(cohort %in% c("Mar-20","Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20", "W/B 05-OCT-20", "W/B 12-OCT-20", "W/B 19-OCT-20", "W/B 26-OCT-20", "W/B 02-NOV-20", "W/B 09-NOV-20", "W/B 16-NOV-20", "W/B 23-NOV-20", "W/B 30-NOV-20", "W/B 07-DEC-20")))
+SIMD_FirstMMR_2020 = SIMD_FirstMMR_2020 %>% 
+  mutate (lockdown.factor = 
+            cohort %>%
+            factor() %>% 
+            fct_recode("Pre_LD_2020"="Jan-20", "Pre_LD_2020"="Feb-20", "Pre_LD_2020"="W/B 02-MAR-20","Pre_LD_2020"="W/B 09-MAR-20", "Pre_LD_2020"="W/B 16-MAR-20", "LD_2020"="W/B 23-MAR-20","LD_2020"="W/B 30-MAR-20","LD_2020"="W/B 06-APR-20","LD_2020"="W/B 13-APR-20","LD_2020"="W/B 20-APR-20","LD_2020"="W/B 27-APR-20","LD_2020"="W/B 04-MAY-20","LD_2020"="W/B 11-MAY-20","LD_2020"="W/B 18-MAY-20","LD_2020"="W/B 25-MAY-20","LD_2020"="W/B 01-JUN-20","LD_2020"="W/B 08-JUN-20","LD_2020"="W/B 15-JUN-20","LD_2020"="W/B 22-JUN-20","LD_2020"="W/B 29-JUN-20","LD_2020"="W/B 06-JUL-20","LD_2020"="W/B 13-JUL-20","LD_2020"="W/B 20-JUL-20","LD_2020"="W/B 27-JUL-20", "Post_LD_2020"="W/B 03-AUG-20","Post_LD_2020"="W/B 10-AUG-20","Post_LD_2020"="W/B 17-AUG-20","Post_LD_2020"="W/B 24-AUG-20","Post_LD_2020"="W/B 31-AUG-20","Post_LD_2020"="W/B 07-SEP-20","Post_LD_2020"="W/B 14-SEP-20","Post_LD_2020"="W/B 21-SEP-20","Post_LD_2020"="W/B 28-SEP-20")) 
+#Select time periods
+SIMD_FirstMMR_preLD = SIMD_FirstMMR_2020 %>% 
+  filter(lockdown.factor=="Pre_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(num_vaccinated), mean_percent = mean(percent_uptake)) %>% 
+  mutate(lockdown.factor="PreLD")
+SIMD_FirstMMR_LD = SIMD_FirstMMR_2020 %>% 
+  filter(lockdown.factor=="LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(num_vaccinated), mean_percent = mean(percent_uptake)) %>% 
+  mutate(lockdown.factor="LD")
+SIMD_FirstMMR_PostLD = SIMD_FirstMMR_2020 %>% 
+  filter(lockdown.factor=="Post_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(num_vaccinated), mean_percent = mean(percent_uptake)) %>% 
+  mutate(lockdown.factor="PostLD")
+
+#Group together then plot
+
+SIMD_FirstMMR_grouped = full_join(SIMD_FirstMMR_2019, SIMD_FirstMMR_preLD)  
+SIMD_FirstMMR_grouped = full_join(SIMD_FirstMMR_grouped, SIMD_FirstMMR_LD)
+SIMD_FirstMMR_grouped = full_join(SIMD_FirstMMR_grouped, SIMD_FirstMMR_PostLD)
+SIMD_FirstMMR_grouped = SIMD_FirstMMR_grouped %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("2019"))
+
+SIMD_FirstMMR_grouped$lockdown.factor = factor(SIMD_FirstMMR_grouped$lockdown.factor, levels = c('2019', 'PreLD', 'LD', 'PostLD'))
+
+
+FirstMMR_SIMD_grouped = SIMD_FirstMMR_grouped %>%
+  ggplot(aes(fill=lockdown.factor, y=mean_percent, x=deprivation_quintile)) +
+  geom_bar(position="dodge", stat="identity")+
+  theme_bw()+
+  scale_fill_brewer(palette = "Greens")+
+  labs(x = NULL,
+       y = "% vaccinated (4 weeks)",
+       title = "FirstMMR")+
+  theme(axis.text.y = element_text(size = 7))+
+  geom_hline(yintercept = 65.2, linetype="dotted", ##Scotland wide mean uptake 2019
+             color = "Green", size=0.75)+
+  geom_hline(yintercept = 78, linetype="dotted", ##Scotland wide mean uptake LD
+             color = "black", size=0.75)
+
+FirstMMR_SIMD_grouped 
+
+#Plot grouped by SIMD on line plot
+
+FirstMMR_groupedSIMD_line = SIMD_FirstMMR_grouped %>%
+  ggplot(aes(x=lockdown.factor, y=mean_percent, group=deprivation_quintile, color=deprivation_quintile)) +
+  geom_line()+
+  theme_bw()+
+  labs(x = NULL,
+       y = "% vaccinated (4 weeks)",
+       title = "FirstMMR")+
+  expand_limits(y=55)+
+  scale_y_continuous(breaks = c(55,60,65,70,75,80,85,90,95,100))
+FirstMMR_groupedSIMD_line
+
+
+##Plot percent change
+#FirstMMR, first format tables of percent only then join 2019 and LD
+SIMD_FirstMMR_percent_2019 = SIMD_FirstMMR_2019 %>% 
+  select(deprivation_quintile, mean_percent)
+colnames(SIMD_FirstMMR_percent_2019)= c("deprivation_quintile", "uptake_2019_percent")
+
+SIMD_FirstMMR_percent_LD = SIMD_FirstMMR_LD %>% 
+  select(deprivation_quintile, mean_percent)
+colnames(SIMD_FirstMMR_percent_LD)= c("deprivation_quintile", "uptake_LD_percent")
+
+SIMD_FirstMMR_percentchange = full_join(SIMD_FirstMMR_percent_2019, SIMD_FirstMMR_percent_LD) 
+SIMD_FirstMMR_percentchange = SIMD_FirstMMR_percentchange %>% 
+  mutate(percent_change = uptake_LD_percent - uptake_2019_percent)
+#Plot percent change FirstMMR NBB to get the significant levels you need to do the regression below
+library(RColorBrewer)
+FirstMMR_SIMD_percentchange_bar = SIMD_FirstMMR_percentchange %>% 
+  ggplot(aes(y=percent_change, x=deprivation_quintile)) + 
+  geom_bar(position="dodge", stat="identity", color=rgb(0.1,0.4,0.5,0.7), fill= rgb(0.1,0.4,0.5,0.7))+
+  theme(legend.position="none")+
+  labs(x=NULL,y="Absolute % change 2019 vs LD")+
+  theme_bw()+
+  theme(axis.text.y = element_text(size = 10))+
+  annotate("text", x = 1, y = 15, label = "***")+
+  annotate("text", x = 2, y = 15, label = "***")+
+  annotate("text", x = 3, y = 15, label = "***")+
+  annotate("text", x = 4, y = 15, label = "***")+
+  annotate("text", x = 5, y = 15, label = "***")+
+  annotate("text", x = 1, y = 12, label = "FirstMMR")
+FirstMMR_SIMD_percentchange_bar
+
+#### regression analysis for FirstMMR SIMD
+#Comparison in 2019- Add unvaccianted column and relevel to most deprived
+
+SIMD_FirstMMR_2019 = SIMD_FirstMMR_2019 %>% 
+  mutate(unvaccinated = total_eligable-total_vaccinated) %>% 
+  mutate(SIMD.factor =  
+           deprivation_quintile %>% 
+           factor())
+
+SIMD_FirstMMR_2019 = SIMD_FirstMMR_2019 %>%
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("1 - most deprived"))
+
+
+#Set up regression tbls
+
+Summary_FirstMMR_SIMD_regression_tbl_2019 = cbind(SIMD_FirstMMR_2019$total_vaccinated, SIMD_FirstMMR_2019$unvaccinated)
+
+Summarymodel_FirstMMR_SIMD_2019 = glm(Summary_FirstMMR_SIMD_regression_tbl_2019 ~ SIMD_FirstMMR_2019$SIMD.factor,
+                                       family="binomial")
+
+summary(Summarymodel_FirstMMR_SIMD_2019)
+
+exp(Summarymodel_FirstMMR_SIMD_2019$coefficients)
+exp(confint(Summarymodel_FirstMMR_SIMD_2019))
+
+###Make a plot showing OR and CI compared to baseline most deprived
+#Make the OR and CI tbls, remove the intercept
+library(broom)
+SummaryFirstMMR_SIMD2019model_tbl = Summarymodel_FirstMMR_SIMD_2019%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+#Create labels and enter summary data from above tbls
+boxLabelsSIMD = c("2","3","4","5")
+
+SummaryORandCI_FirstMMR_SIMD2019 <- data.frame(
+  yAxis = length(boxLabelsSIMD):1,
+  boxOdds = c(SummaryFirstMMR_SIMD2019model_tbl$OR),
+  boxCILow = c(SummaryFirstMMR_SIMD2019model_tbl$upperCI),
+  boxCIHigh = c(SummaryFirstMMR_SIMD2019model_tbl$lowerCI))
+
+SummaryFirstMMR_SIMD2019_forest <- ggplot(SummaryORandCI_FirstMMR_SIMD2019, aes(x = boxOdds, y = boxLabelsSIMD))
+SummaryFirstMMR_SIMD2019_forest = SummaryFirstMMR_SIMD2019_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()+
+  labs(x = "Summary2019 OR compared to most deprived",
+       y = NULL,
+       title = NULL)
+
+SummaryFirstMMR_SIMD2019_forest
+
+anova(Summarymodel_FirstMMR_SIMD_2019, test="LRT")
+
+#Comparison in LD- Add unvaccinated column and relevel to most deprived
+
+SIMD_FirstMMR_LD = SIMD_FirstMMR_LD %>% 
+  mutate(unvaccinated = total_eligable-total_vaccinated) %>% 
+  mutate(SIMD.factor =  
+           deprivation_quintile %>% 
+           factor())
+
+SIMD_FirstMMR_LD = SIMD_FirstMMR_LD %>%
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("1 - most deprived"))
+
+
+#Set up regression tbls
+
+Summary_FirstMMR_SIMD_regression_tbl_LD = cbind(SIMD_FirstMMR_LD$total_vaccinated, SIMD_FirstMMR_LD$unvaccinated)
+
+Summarymodel_FirstMMR_SIMD_LD = glm(Summary_FirstMMR_SIMD_regression_tbl_LD ~ SIMD_FirstMMR_LD$SIMD.factor,
+                                     family="binomial")
+
+summary(Summarymodel_FirstMMR_SIMD_LD)
+
+exp(Summarymodel_FirstMMR_SIMD_LD$coefficients)
+exp(confint(Summarymodel_FirstMMR_SIMD_LD))
+
+###Make a plot showing OR and CI compared to baseline most deprived
+#Make the OR and CI tbls, remove the intercept
+library(broom)
+SummaryFirstMMR_SIMDLDmodel_tbl = Summarymodel_FirstMMR_SIMD_LD%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+#Create labels and enter summary data from above tbls
+boxLabelsSIMD = c("2","3","4","5")
+
+SummaryORandCIFirstMMR_SIMDLD <- data.frame(
+  yAxis = length(boxLabelsSIMD):1,
+  boxOdds = c(SummaryFirstMMR_SIMDLDmodel_tbl$OR),
+  boxCILow = c(SummaryFirstMMR_SIMDLDmodel_tbl$upperCI),
+  boxCIHigh = c(SummaryFirstMMR_SIMDLDmodel_tbl$lowerCI))
+
+SummaryFirstMMR_SIMDLD_forest <- ggplot(SummaryORandCIFirstMMR_SIMDLD, aes(x = boxOdds, y = boxLabelsSIMD))
+SummaryFirstMMR_SIMDLD_forest = SummaryFirstMMR_SIMDLD_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()+
+  labs(x = "SummaryLD OR compared to most deprived",
+       y = NULL,
+       title = NULL)
+
+SummaryFirstMMR_SIMDLD_forest
+
+anova(Summarymodel_FirstMMR_SIMD_LD, test="LRT")
+
+##Try to plot the forest plots together
+SummaryFirstMMR_SIMD2019model_tbl= SummaryFirstMMR_SIMD2019model_tbl %>% 
+  mutate(time.factor =  
+           "2019" %>% 
+           factor())
+SummaryFirstMMR_SIMDLDmodel_tbl= SummaryFirstMMR_SIMDLDmodel_tbl %>% 
+  mutate(time.factor =  
+           "LD" %>% 
+           factor())
+
+
+Merge_FirstMMR_ORCI_df = rbind(SummaryFirstMMR_SIMD2019model_tbl, SummaryFirstMMR_SIMDLDmodel_tbl) %>% 
+  mutate("label" = c("2-2019", "3-2019", "4-2019", "5-2019","2-LD", "3-LD", "4-LD", "5-LD"))
+
+boxLabelsSIMDmerge = c("2-2019", "3-2019", "4-2019", "5-2019","2-LD", "3-LD", "4-LD", "5-LD")
+
+MergeLD2019ORandCI_FirstMMR_SIMD <- data.frame(
+  yAxis = length(boxLabelsSIMDmerge):1,
+  boxOdds = c(Merge_FirstMMR_ORCI_df$OR),
+  boxCILow = c(Merge_FirstMMR_ORCI_df$upperCI),
+  boxCIHigh = c(Merge_FirstMMR_ORCI_df$lowerCI), 
+  time = c(Merge_FirstMMR_ORCI_df$time.factor))
+
+MergeLD2019ORandCI_FirstMMR_SIMD_forest <- ggplot(MergeLD2019ORandCI_FirstMMR_SIMD, aes(x = boxOdds, y = boxLabelsSIMDmerge, colour = time))
+MergeLD2019ORandCI_FirstMMR_SIMD_forest = MergeLD2019ORandCI_FirstMMR_SIMD_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5) +
+  theme_bw()+
+  labs(x = "FirstMMR OR compared to most deprived",
+       y = NULL,
+       title = NULL)+
+  theme(legend.position="none")
+
+MergeLD2019ORandCI_FirstMMR_SIMD_forest
+
+##Log regression to compare change btw 2019 and LD with interaction of SIMD 
+
+SIMD_FirstMMR_grouped = SIMD_FirstMMR_grouped %>% 
+  mutate(unvaccinated = total_eligable-total_vaccinated) %>% 
+  mutate(SIMD.factor =  
+           deprivation_quintile %>% 
+           factor())
+SIMD_FirstMMR_grouped = SIMD_FirstMMR_grouped %>% 
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("1 - most deprived"))
+
+
+FirstMMR_interaction_tbl <- cbind(SIMD_FirstMMR_grouped$total_vaccinated, SIMD_FirstMMR_grouped$unvaccinated)
+
+# Column for time-period
+tp <- SIMD_FirstMMR_grouped$lockdown.factor
+# Column for HSCP
+SIMD <- SIMD_FirstMMR_grouped$SIMD.factor
+# Put into GLM with interaction
+model_SIMD_FirstMMR<- glm(FirstMMR_interaction_tbl ~ tp*SIMD,
+                           family="binomial")                                 
+
+summary(model_SIMD_FirstMMR) ##cf 2019, change for SIMD1 was sig increase pre, post and during LD
+exp(model_SIMD_FirstMMR$coefficients)
+exp(confint(model_SIMD_FirstMMR))
+
+library(broom)
+FirstMMR_SIMDinteraction_tbl = model_SIMD_FirstMMR%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+write_csv(FirstMMR_SIMDinteraction_tbl, file = "Exported tables/FirstMMR_SIMDinteraction_tbl.csv")
+
+##Run the interaction model again but change the baseline to different SIMD levels. Will give you the comparisons for that level btw tp and the other SIMD
+#Baseline least deprived:
+
+SIMD_FirstMMR_grouped = SIMD_FirstMMR_grouped %>% 
+  mutate(unvaccinated = total_eligable-total_vaccinated) %>% 
+  mutate(SIMD.factor =  
+           deprivation_quintile %>% 
+           factor())
+SIMD_FirstMMR_grouped_BL5 = SIMD_FirstMMR_grouped %>% 
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("5 - least deprived"))
+
+FirstMMR_interaction_tbl_BL5 <- cbind(SIMD_FirstMMR_grouped_BL5$total_vaccinated, SIMD_FirstMMR_grouped_BL5$unvaccinated)
+
+# Column for time-period
+tp <- SIMD_FirstMMR_grouped_BL5$lockdown.factor
+# Column for HSCP
+SIMD <- SIMD_FirstMMR_grouped_BL5$SIMD.factor
+# Put into GLM with interaction
+model_SIMD_FirstMMR_BL5<- glm(FirstMMR_interaction_tbl_BL5 ~ tp*SIMD,
+                               family="binomial")                                 
+
+summary(model_SIMD_FirstMMR_BL5) ##cf 2019, change for SIMD5  sig inc for preLD, post LD ad LD***
+exp(model_SIMD_FirstMMR_BL5$coefficients)
+exp(confint(model_SIMD_FirstMMR_BL5))
+
+library(broom)
+FirstMMR_SIMDinteraction_tbl_BL5 = model_SIMD_FirstMMR_BL5%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+write_csv(FirstMMR_SIMDinteraction_tbl_BL5, file = "Exported tables/FirstMMR_SIMDinteraction_tbl_BL5.csv")
+
+#Baseline SIMD4
+SIMD_FirstMMR_grouped_BL4 = SIMD_FirstMMR_grouped %>% 
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("4"))
+
+FirstMMR_interaction_tbl_BL4 <- cbind(SIMD_FirstMMR_grouped_BL4$total_vaccinated, SIMD_FirstMMR_grouped_BL4$unvaccinated)
+
+# Column for time-period
+tp <- SIMD_FirstMMR_grouped_BL4$lockdown.factor
+# Column for HSCP
+SIMD <- SIMD_FirstMMR_grouped_BL4$SIMD.factor
+# Put into GLM with interaction
+model_SIMD_FirstMMR_BL4<- glm(FirstMMR_interaction_tbl_BL4 ~ tp*SIMD,
+                               family="binomial")                                 
+
+summary(model_SIMD_FirstMMR_BL4) ##cf 2019, change for SIMD 4 was sig for pre, post and LD ***
+exp(model_SIMD_FirstMMR_BL4$coefficients)
+exp(confint(model_SIMD_FirstMMR_BL4))
+
+library(broom)
+FirstMMR_SIMDinteraction_tbl_BL4 = model_SIMD_FirstMMR_BL4%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+write_csv(FirstMMR_SIMDinteraction_tbl_BL4, file = "Exported tables/FirstMMR_SIMDinteraction_tbl_BL4.csv")
+
+#Baseline SIMD3
+SIMD_FirstMMR_grouped_BL3 = SIMD_FirstMMR_grouped %>% 
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("3"))
+
+FirstMMR_interaction_tbl_BL3 <- cbind(SIMD_FirstMMR_grouped_BL3$total_vaccinated, SIMD_FirstMMR_grouped_BL3$unvaccinated)
+
+# Column for time-period
+tp <- SIMD_FirstMMR_grouped_BL3$lockdown.factor
+# Column for HSCP
+SIMD <- SIMD_FirstMMR_grouped_BL3$SIMD.factor
+# Put into GLM with interaction
+model_SIMD_FirstMMR_BL3<- glm(FirstMMR_interaction_tbl_BL3 ~ tp*SIMD,
+                               family="binomial")                                 
+
+summary(model_SIMD_FirstMMR_BL3) ##cf 2019, change for SIMD 3  sig increase for all periods
+exp(model_SIMD_FirstMMR_BL3$coefficients)
+exp(confint(model_SIMD_FirstMMR_BL3))
+
+library(broom)
+FirstMMR_SIMDinteraction_tbl_BL3 = model_SIMD_FirstMMR_BL3%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+FirstMMR_SIMDinteraction_tbl_BL3
+write_csv(FirstMMR_SIMDinteraction_tbl_BL3, file = "Exported tables/FirstMMR_SIMDinteraction_tbl_BL3.csv")
+
+#Baseline SIMD2
+SIMD_FirstMMR_grouped_BL2 = SIMD_FirstMMR_grouped %>% 
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("2"))
+
+FirstMMR_interaction_tbl_BL2 <- cbind(SIMD_FirstMMR_grouped_BL2$total_vaccinated, SIMD_FirstMMR_grouped_BL2$unvaccinated)
+
+# Column for time-period
+tp <- SIMD_FirstMMR_grouped_BL2$lockdown.factor
+# Column for HSCP
+SIMD <- SIMD_FirstMMR_grouped_BL2$SIMD.factor
+# Put into GLM with interaction
+model_SIMD_FirstMMR_BL2<- glm(FirstMMR_interaction_tbl_BL2 ~ tp*SIMD,
+                               family="binomial")                                 
+
+summary(model_SIMD_FirstMMR_BL2) ##cf 2019, change for SIMD 2 sig increase for all time periods
+exp(model_SIMD_FirstMMR_BL2$coefficients)
+exp(confint(model_SIMD_FirstMMR_BL2))
+
+library(broom)
+FirstMMR_SIMDinteraction_tbl_BL2 = model_SIMD_FirstMMR_BL2%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+FirstMMR_SIMDinteraction_tbl_BL2
+write_csv(FirstMMR_SIMDinteraction_tbl_BL2, file = "Exported tables/FirstMMR_SIMDinteraction_tbl_BL2.csv")
+
+####################################################################
+######As above but for second dose MMR. Removed monthly plots
+Full_SIMD_SecondMMR = read.csv(here("Data", "Deprivation_Second_MMR_11_feb_21.csv"))
+#Select out 2019 data
+SIMD_SecondMMR_2019 = Full_SIMD_SecondMMR %>% 
+  select("cohort", "deprivation_quintile", "children_turn_3y4months_2019_num", "children_rec_imm_3y5months_2019_num", "uptake_3y5months_2019_percent")
+colnames(SIMD_SecondMMR_2019) = c("cohort", "deprivation_quintile", "total_eligable", "total_vaccinated", "mean_percent")
+SIMD_SecondMMR_2019 = SIMD_SecondMMR_2019 %>%  
+  filter(cohort=="Jan-20") %>% 
+  select("deprivation_quintile", "total_eligable", "total_vaccinated", "mean_percent") %>% 
+  mutate(lockdown.factor = "2019")
+
+#Select out 2020 data
+SIMD_SecondMMR_2020 = Full_SIMD_SecondMMR %>% 
+  select("cohort", "deprivation_quintile", "children_turn_3y4months_num", "children_rec_imm_3y5months_num", "uptake_3y5months_percent")
+colnames(SIMD_SecondMMR_2020) = c("cohort", "deprivation_quintile", "denominator", "num_vaccinated", "percent_uptake")
+SIMD_SecondMMR_2020 = SIMD_SecondMMR_2020 %>% 
+  filter(!(cohort %in% c("Mar-20","Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20", "W/B 05-OCT-20", "W/B 12-OCT-20", "W/B 19-OCT-20", "W/B 26-OCT-20", "W/B 02-NOV-20", "W/B 09-NOV-20", "W/B 16-NOV-20", "W/B 23-NOV-20", "W/B 30-NOV-20", "W/B 07-DEC-20")))
+SIMD_SecondMMR_2020 = SIMD_SecondMMR_2020 %>% 
+  mutate (lockdown.factor = 
+            cohort %>%
+            factor() %>% 
+            fct_recode("Pre_LD_2020"="Jan-20", "Pre_LD_2020"="Feb-20", "Pre_LD_2020"="W/B 02-MAR-20","Pre_LD_2020"="W/B 09-MAR-20", "Pre_LD_2020"="W/B 16-MAR-20", "LD_2020"="W/B 23-MAR-20","LD_2020"="W/B 30-MAR-20","LD_2020"="W/B 06-APR-20","LD_2020"="W/B 13-APR-20","LD_2020"="W/B 20-APR-20","LD_2020"="W/B 27-APR-20","LD_2020"="W/B 04-MAY-20","LD_2020"="W/B 11-MAY-20","LD_2020"="W/B 18-MAY-20","LD_2020"="W/B 25-MAY-20","LD_2020"="W/B 01-JUN-20","LD_2020"="W/B 08-JUN-20","LD_2020"="W/B 15-JUN-20","LD_2020"="W/B 22-JUN-20","LD_2020"="W/B 29-JUN-20","LD_2020"="W/B 06-JUL-20","LD_2020"="W/B 13-JUL-20","LD_2020"="W/B 20-JUL-20","LD_2020"="W/B 27-JUL-20", "Post_LD_2020"="W/B 03-AUG-20","Post_LD_2020"="W/B 10-AUG-20","Post_LD_2020"="W/B 17-AUG-20","Post_LD_2020"="W/B 24-AUG-20","Post_LD_2020"="W/B 31-AUG-20","Post_LD_2020"="W/B 07-SEP-20","Post_LD_2020"="W/B 14-SEP-20","Post_LD_2020"="W/B 21-SEP-20","Post_LD_2020"="W/B 28-SEP-20")) 
+#Select time periods
+SIMD_SecondMMR_preLD = SIMD_SecondMMR_2020 %>% 
+  filter(lockdown.factor=="Pre_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(num_vaccinated), mean_percent = mean(percent_uptake)) %>% 
+  mutate(lockdown.factor="PreLD")
+SIMD_SecondMMR_LD = SIMD_SecondMMR_2020 %>% 
+  filter(lockdown.factor=="LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(num_vaccinated), mean_percent = mean(percent_uptake)) %>% 
+  mutate(lockdown.factor="LD")
+SIMD_SecondMMR_PostLD = SIMD_SecondMMR_2020 %>% 
+  filter(lockdown.factor=="Post_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(num_vaccinated), mean_percent = mean(percent_uptake)) %>% 
+  mutate(lockdown.factor="PostLD")
+
+#Group together then plot
+
+SIMD_SecondMMR_grouped = full_join(SIMD_SecondMMR_2019, SIMD_SecondMMR_preLD)  
+SIMD_SecondMMR_grouped = full_join(SIMD_SecondMMR_grouped, SIMD_SecondMMR_LD)
+SIMD_SecondMMR_grouped = full_join(SIMD_SecondMMR_grouped, SIMD_SecondMMR_PostLD)
+SIMD_SecondMMR_grouped = SIMD_SecondMMR_grouped %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("2019"))
+
+SIMD_SecondMMR_grouped$lockdown.factor = factor(SIMD_SecondMMR_grouped$lockdown.factor, levels = c('2019', 'PreLD', 'LD', 'PostLD'))
+
+
+SecondMMR_SIMD_grouped = SIMD_SecondMMR_grouped %>%
+  ggplot(aes(fill=lockdown.factor, y=mean_percent, x=deprivation_quintile)) +
+  geom_bar(position="dodge", stat="identity")+
+  theme_bw()+
+  scale_fill_brewer(palette = "Greens")+
+  labs(x = NULL,
+       y = "% vaccinated (4 weeks)",
+       title = "SecondMMR")+
+  theme(axis.text.y = element_text(size = 7))+
+  geom_hline(yintercept = 51.8, linetype="dotted", ##Scotland wide mean uptake 2019
+             color = "Green", size=0.75)+
+  geom_hline(yintercept = 61, linetype="dotted", ##Scotland wide mean uptake LD
+             color = "black", size=0.75)
+
+SecondMMR_SIMD_grouped 
+
+#Plot grouped by SIMD on line plot
+
+SecondMMR_groupedSIMD_line = SIMD_SecondMMR_grouped %>%
+  ggplot(aes(x=lockdown.factor, y=mean_percent, group=deprivation_quintile, color=deprivation_quintile)) +
+  geom_line()+
+  theme_bw()+
+  labs(x = NULL,
+       y = "% vaccinated (4 weeks)",
+       title = "SecondMMR")+
+  expand_limits(y=40)+
+  scale_y_continuous(breaks = c(40,45,55,60,65,70,75,80,85,90,95,100))
+SecondMMR_groupedSIMD_line
+
+
+##Plot percent change
+#SecondMMR, first format tables of percent only then join 2019 and LD
+SIMD_SecondMMR_percent_2019 = SIMD_SecondMMR_2019 %>% 
+  select(deprivation_quintile, mean_percent)
+colnames(SIMD_SecondMMR_percent_2019)= c("deprivation_quintile", "uptake_2019_percent")
+
+SIMD_SecondMMR_percent_LD = SIMD_SecondMMR_LD %>% 
+  select(deprivation_quintile, mean_percent)
+colnames(SIMD_SecondMMR_percent_LD)= c("deprivation_quintile", "uptake_LD_percent")
+
+SIMD_SecondMMR_percentchange = full_join(SIMD_SecondMMR_percent_2019, SIMD_SecondMMR_percent_LD) 
+SIMD_SecondMMR_percentchange = SIMD_SecondMMR_percentchange %>% 
+  mutate(percent_change = uptake_LD_percent - uptake_2019_percent)
+#Plot percent change SecondMMR NBB to get the significant levels you need to do the regression below
+library(RColorBrewer)
+SecondMMR_SIMD_percentchange_bar = SIMD_SecondMMR_percentchange %>% 
+  ggplot(aes(y=percent_change, x=deprivation_quintile)) + 
+  geom_bar(position="dodge", stat="identity", color=rgb(0.1,0.4,0.5,0.7), fill= rgb(0.1,0.4,0.5,0.7))+
+  theme(legend.position="none")+
+  labs(x=NULL,y="Absolute % change 2019 vs LD")+
+  theme_bw()+
+  theme(axis.text.y = element_text(size = 10))+
+  annotate("text", x = 1, y = 17, label = "***")+
+  annotate("text", x = 2, y = 17, label = "***")+
+  annotate("text", x = 3, y = 17, label = "***")+
+  annotate("text", x = 4, y = 17, label = "***")+
+  annotate("text", x = 5, y = 17, label = "***")+
+  annotate("text", x = 3, y = 15, label = "SecondMMR")
+SecondMMR_SIMD_percentchange_bar
+
+#### regression analysis for SecondMMR SIMD
+#Comparison in 2019- Add unvaccianted column and relevel to most deprived
+
+SIMD_SecondMMR_2019 = SIMD_SecondMMR_2019 %>% 
+  mutate(unvaccinated = total_eligable-total_vaccinated) %>% 
+  mutate(SIMD.factor =  
+           deprivation_quintile %>% 
+           factor())
+
+SIMD_SecondMMR_2019 = SIMD_SecondMMR_2019 %>%
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("1 - most deprived"))
+
+
+#Set up regression tbls
+
+Summary_SecondMMR_SIMD_regression_tbl_2019 = cbind(SIMD_SecondMMR_2019$total_vaccinated, SIMD_SecondMMR_2019$unvaccinated)
+
+Summarymodel_SecondMMR_SIMD_2019 = glm(Summary_SecondMMR_SIMD_regression_tbl_2019 ~ SIMD_SecondMMR_2019$SIMD.factor,
+                                      family="binomial")
+
+summary(Summarymodel_SecondMMR_SIMD_2019)
+
+exp(Summarymodel_SecondMMR_SIMD_2019$coefficients)
+exp(confint(Summarymodel_SecondMMR_SIMD_2019))
+
+###Make a plot showing OR and CI compared to baseline most deprived
+#Make the OR and CI tbls, remove the intercept
+library(broom)
+SummarySecondMMR_SIMD2019model_tbl = Summarymodel_SecondMMR_SIMD_2019%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+#Create labels and enter summary data from above tbls
+boxLabelsSIMD = c("2","3","4","5")
+
+SummaryORandCI_SecondMMR_SIMD2019 <- data.frame(
+  yAxis = length(boxLabelsSIMD):1,
+  boxOdds = c(SummarySecondMMR_SIMD2019model_tbl$OR),
+  boxCILow = c(SummarySecondMMR_SIMD2019model_tbl$upperCI),
+  boxCIHigh = c(SummarySecondMMR_SIMD2019model_tbl$lowerCI))
+
+SummarySecondMMR_SIMD2019_forest <- ggplot(SummaryORandCI_SecondMMR_SIMD2019, aes(x = boxOdds, y = boxLabelsSIMD))
+SummarySecondMMR_SIMD2019_forest = SummarySecondMMR_SIMD2019_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()+
+  labs(x = "Summary2019 OR compared to most deprived",
+       y = NULL,
+       title = NULL)
+
+SummarySecondMMR_SIMD2019_forest
+
+anova(Summarymodel_SecondMMR_SIMD_2019, test="LRT")
+
+#Comparison in LD- Add unvaccinated column and relevel to most deprived
+
+SIMD_SecondMMR_LD = SIMD_SecondMMR_LD %>% 
+  mutate(unvaccinated = total_eligable-total_vaccinated) %>% 
+  mutate(SIMD.factor =  
+           deprivation_quintile %>% 
+           factor())
+
+SIMD_SecondMMR_LD = SIMD_SecondMMR_LD %>%
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("1 - most deprived"))
+
+
+#Set up regression tbls
+
+Summary_SecondMMR_SIMD_regression_tbl_LD = cbind(SIMD_SecondMMR_LD$total_vaccinated, SIMD_SecondMMR_LD$unvaccinated)
+
+Summarymodel_SecondMMR_SIMD_LD = glm(Summary_SecondMMR_SIMD_regression_tbl_LD ~ SIMD_SecondMMR_LD$SIMD.factor,
+                                    family="binomial")
+
+summary(Summarymodel_SecondMMR_SIMD_LD)
+
+exp(Summarymodel_SecondMMR_SIMD_LD$coefficients)
+exp(confint(Summarymodel_SecondMMR_SIMD_LD))
+
+###Make a plot showing OR and CI compared to baseline most deprived
+#Make the OR and CI tbls, remove the intercept
+library(broom)
+SummarySecondMMR_SIMDLDmodel_tbl = Summarymodel_SecondMMR_SIMD_LD%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+#Create labels and enter summary data from above tbls
+boxLabelsSIMD = c("2","3","4","5")
+
+SummaryORandCISecondMMR_SIMDLD <- data.frame(
+  yAxis = length(boxLabelsSIMD):1,
+  boxOdds = c(SummarySecondMMR_SIMDLDmodel_tbl$OR),
+  boxCILow = c(SummarySecondMMR_SIMDLDmodel_tbl$upperCI),
+  boxCIHigh = c(SummarySecondMMR_SIMDLDmodel_tbl$lowerCI))
+
+SummarySecondMMR_SIMDLD_forest <- ggplot(SummaryORandCISecondMMR_SIMDLD, aes(x = boxOdds, y = boxLabelsSIMD))
+SummarySecondMMR_SIMDLD_forest = SummarySecondMMR_SIMDLD_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5, color = "orange") +
+  theme_bw()+
+  labs(x = "SummaryLD OR compared to most deprived",
+       y = NULL,
+       title = NULL)
+
+SummarySecondMMR_SIMDLD_forest
+
+anova(Summarymodel_SecondMMR_SIMD_LD, test="LRT")
+
+##Try to plot the forest plots together
+SummarySecondMMR_SIMD2019model_tbl= SummarySecondMMR_SIMD2019model_tbl %>% 
+  mutate(time.factor =  
+           "2019" %>% 
+           factor())
+SummarySecondMMR_SIMDLDmodel_tbl= SummarySecondMMR_SIMDLDmodel_tbl %>% 
+  mutate(time.factor =  
+           "LD" %>% 
+           factor())
+
+
+Merge_SecondMMR_ORCI_df = rbind(SummarySecondMMR_SIMD2019model_tbl, SummarySecondMMR_SIMDLDmodel_tbl) %>% 
+  mutate("label" = c("2-2019", "3-2019", "4-2019", "5-2019","2-LD", "3-LD", "4-LD", "5-LD"))
+
+boxLabelsSIMDmerge = c("2-2019", "3-2019", "4-2019", "5-2019","2-LD", "3-LD", "4-LD", "5-LD")
+
+MergeLD2019ORandCI_SecondMMR_SIMD <- data.frame(
+  yAxis = length(boxLabelsSIMDmerge):1,
+  boxOdds = c(Merge_SecondMMR_ORCI_df$OR),
+  boxCILow = c(Merge_SecondMMR_ORCI_df$upperCI),
+  boxCIHigh = c(Merge_SecondMMR_ORCI_df$lowerCI), 
+  time = c(Merge_SecondMMR_ORCI_df$time.factor))
+
+MergeLD2019ORandCI_SecondMMR_SIMD_forest <- ggplot(MergeLD2019ORandCI_SecondMMR_SIMD, aes(x = boxOdds, y = boxLabelsSIMDmerge, colour = time))
+MergeLD2019ORandCI_SecondMMR_SIMD_forest = MergeLD2019ORandCI_SecondMMR_SIMD_forest + geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+  geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
+  geom_point(size = 3.5) +
+  theme_bw()+
+  labs(x = "SecondMMR OR compared to most deprived",
+       y = NULL,
+       title = NULL)+
+  theme(legend.position="none")
+
+MergeLD2019ORandCI_SecondMMR_SIMD_forest
+
+##Log regression to compare change btw 2019 and LD with interaction of SIMD 
+
+SIMD_SecondMMR_grouped = SIMD_SecondMMR_grouped %>% 
+  mutate(unvaccinated = total_eligable-total_vaccinated) %>% 
+  mutate(SIMD.factor =  
+           deprivation_quintile %>% 
+           factor())
+SIMD_SecondMMR_grouped = SIMD_SecondMMR_grouped %>% 
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("1 - most deprived"))
+
+
+SecondMMR_interaction_tbl <- cbind(SIMD_SecondMMR_grouped$total_vaccinated, SIMD_SecondMMR_grouped$unvaccinated)
+
+# Column for time-period
+tp <- SIMD_SecondMMR_grouped$lockdown.factor
+# Column for HSCP
+SIMD <- SIMD_SecondMMR_grouped$SIMD.factor
+# Put into GLM with interaction
+model_SIMD_SecondMMR<- glm(SecondMMR_interaction_tbl ~ tp*SIMD,
+                          family="binomial")                                 
+
+summary(model_SIMD_SecondMMR) ##cf 2019, change for SIMD1 was sig increase pre, post and during LD
+exp(model_SIMD_SecondMMR$coefficients)
+exp(confint(model_SIMD_SecondMMR))
+
+library(broom)
+SecondMMR_SIMDinteraction_tbl = model_SIMD_SecondMMR%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+write_csv(SecondMMR_SIMDinteraction_tbl, file = "Exported tables/SecondMMR_SIMDinteraction_tbl.csv")
+
+##Run the interaction model again but change the baseline to different SIMD levels. Will give you the comparisons for that level btw tp and the other SIMD
+#Baseline least deprived:
+
+SIMD_SecondMMR_grouped = SIMD_SecondMMR_grouped %>% 
+  mutate(unvaccinated = total_eligable-total_vaccinated) %>% 
+  mutate(SIMD.factor =  
+           deprivation_quintile %>% 
+           factor())
+SIMD_SecondMMR_grouped_BL5 = SIMD_SecondMMR_grouped %>% 
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("5 - least deprived"))
+
+SecondMMR_interaction_tbl_BL5 <- cbind(SIMD_SecondMMR_grouped_BL5$total_vaccinated, SIMD_SecondMMR_grouped_BL5$unvaccinated)
+
+# Column for time-period
+tp <- SIMD_SecondMMR_grouped_BL5$lockdown.factor
+# Column for HSCP
+SIMD <- SIMD_SecondMMR_grouped_BL5$SIMD.factor
+# Put into GLM with interaction
+model_SIMD_SecondMMR_BL5<- glm(SecondMMR_interaction_tbl_BL5 ~ tp*SIMD,
+                              family="binomial")                                 
+
+summary(model_SIMD_SecondMMR_BL5) ##cf 2019, change for SIMD5  sig inc for preLD, post LD ad LD***
+exp(model_SIMD_SecondMMR_BL5$coefficients)
+exp(confint(model_SIMD_SecondMMR_BL5))
+
+library(broom)
+SecondMMR_SIMDinteraction_tbl_BL5 = model_SIMD_SecondMMR_BL5%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+write_csv(SecondMMR_SIMDinteraction_tbl_BL5, file = "Exported tables/SecondMMR_SIMDinteraction_tbl_BL5.csv")
+
+#Baseline SIMD4
+SIMD_SecondMMR_grouped_BL4 = SIMD_SecondMMR_grouped %>% 
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("4"))
+
+SecondMMR_interaction_tbl_BL4 <- cbind(SIMD_SecondMMR_grouped_BL4$total_vaccinated, SIMD_SecondMMR_grouped_BL4$unvaccinated)
+
+# Column for time-period
+tp <- SIMD_SecondMMR_grouped_BL4$lockdown.factor
+# Column for HSCP
+SIMD <- SIMD_SecondMMR_grouped_BL4$SIMD.factor
+# Put into GLM with interaction
+model_SIMD_SecondMMR_BL4<- glm(SecondMMR_interaction_tbl_BL4 ~ tp*SIMD,
+                              family="binomial")                                 
+
+summary(model_SIMD_SecondMMR_BL4) ##cf 2019, change for SIMD 4 was sig for pre, post and LD ***
+exp(model_SIMD_SecondMMR_BL4$coefficients)
+exp(confint(model_SIMD_SecondMMR_BL4))
+
+library(broom)
+SecondMMR_SIMDinteraction_tbl_BL4 = model_SIMD_SecondMMR_BL4%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+write_csv(SecondMMR_SIMDinteraction_tbl_BL4, file = "Exported tables/SecondMMR_SIMDinteraction_tbl_BL4.csv")
+
+#Baseline SIMD3
+SIMD_SecondMMR_grouped_BL3 = SIMD_SecondMMR_grouped %>% 
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("3"))
+
+SecondMMR_interaction_tbl_BL3 <- cbind(SIMD_SecondMMR_grouped_BL3$total_vaccinated, SIMD_SecondMMR_grouped_BL3$unvaccinated)
+
+# Column for time-period
+tp <- SIMD_SecondMMR_grouped_BL3$lockdown.factor
+# Column for HSCP
+SIMD <- SIMD_SecondMMR_grouped_BL3$SIMD.factor
+# Put into GLM with interaction
+model_SIMD_SecondMMR_BL3<- glm(SecondMMR_interaction_tbl_BL3 ~ tp*SIMD,
+                              family="binomial")                                 
+
+summary(model_SIMD_SecondMMR_BL3) ##cf 2019, change for SIMD 3  sig increase for LD and post LD but not preLD
+exp(model_SIMD_SecondMMR_BL3$coefficients)
+exp(confint(model_SIMD_SecondMMR_BL3))
+
+library(broom)
+SecondMMR_SIMDinteraction_tbl_BL3 = model_SIMD_SecondMMR_BL3%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+SecondMMR_SIMDinteraction_tbl_BL3
+write_csv(SecondMMR_SIMDinteraction_tbl_BL3, file = "Exported tables/SecondMMR_SIMDinteraction_tbl_BL3.csv")
+
+#Baseline SIMD2
+SIMD_SecondMMR_grouped_BL2 = SIMD_SecondMMR_grouped %>% 
+  mutate(SIMD.factor = SIMD.factor %>% 
+           fct_relevel("2"))
+
+SecondMMR_interaction_tbl_BL2 <- cbind(SIMD_SecondMMR_grouped_BL2$total_vaccinated, SIMD_SecondMMR_grouped_BL2$unvaccinated)
+
+# Column for time-period
+tp <- SIMD_SecondMMR_grouped_BL2$lockdown.factor
+# Column for HSCP
+SIMD <- SIMD_SecondMMR_grouped_BL2$SIMD.factor
+# Put into GLM with interaction
+model_SIMD_SecondMMR_BL2<- glm(SecondMMR_interaction_tbl_BL2 ~ tp*SIMD,
+                              family="binomial")                                 
+
+summary(model_SIMD_SecondMMR_BL2) ##cf 2019, change for SIMD 2 sig increase for all time periods
+exp(model_SIMD_SecondMMR_BL2$coefficients)
+exp(confint(model_SIMD_SecondMMR_BL2))
+
+library(broom)
+SecondMMR_SIMDinteraction_tbl_BL2 = model_SIMD_SecondMMR_BL2%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+SecondMMR_SIMDinteraction_tbl_BL2
+write_csv(SecondMMR_SIMDinteraction_tbl_BL2, file = "Exported tables/SecondMMR_SIMDinteraction_tbl_BL2.csv")
+
