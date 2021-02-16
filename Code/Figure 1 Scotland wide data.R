@@ -778,10 +778,12 @@ MonthlyScotland_6in1_line = All_6in1_bymonth %>%
   scale_y_continuous(breaks = c(70,75,80,85,90,95,100))
 
 MonthlyScotland_6in1_line = MonthlyScotland_6in1_line + geom_vline(xintercept = "Apr-20", linetype="dotted", 
-                                                                                       color = "blue", size=1)
+                                                                                       color = "blue", size=1) ###LD starts
 
 MonthlyScotland_6in1_line = MonthlyScotland_6in1_line + geom_vline(xintercept = "Aug-20", linetype="dotted", 
-                                                                                      color = "blue", size=1)
+                                                                                      color = "blue", size=1) ####LD ends
+MonthlyScotland_6in1_line = MonthlyScotland_6in1_line + geom_vline(xintercept = "Jun-20", linetype="dotted", 
+                                                                 color = "purple", size=1) ###Easing began 28 May
 MonthlyScotland_6in1_line
 
 #Join MMR doses and plot
@@ -797,10 +799,12 @@ MonthlyScotland_MMR_line = All_MMR_bymonth %>%
   scale_y_continuous(breaks = c(50,55,60,65,70,75,80,85,90,95,100))
 
 MonthlyScotland_MMR_line = MonthlyScotland_MMR_line + geom_vline(xintercept = "Apr-20", linetype="dotted", 
-                                                                   color = "blue", size=1)
+                                                                   color = "blue", size=1) ###LD starts
 
 MonthlyScotland_MMR_line = MonthlyScotland_MMR_line + geom_vline(xintercept = "Aug-20", linetype="dotted", 
-                                                                   color = "blue", size=1)
+                                                                   color = "blue", size=1)###LD ends
+MonthlyScotland_MMR_line = MonthlyScotland_MMR_line + geom_vline(xintercept = "Jun-20", linetype="dotted", 
+                                                                 color = "purple", size=1)###Easing begins 28 May
 MonthlyScotland_MMR_line
 
 #Export
@@ -813,3 +817,28 @@ Line_plots_bymonth = ggarrange(MonthlyScotland_6in1_line, MonthlyScotland_MMR_li
                                   legend=NULL,
                                   ncol = 1, nrow = 2)
 Line_plots_bymonth
+
+##Making table
+
+Section1tbl_First_6in1_by_LDperiod = First_6in1_by_LDperiod%>% 
+  mutate (mean_percent= round (mean_percent, digits = 1)) 
+Section1tbl_First_6in1_by_LDperiod$time_period <- c("2019", "Pre LD", "LD", "Post LD")
+Section1tbl_First_6in1_by_LDperiod = Section1tbl_First_6in1_by_LDperiod %>% 
+  select(time_period, mean_percent) %>% 
+  mutate("Vaccine"="First6in1") %>% 
+  mutate("Absolute % change from 2019" = mean_percent-94)
+Section1tbl_First_6in1_by_LDperiod = Section1tbl_First_6in1_by_LDperiod[,c(3,1,2,4)]
+
+
+First6in1_model_tbl$time_period <- c("Pre LD", "LD", "Post LD") 
+First6in1_model_tbl = First6in1_model_tbl %>% 
+  select(time_period, OR, lowerCI, upperCI) %>% 
+  mutate (OR= round (OR, digits = 2)) %>% 
+  mutate (lowerCI= round (lowerCI, digits = 2)) %>%  
+  mutate (upperCI= round (upperCI, digits = 2))
+
+Section1tbl_First_6in1_by_LDperiod = full_join(Section1tbl_First_6in1_by_LDperiod, First6in1_model_tbl)
+
+colnames(Section1tbl_First_6in1_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI")
+
+write_csv(Section1tbl_First_6in1_by_LDperiod, file = "Exported tables/Section1tbl_First6in1_byLDperiod.csv")
