@@ -818,7 +818,8 @@ Line_plots_bymonth = ggarrange(MonthlyScotland_6in1_line, MonthlyScotland_MMR_li
                                   ncol = 1, nrow = 2)
 Line_plots_bymonth
 
-##Making table
+###Making tablefor Section1 table 1
+##First 6in1
 
 Section1tbl_First_6in1_by_LDperiod = First_6in1_by_LDperiod%>% 
   mutate (mean_percent= round (mean_percent, digits = 1)) 
@@ -828,7 +829,6 @@ Section1tbl_First_6in1_by_LDperiod = Section1tbl_First_6in1_by_LDperiod %>%
   mutate("Vaccine"="First6in1") %>% 
   mutate("Absolute % change from 2019" = mean_percent-94)
 Section1tbl_First_6in1_by_LDperiod = Section1tbl_First_6in1_by_LDperiod[,c(3,1,2,4)]
-
 
 First6in1_model_tbl$time_period <- c("Pre LD", "LD", "Post LD") 
 First6in1_model_tbl = First6in1_model_tbl %>% 
@@ -842,3 +842,264 @@ Section1tbl_First_6in1_by_LDperiod = full_join(Section1tbl_First_6in1_by_LDperio
 colnames(Section1tbl_First_6in1_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI")
 
 write_csv(Section1tbl_First_6in1_by_LDperiod, file = "Exported tables/Section1tbl_First6in1_byLDperiod.csv")
+
+##Second 6in1
+
+Section1tbl_Second_6in1_by_LDperiod = Second_6in1_by_LDperiod%>% 
+  mutate (mean_percent= round (mean_percent, digits = 1)) 
+Section1tbl_Second_6in1_by_LDperiod$time_period <- c("2019", "Pre LD", "LD", "Post LD")
+Section1tbl_Second_6in1_by_LDperiod = Section1tbl_Second_6in1_by_LDperiod %>% 
+  select(time_period, mean_percent) %>% 
+  mutate("Vaccine"="Second6in1") %>% 
+  mutate("Absolute % change from 2019" = mean_percent-84.8)
+Section1tbl_Second_6in1_by_LDperiod = Section1tbl_Second_6in1_by_LDperiod[,c(3,1,2,4)]
+
+
+Second6in1_model_tbl$time_period <- c("Pre LD", "LD", "Post LD") 
+Second6in1_model_tbl = Second6in1_model_tbl %>% 
+  select(time_period, OR, lowerCI, upperCI) %>% 
+  mutate (OR= round (OR, digits = 2)) %>% 
+  mutate (lowerCI= round (lowerCI, digits = 2)) %>%  
+  mutate (upperCI= round (upperCI, digits = 2))
+
+Section1tbl_Second_6in1_by_LDperiod = full_join(Section1tbl_Second_6in1_by_LDperiod, Second6in1_model_tbl)
+
+colnames(Section1tbl_Second_6in1_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI")
+
+Section1_tbl1_allvaccines = rbind(Section1tbl_First_6in1_by_LDperiod, Section1tbl_Second_6in1_by_LDperiod)
+
+##Third 6in1
+
+Section1tbl_Third_6in1_by_LDperiod = Third_6in1_by_LDperiod%>% 
+  mutate (mean_percent= round (mean_percent, digits = 1)) 
+Section1tbl_Third_6in1_by_LDperiod$time_period <- c("2019", "Pre LD", "LD", "Post LD")
+Section1tbl_Third_6in1_by_LDperiod = Section1tbl_Third_6in1_by_LDperiod %>% 
+  select(time_period, mean_percent) %>% 
+  mutate("Vaccine"="Third6in1") %>% 
+  mutate("Absolute % change from 2019" = mean_percent-73)
+Section1tbl_Third_6in1_by_LDperiod = Section1tbl_Third_6in1_by_LDperiod[,c(3,1,2,4)]
+
+
+Third6in1_model_tbl$time_period <- c("Pre LD", "LD", "Post LD") 
+Third6in1_model_tbl = Third6in1_model_tbl %>% 
+  select(time_period, OR, lowerCI, upperCI) %>% 
+  mutate (OR= round (OR, digits = 2)) %>% 
+  mutate (lowerCI= round (lowerCI, digits = 2)) %>%  
+  mutate (upperCI= round (upperCI, digits = 2))
+
+Section1tbl_Third_6in1_by_LDperiod = full_join(Section1tbl_Third_6in1_by_LDperiod, Third6in1_model_tbl)
+
+colnames(Section1tbl_Third_6in1_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI")
+
+##First MMR
+
+Section1tbl_FirstMMR_by_LDperiod = First_MMR_by_LDperiod%>% 
+  mutate (mean_percent= round (mean_percent, digits = 1)) 
+Section1tbl_FirstMMR_by_LDperiod$time_period <- c("2019", "Pre LD", "LD", "Post LD")
+Section1tbl_FirstMMR_by_LDperiod = Section1tbl_FirstMMR_by_LDperiod %>% 
+  select(time_period, mean_percent) %>% 
+  mutate("Vaccine"="FirstMMR") %>% 
+  mutate("Absolute % change from 2019" = mean_percent-65.2)
+Section1tbl_FirstMMR_by_LDperiod = Section1tbl_FirstMMR_by_LDperiod[,c(3,1,2,4)]
+
+
+FirstMMR_model_tbl$time_period <- c("Pre LD", "LD", "Post LD") 
+FirstMMR_model_tbl = FirstMMR_model_tbl %>% 
+  select(time_period, OR, lowerCI, upperCI) %>% 
+  mutate (OR= round (OR, digits = 2)) %>% 
+  mutate (lowerCI= round (lowerCI, digits = 2)) %>%  
+  mutate (upperCI= round (upperCI, digits = 2))
+
+Section1tbl_FirstMMR_by_LDperiod = full_join(Section1tbl_FirstMMR_by_LDperiod, FirstMMR_model_tbl)
+
+colnames(Section1tbl_FirstMMR_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI")
+
+##Second MMR
+
+Section1tbl_SecondMMR_by_LDperiod = Second_MMR_by_LDperiod%>% 
+  mutate (mean_percent= round (mean_percent, digits = 1)) 
+Section1tbl_SecondMMR_by_LDperiod$time_period <- c("2019", "Pre LD", "LD", "Post LD")
+Section1tbl_SecondMMR_by_LDperiod = Section1tbl_SecondMMR_by_LDperiod %>% 
+  select(time_period, mean_percent) %>% 
+  mutate("Vaccine"="SecondMMR") %>% 
+  mutate("Absolute % change from 2019" = mean_percent-51.8)
+Section1tbl_SecondMMR_by_LDperiod = Section1tbl_SecondMMR_by_LDperiod[,c(3,1,2,4)]
+
+
+SecondMMR_model_tbl$time_period <- c("Pre LD", "LD", "Post LD") 
+SecondMMR_model_tbl = SecondMMR_model_tbl %>% 
+  select(time_period, OR, lowerCI, upperCI) %>% 
+  mutate (OR= round (OR, digits = 2)) %>% 
+  mutate (lowerCI= round (lowerCI, digits = 2)) %>%  
+  mutate (upperCI= round (upperCI, digits = 2))
+
+Section1tbl_SecondMMR_by_LDperiod = full_join(Section1tbl_SecondMMR_by_LDperiod, SecondMMR_model_tbl)
+
+colnames(Section1tbl_SecondMMR_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI")
+
+#Merge all tables together and export as csv
+Section1_tbl1_allvaccines = rbind(Section1tbl_First_6in1_by_LDperiod, Section1tbl_Second_6in1_by_LDperiod, Section1tbl_Third_6in1_by_LDperiod, Section1tbl_FirstMMR_by_LDperiod, Section1tbl_SecondMMR_by_LDperiod)
+
+write_csv(Section1_tbl1_allvaccines, file = "Exported tables/Section1_tbl1_allvaccines.csv")
+
+###Section 1, figure 1, line plot of weekly rates
+
+#First dose 6in1, first remove 2019
+Weekly_first_6in1_remove_2019 = Scotland_firstdose_6in1 %>% 
+  filter(!(cohort=="2019")) %>% 
+  select(immunisation, uptake_12weeks_percent,time.factor)
+colnames(Weekly_first_6in1_remove_2019) = c("immunisation", "percent uptake", "time.factor")
+#set levels
+Weekly_first_6in1_remove_2019$time.factor = factor(Weekly_first_6in1_remove_2019$time.factor, levels = c('Jan-20', 'Feb-20', 'W/B 02-MAR-20', 'W/B 09-MAR-20', 'W/B 16-MAR-20', 'W/B 23-MAR-20','W/B 30-MAR-20','W/B 06-APR-20','W/B 13-APR-20','W/B 20-APR-20','W/B 27-APR-20','W/B 04-MAY-20','W/B 11-MAY-20','W/B 18-MAY-20','W/B 25-MAY-20','W/B 01-JUN-20','W/B 08-JUN-20','W/B 15-JUN-20','W/B 22-JUN-20','W/B 29-JUN-20','W/B 06-JUL-20','W/B 13-JUL-20','W/B 20-JUL-20','W/B 27-JUL-20', 'W/B 03-AUG-20','W/B 10-AUG-20','W/B 17-AUG-20','W/B 24-AUG-20','W/B 31-AUG-20','W/B 07-SEP-20','W/B 14-SEP-20','W/B 21-SEP-20','W/B 28-SEP-20'))
+#Plot
+Weekly_first_6in1_line = Weekly_first_6in1_remove_2019 %>% 
+  ggplot(aes(x=time.factor, y=`percent uptake`, group=immunisation, color=immunisation)) +
+  geom_line() +
+  theme_bw()+
+  labs(x = NULL,
+       y = "% vaccinated (4 weeks)",
+       title = "First dose 6in1")+
+  expand_limits(y=80)+
+  scale_y_continuous(breaks = c(80:100))
+
+Weekly_first_6in1_line
+#Add 2019 line
+Weekly_first_6in1_line = Weekly_first_6in1_line + geom_hline(yintercept = 94, linetype="dashed", 
+                                                   color = "red", size=0.75) + theme(axis.text.x = element_text(angle = 90)) 
+Weekly_first_6in1_line
+#Custom x axis to display certain ticks only and change names of ticks
+
+Weekly_first_6in1_line = Weekly_first_6in1_line + scale_x_discrete(breaks =c("Jan-20", "Feb-20", "W/B 02-MAR-20", "W/B 30-MAR-20", "W/B 04-MAY-20", "W/B 01-JUN-20", "W/B 29-JUN-20", "W/B 03-AUG-20", "W/B 31-AUG-20"), label = c("Jan 20", "Feb 20", "Mar 20", "Apr 20", "May 20", "Jun 20", "Jul 20", "Aug 20", "Sept 20"))
+
+Weekly_first_6in1_line
+
+#Add LD rectangle
+
+Weekly_first_6in1_line = Weekly_first_6in1_line +
+  annotate("rect", xmin = "W/B 23-MAR-20", xmax = "W/B 03-AUG-20", ymin = 80, ymax = 100,
+           alpha = .1,fill = "blue")
+
+Weekly_first_6in1_line
+
+###Add all 6in1 vaccines on single graph, first format the tables
+#Second6in1
+Weekly_second_6in1_remove_2019 = Scotland_seconddose_6in1 %>% 
+  filter(!(cohort=="2019"))%>% 
+  select(immunisation, uptake_16weeks_percent, time.factor)
+colnames(Weekly_second_6in1_remove_2019) = c("immunisation", "percent uptake", "time.factor")
+
+Weekly_second_6in1_remove_2019$time.factor = factor(Weekly_second_6in1_remove_2019$time.factor, levels = c('Jan-20', 'Feb-20', 'W/B 02-MAR-20', 'W/B 09-MAR-20', 'W/B 16-MAR-20', 'W/B 23-MAR-20','W/B 30-MAR-20','W/B 06-APR-20','W/B 13-APR-20','W/B 20-APR-20','W/B 27-APR-20','W/B 04-MAY-20','W/B 11-MAY-20','W/B 18-MAY-20','W/B 25-MAY-20','W/B 01-JUN-20','W/B 08-JUN-20','W/B 15-JUN-20','W/B 22-JUN-20','W/B 29-JUN-20','W/B 06-JUL-20','W/B 13-JUL-20','W/B 20-JUL-20','W/B 27-JUL-20', 'W/B 03-AUG-20','W/B 10-AUG-20','W/B 17-AUG-20','W/B 24-AUG-20','W/B 31-AUG-20','W/B 07-SEP-20','W/B 14-SEP-20','W/B 21-SEP-20','W/B 28-SEP-20'))
+#Third 6in1
+Weekly_third_6in1_remove_2019 = Scotland_thirddose_6in1 %>% 
+  filter(!(cohort=="2019"))%>% 
+  select(immunisation, uptake_20weeks_percent,time.factor)
+colnames(Weekly_third_6in1_remove_2019) = c("immunisation", "percent uptake", "time.factor")
+Weekly_third_6in1_remove_2019$time.factor = factor(Weekly_third_6in1_remove_2019$time.factor, levels = c('Jan-20', 'Feb-20', 'W/B 02-MAR-20', 'W/B 09-MAR-20', 'W/B 16-MAR-20', 'W/B 23-MAR-20','W/B 30-MAR-20','W/B 06-APR-20','W/B 13-APR-20','W/B 20-APR-20','W/B 27-APR-20','W/B 04-MAY-20','W/B 11-MAY-20','W/B 18-MAY-20','W/B 25-MAY-20','W/B 01-JUN-20','W/B 08-JUN-20','W/B 15-JUN-20','W/B 22-JUN-20','W/B 29-JUN-20','W/B 06-JUL-20','W/B 13-JUL-20','W/B 20-JUL-20','W/B 27-JUL-20', 'W/B 03-AUG-20','W/B 10-AUG-20','W/B 17-AUG-20','W/B 24-AUG-20','W/B 31-AUG-20','W/B 07-SEP-20','W/B 14-SEP-20','W/B 21-SEP-20','W/B 28-SEP-20'))
+#combine and plot
+
+Combined_weekly_6in1_no2019 = rbind(Weekly_first_6in1_remove_2019, Weekly_second_6in1_remove_2019, Weekly_third_6in1_remove_2019)
+#colour blind friendly palete
+
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+Combined_weekly_6in1_no2019_line = Combined_weekly_6in1_no2019 %>% 
+  ggplot(aes(x=time.factor, y=`percent uptake`, group=immunisation, color=immunisation)) +
+  geom_line(size = 0.6) +
+  scale_color_brewer(palette="Set2", name = NULL, labels=c("First dose  6in1", "Second dose 6in1", "Third dose 6in1"))+
+  theme_classic()+
+  labs(x = NULL,
+       y = "% vaccinated (4 weeks)",
+       title = "6in1 vaccine")+
+  expand_limits(y=70)+
+  scale_y_continuous(breaks = seq(70,100,5)) +
+  geom_hline(yintercept = 94, linetype="dashed", color = "#66c2a5", size=0.75)+
+  geom_hline(yintercept = 84.8, linetype="dashed", color = "#fc8d62", size=0.75)+
+  geom_hline(yintercept = 73, linetype="dashed", color = "#8da0cb", size=0.75)+
+  theme(axis.text.x = element_text(angle = 90))+
+  annotate("rect", xmin = "W/B 23-MAR-20", xmax = "W/B 03-AUG-20", ymin = 70, ymax = 100,
+           alpha = .1,fill = "blue")+
+  scale_x_discrete(breaks =c("Jan-20", "Feb-20", "W/B 02-MAR-20", "W/B 30-MAR-20", "W/B 04-MAY-20", "W/B 01-JUN-20", "W/B 29-JUN-20", "W/B 03-AUG-20", "W/B 31-AUG-20"), label = c("Jan 20", "Feb 20", "Mar 20", "Apr 20", "May 20", "Jun 20", "Jul 20", "Aug 20", "Sept 20")) 
+Combined_weekly_6in1_no2019_line
+  
+###Add all MMR vaccines on single graph, first format the tables   
+#First MMR
+Weekly_firstMMR_remove_2019 = Scotland_firstdose_MMR %>% 
+  filter(!(cohort=="2019"))%>% 
+  select(immunisation, uptake_13m_percent, time.factor)
+colnames(Weekly_firstMMR_remove_2019) = c("immunisation", "percent uptake", "time.factor")
+
+Weekly_firstMMR_remove_2019$time.factor = factor(Weekly_firstMMR_remove_2019$time.factor, levels = c('Jan-20', 'Feb-20', 'W/B 02-MAR-20', 'W/B 09-MAR-20', 'W/B 16-MAR-20', 'W/B 23-MAR-20','W/B 30-MAR-20','W/B 06-APR-20','W/B 13-APR-20','W/B 20-APR-20','W/B 27-APR-20','W/B 04-MAY-20','W/B 11-MAY-20','W/B 18-MAY-20','W/B 25-MAY-20','W/B 01-JUN-20','W/B 08-JUN-20','W/B 15-JUN-20','W/B 22-JUN-20','W/B 29-JUN-20','W/B 06-JUL-20','W/B 13-JUL-20','W/B 20-JUL-20','W/B 27-JUL-20', 'W/B 03-AUG-20','W/B 10-AUG-20','W/B 17-AUG-20','W/B 24-AUG-20','W/B 31-AUG-20','W/B 07-SEP-20','W/B 14-SEP-20','W/B 21-SEP-20','W/B 28-SEP-20'))
+#Second MMR
+Weekly_secondMMR_remove_2019 = Scotland_seconddose_MMR %>% 
+  filter(!(cohort=="2019"))%>% 
+  select(immunisation, uptake_3y5m_percent,time.factor)
+colnames(Weekly_secondMMR_remove_2019) = c("immunisation", "percent uptake", "time.factor")
+Weekly_secondMMR_remove_2019$time.factor = factor(Weekly_secondMMR_remove_2019$time.factor, levels = c('Jan-20', 'Feb-20', 'W/B 02-MAR-20', 'W/B 09-MAR-20', 'W/B 16-MAR-20', 'W/B 23-MAR-20','W/B 30-MAR-20','W/B 06-APR-20','W/B 13-APR-20','W/B 20-APR-20','W/B 27-APR-20','W/B 04-MAY-20','W/B 11-MAY-20','W/B 18-MAY-20','W/B 25-MAY-20','W/B 01-JUN-20','W/B 08-JUN-20','W/B 15-JUN-20','W/B 22-JUN-20','W/B 29-JUN-20','W/B 06-JUL-20','W/B 13-JUL-20','W/B 20-JUL-20','W/B 27-JUL-20', 'W/B 03-AUG-20','W/B 10-AUG-20','W/B 17-AUG-20','W/B 24-AUG-20','W/B 31-AUG-20','W/B 07-SEP-20','W/B 14-SEP-20','W/B 21-SEP-20','W/B 28-SEP-20'))
+#combine and plot
+
+Combined_weekly_MMR_no2019 = rbind(Weekly_firstMMR_remove_2019, Weekly_secondMMR_remove_2019)
+#colour blind friendly palete
+
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+Combined_weekly_MMR_no2019_line = Combined_weekly_MMR_no2019 %>% 
+  ggplot(aes(x=time.factor, y=`percent uptake`, group=immunisation, color=immunisation)) +
+  geom_line(size = 0.6) +
+  scale_color_brewer(palette="Set2", name = NULL, labels=c("First dose MMR", "Second dose MMR"))+
+  theme_classic()+
+  labs(x = NULL,
+       y = "% vaccinated (4 weeks)",
+       title = "MMR vaccine")+
+  expand_limits(y=45)+
+  scale_y_continuous(breaks = seq(45,100,5)) +
+  geom_hline(yintercept = 65.2, linetype="dashed", color = "#66c2a5", size=0.75)+
+  geom_hline(yintercept = 51.8, linetype="dashed", color = "#fc8d62", size=0.75)+
+  theme(axis.text.x = element_text(angle = 90))+
+  annotate("rect", xmin = "W/B 23-MAR-20", xmax = "W/B 03-AUG-20", ymin = 40, ymax = 100,
+           alpha = .1,fill = "blue")+ 
+  scale_x_discrete(breaks =c("Jan-20", "Feb-20", "W/B 02-MAR-20", "W/B 30-MAR-20", "W/B 04-MAY-20", "W/B 01-JUN-20", "W/B 29-JUN-20", "W/B 03-AUG-20", "W/B 31-AUG-20"), label = c("Jan 20", "Feb 20", "Mar 20", "Apr 20", "May 20", "Jun 20", "Jul 20", "Aug 20", "Sept 20")) 
+Combined_weekly_MMR_no2019_line
+
+##Export both plots together
+library(ggplot2)
+library(ggpubr)
+theme_set(theme_pubr())
+
+Figure_1_weeklylineplots = ggarrange(Combined_weekly_6in1_no2019_line, Combined_weekly_MMR_no2019_line,
+                              labels = NULL,
+                              legend=NULL,
+                              ncol = 1, nrow = 2)
+Figure_1_weeklylineplots
+
+####Table S1
+#First select out the relevant colunms incl numerator and denominator then join together. NB need to have different column names so only joins by cohort
+Section1_supptbl1_first6in1 = Scotland_firstdose_6in1 %>% 
+  select(immunisation, cohort, uptake_12weeks_percent, uptake_12weeks_num, denominator)
+colnames(Section1_supptbl1_first6in1) = c("First 6in1", "cohort", "% uptake 12wks", "12wk uptake", "Eligable first6in1")
+
+Section1_supptbl1_second6in1 = Scotland_seconddose_6in1 %>% 
+  select(immunisation, cohort, uptake_16weeks_percent, uptake_16weeks_num, denominator)
+colnames(Section1_supptbl1_second6in1) = c("Second 6in1", "cohort", "% uptake 16wks", "16wk uptake", "Eligable second 6in1")
+
+Section1_supptbl1_third6in1 = Scotland_thirddose_6in1 %>% 
+  select(immunisation, cohort, uptake_20weeks_percent, uptake_20weeks_num, denominator)
+colnames(Section1_supptbl1_third6in1) = c("Third 6in1", "cohort", "% uptake 20wks", "20wk uptake", "Eligable third 6in1")
+
+Section1_supptbl1_all6in1 = full_join(Section1_supptbl1_first6in1, Section1_supptbl1_second6in1)
+Section1_supptbl1_all6in1 = full_join(Section1_supptbl1_all6in1, Section1_supptbl1_third6in1)
+
+Section1_supptbl1_firstMMR = Scotland_firstdose_MMR %>% 
+  select(immunisation, cohort, uptake_13m_percent, uptake_13m_num, denominator)
+colnames(Section1_supptbl1_firstMMR) = c("First MMR", "cohort", "% uptake 13m", "13m uptake", "Eligable firstMMR")
+
+Section1_supptbl1_secondMMR = Scotland_seconddose_MMR %>% 
+  select(immunisation, cohort, uptake_3y5m_percent, uptake_3y5m_num, denominator)
+colnames(Section1_supptbl1_secondMMR) = c("Second MMR", "cohort", "% uptake 3y5m", "3y5m uptake", "Eligable secondMMR")
+
+Section1_supptbl1_allMMR = full_join(Section1_supptbl1_firstMMR, Section1_supptbl1_secondMMR)
+
+Section1_supptbl_full = full_join(Section1_supptbl1_all6in1, Section1_supptbl1_allMMR)
+
+write_csv(Section1_supptbl_full, file = "Exported tables/Section1_supptbl_full.csv")
