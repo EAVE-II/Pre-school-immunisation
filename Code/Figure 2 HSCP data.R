@@ -27,20 +27,26 @@ Full_firstdose_6in1 = read.csv(here("Data", "First_dose_6in1_3_feb_21.csv"))
 Full_seconddose_6in1 = read.csv(here("Data", "Second_dose_6in1_3_feb_21.csv"))
 Full_thirddose_6in1 = read.csv(here("Data", "Third_dose_6in1_3_feb_21.csv"))
 Full_firstdose_MMR = read.csv(here("Data", "First_dose_MMR_3_feb_21.csv"))
-Full_seconddose_MMR = read.csv(here("Data", "Second_dose_MMR_3_feb_21.csv"))  ####excludes Aberdeen city, Aberdeenshire and Moray as given second MMR at different time, hese were removed pre enering into dashboard
+Full_seconddose_MMR = read.csv(here("Data", "Second_dose_MMR_3_feb_21.csv"))####excludes Aberdeen city, Aberdeenshire and Moray as given second MMR at different time, hese were removed pre enering into dashboard
+
+###Change island names for all at the beginning
+Full_firstdose_6in1$area_name = gsub("Shetland", "Shetland Islands", Full_firstdose_6in1$area_name)
+Full_firstdose_6in1$area_name = gsub("Orkney", "Orkney Islands", Full_firstdose_6in1$area_name)
+
+Full_seconddose_6in1$area_name = gsub("Shetland", "Shetland Islands", Full_seconddose_6in1$area_name)
+Full_seconddose_6in1$area_name = gsub("Orkney", "Orkney Islands", Full_seconddose_6in1$area_name)
+
+Full_thirddose_6in1$area_name = gsub("Shetland", "Shetland Islands", Full_thirddose_6in1$area_name)
+Full_thirddose_6in1$area_name = gsub("Orkney", "Orkney Islands", Full_thirddose_6in1$area_name)
+
+Full_firstdose_MMR$area_name = gsub("Shetland", "Shetland Islands", Full_firstdose_MMR$area_name)
+Full_firstdose_MMR$area_name = gsub("Orkney", "Orkney Islands", Full_firstdose_MMR$area_name)
+
+Full_seconddose_MMR$area_name = gsub("Shetland", "Shetland Islands", Full_seconddose_MMR$area_name)
+Full_seconddose_MMR$area_name = gsub("Orkney", "Orkney Islands", Full_seconddose_MMR$area_name)
 
 #Load HSCP map from https://spatialdata.gov.scot/geonetwork/srv/eng/catalog.search;jsessionid=714BD98E15D22A8116824CA25B30DC02#/metadata/ac5e870f-8fc2-4c21-8b9c-3bd2311a583f
 HSCP_map <- readOGR(here("Data"), layer="SG_NHS_IntegrationAuthority_2019", verbose=FALSE)
-
-######ggplot method dosen't seem to work # 'fortify' the data to get a dataframe format required by ggplot2
-#library(broom)
-#HSCP_fortified <- tidy(HSCP_map, region = "HIAName") 
-
-# Plot it
-#library(ggplot2)
-#ggplot() +
-  #geom_polygon(data = HSCP_fortified, aes( x = long, y = lat, group = group), fill="#69b3a2", color="white") +
-  #theme_void() 
 
 ##Select out percentage uptake for 2019 for HSPC. Remove NHS boards and Scotland
 
@@ -50,23 +56,13 @@ HSCP_2019data_First6in1 <- Full_firstdose_6in1 %>%
   filter(str_detect(area_name,"Scotland", negate = TRUE)) %>% 
   filter(cohort == 2019)
 
-######ggplot method dosen't seem to work HSCP_2019map_First6in1 = HSCP_fortified %>% 
-  #left_join(., HSCP_2019data_First6in1, by=c("id"="area_name")) %>% 
-  #select(long,lat, group, id, uptake_12weeks_percent)
-
-#First6in1_2019_map = ggplot() +
- # geom_polygon(data = HSCP_2019map_First6in1, aes(fill = uptake_12weeks_percent, x = long, y = lat, group = id)) +
-  #theme_void() +
-  #coord_map()
-#First6in1_2019_map  
-
 library(tmap) ############this works
 
 
 newPoly <- merge(x=HSCP_map, y=HSCP_2019data_First6in1, by.x = "HIAName", by.y = "area_name")
 
 First_6in1_2019_map = tm_shape(newPoly)+
-  tm_fill(col="uptake_12weeks_percent", palette = phs_spec2(7), title = "% vacinnated")+
+  tm_fill(col="uptake_12weeks_percent", palette = phs_spec2(7), title = "% immunised within 4 wks")+
   tm_layout(frame = FALSE, main.title = "First 6in1 2019",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
@@ -100,7 +96,7 @@ First_MMR_2019_map
 ##Plot percent change
 #First 6in1
 #Set up the percent change table by selecting out the 2019 and LD data into tables then join
-
+#2019
 HSCP_2019data_First6in1 <- Full_firstdose_6in1 %>%
   filter(str_detect(area_name,"NHS", negate=TRUE)) %>% 
   filter(str_detect(area_name,"Scotland", negate = TRUE)) %>% 
@@ -109,7 +105,7 @@ HSCP_2019data_First6in1 <- Full_firstdose_6in1 %>%
 First6in1_HSCP_2019_percent = HSCP_2019data_First6in1 %>% 
   select(area_name, uptake_12weeks_percent)
 colnames(First6in1_HSCP_2019_percent) = c("area_name", "Uptake_2019")
-
+#LD
 First6in1_HSCP_LD_percent = Full_firstdose_6in1 %>% ###Note this selects out LD data for Shetland, Orkney and Western Isles, need to fix
   filter(str_detect(area_name,"NHS", negate=TRUE)) %>% 
   filter(str_detect(area_name,"Scotland", negate = TRUE))%>% 
@@ -121,10 +117,25 @@ First6in1_HSCP_LD_percent = First6in1_HSCP_LD_percent%>%
   summarise(mean_percentuptake_LD = mean(uptake_12weeks_percent))
 colnames(First6in1_HSCP_LD_percent) = c("area_name", "Uptake_LD")
 
+##To get Islands only data
+First6in1_Islands_LD_percent = Full_firstdose_6in1 %>% 
+  filter(area_name %in% c("Orkney Islands", "Shetland Islands", "Western Isles")) %>% 
+  filter(!(cohort %in% c("2019", "Jan-20", "Feb-20", "Mar-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20")))
+
+First6in1_Islands_LD_percent = First6in1_Islands_LD_percent%>%
+  group_by(area_name) %>% 
+  summarise(mean_percentuptake_LD = mean(uptake_12weeks_percent))
+colnames(First6in1_Islands_LD_percent) = c("area_name", "Uptake_LD")
+
+#Join island LD with other HSCP
+First6in1_HSCP_LD_percent = rbind(First6in1_HSCP_LD_percent, First6in1_Islands_LD_percent)
+
+#Join 2019 and LD tbls
 First6in1_HSPC_percentchange_2019andLD = full_join(First6in1_HSCP_2019_percent, First6in1_HSCP_LD_percent)  #has been cross checked with excel for aberdeen city and Scottish borders
 
 First6in1_HSPC_percentchange_2019andLD = First6in1_HSPC_percentchange_2019andLD %>% 
   mutate(percent_change = Uptake_LD-Uptake_2019)
+
 
 #Plot percent change 
 
@@ -133,8 +144,8 @@ library(viridis)
 First6in1_percentchange_poly <- merge(x=HSCP_map, y=First6in1_HSPC_percentchange_2019andLD, by.x = "HIAName", by.y = "area_name")
 
 First_6in1_percentchange_map = tm_shape(First6in1_percentchange_poly)+
-  tm_fill(col= "percent_change", palette = "RdYlGn", title = "% change LD vs 2019")+
-  tm_layout(frame = FALSE, main.title = "First 6in1 Percent change",
+  tm_fill(col= "percent_change", palette = "RdYlGn", title = "Absolute % change LD vs 2019")+
+  tm_layout(frame = FALSE, main.title = "First 6in1",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 First_6in1_percentchange_map
@@ -151,7 +162,7 @@ First6in1_HSPC_percentchange_bar = First6in1_HSPC_percentchange_2019andLD %>%
 First6in1_HSPC_percentchange_bar
 
 #Second 6in1
-
+#2010
 HSCP_2019data_Second6in1 <- Full_seconddose_6in1 %>%
   filter(str_detect(area_name,"NHS", negate=TRUE)) %>% 
   filter(str_detect(area_name,"Scotland", negate = TRUE)) %>% 
@@ -160,7 +171,7 @@ HSCP_2019data_Second6in1 <- Full_seconddose_6in1 %>%
 Second6in1_HSCP_2019_percent = HSCP_2019data_Second6in1 %>% 
   select(area_name, uptake_16weeks_percent)
 colnames(Second6in1_HSCP_2019_percent) = c("area_name", "Uptake_2019")
-
+#LD
 Second6in1_HSCP_LD_percent = Full_seconddose_6in1 %>% ###Note this selects out LD data for Shetland, Orkney and Western Isles, need to fix
   filter(str_detect(area_name,"NHS", negate=TRUE)) %>% 
   filter(str_detect(area_name,"Scotland", negate = TRUE))%>% 
@@ -172,6 +183,20 @@ Second6in1_HSCP_LD_percent = Second6in1_HSCP_LD_percent%>%
   summarise(mean_percentuptake_LD = mean(uptake_16weeks_percent))
 colnames(Second6in1_HSCP_LD_percent) = c("area_name", "Uptake_LD")
 
+##To get Islands only data for LD
+Second6in1_Islands_LD_percent = Full_seconddose_6in1 %>% 
+  filter(area_name %in% c("Orkney Islands", "Shetland Islands", "Western Isles")) %>% 
+  filter(!(cohort %in% c("2019", "Jan-20", "Feb-20", "Mar-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20")))
+
+Second6in1_Islands_LD_percent = Second6in1_Islands_LD_percent%>%
+  group_by(area_name) %>% 
+  summarise(mean_percentuptake_LD = mean(uptake_16weeks_percent))
+colnames(Second6in1_Islands_LD_percent) = c("area_name", "Uptake_LD")
+
+#Join island LD with other HSCP
+Second6in1_HSCP_LD_percent = rbind(Second6in1_HSCP_LD_percent,Second6in1_Islands_LD_percent)
+
+#Join 2019 and LD
 Second6in1_HSPC_percentchange_2019andLD = full_join(Second6in1_HSCP_2019_percent, Second6in1_HSCP_LD_percent)  
 
 Second6in1_HSPC_percentchange_2019andLD = Second6in1_HSPC_percentchange_2019andLD %>% 
@@ -182,11 +207,12 @@ library(viridis)
 Second6in1_percentchange_poly <- merge(x=HSCP_map, y=Second6in1_HSPC_percentchange_2019andLD, by.x = "HIAName", by.y = "area_name")
 
 Second_6in1_percentchange_map = tm_shape(Second6in1_percentchange_poly)+
-  tm_fill(col= "percent_change", palette = "RdYlGn", title = "% change LD vs 2019")+
-  tm_layout(frame = FALSE, main.title = "Second 6in1 Percent change",
+  tm_fill(col= "percent_change", palette = "RdYlGn", title = "Absolute % change LD vs 2019")+
+  tm_layout(frame = FALSE, main.title = "Second 6in1",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 Second_6in1_percentchange_map
+
 #Bar chart plot
 Second6in1_HSPC_percentchange_bar = Second6in1_HSPC_percentchange_2019andLD %>% 
   ggplot(aes(y=percent_change, x=area_name)) + 
@@ -219,6 +245,20 @@ Third6in1_HSCP_LD_percent = Third6in1_HSCP_LD_percent%>%
   summarise(mean_percentuptake_LD = mean(uptake_20weeks_percent))
 colnames(Third6in1_HSCP_LD_percent) = c("area_name", "Uptake_LD")
 
+##To get Islands only data for LD
+Third6in1_Islands_LD_percent = Full_thirddose_6in1 %>% 
+  filter(area_name %in% c("Orkney Islands", "Shetland Islands", "Western Isles")) %>% 
+  filter(!(cohort %in% c("2019", "Jan-20", "Feb-20", "Mar-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20")))
+
+Third6in1_Islands_LD_percent = Third6in1_Islands_LD_percent%>%
+  group_by(area_name) %>% 
+  summarise(mean_percentuptake_LD = mean(uptake_20weeks_percent))
+colnames(Third6in1_Islands_LD_percent) = c("area_name", "Uptake_LD")
+
+#Join island LD with other HSCP
+Third6in1_HSCP_LD_percent = rbind(Third6in1_HSCP_LD_percent,Third6in1_Islands_LD_percent)
+#Join 2019 and LD
+
 Third6in1_HSPC_percentchange_2019andLD = full_join(Third6in1_HSCP_2019_percent, Third6in1_HSCP_LD_percent)  
 
 Third6in1_HSPC_percentchange_2019andLD = Third6in1_HSPC_percentchange_2019andLD %>% 
@@ -229,8 +269,8 @@ library(viridis)
 Third6in1_percentchange_poly <- merge(x=HSCP_map, y=Third6in1_HSPC_percentchange_2019andLD, by.x = "HIAName", by.y = "area_name")
 
 Third_6in1_percentchange_map = tm_shape(Third6in1_percentchange_poly)+
-  tm_fill(col= "percent_change", palette = "RdYlGn", title = "% change LD vs 2019")+
-  tm_layout(frame = FALSE, main.title = "Third 6in1 Percent change",
+  tm_fill(col= "percent_change", palette = "RdYlGn", title = "Absolute % change LD vs 2019")+
+  tm_layout(frame = FALSE, main.title = "Third 6in1",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 Third_6in1_percentchange_map
@@ -267,6 +307,19 @@ FirstMMR_HSCP_LD_percent = FirstMMR_HSCP_LD_percent%>%
   summarise(mean_percentuptake_LD = mean(uptake_13m_percent))
 colnames(FirstMMR_HSCP_LD_percent) = c("area_name", "Uptake_LD")
 
+##To get Islands only data for LD
+FirstMMR_Islands_LD_percent = Full_firstdose_MMR %>% 
+  filter(area_name %in% c("Orkney Islands", "Shetland Islands", "Western Isles")) %>% 
+  filter(!(cohort %in% c("2019", "Jan-20", "Feb-20", "Mar-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20")))
+
+FirstMMR_Islands_LD_percent = FirstMMR_Islands_LD_percent%>%
+  group_by(area_name) %>% 
+  summarise(mean_percentuptake_LD = mean(uptake_13m_percent))
+colnames(FirstMMR_Islands_LD_percent) = c("area_name", "Uptake_LD")
+
+#Join island LD with other HSCP
+FirstMMR_HSCP_LD_percent = rbind(FirstMMR_HSCP_LD_percent,FirstMMR_Islands_LD_percent)
+#Join 2019 and LD
 FirstMMR_HSPC_percentchange_2019andLD = full_join(FirstMMR_HSCP_2019_percent, FirstMMR_HSCP_LD_percent)  #has been cross checked with excel for aberdeen city 
 
 FirstMMR_HSPC_percentchange_2019andLD = FirstMMR_HSPC_percentchange_2019andLD %>% 
@@ -277,8 +330,8 @@ library(viridis)
 FirstMMR_percentchange_poly <- merge(x=HSCP_map, y=FirstMMR_HSPC_percentchange_2019andLD, by.x = "HIAName", by.y = "area_name")
 
 First_MMR_percentchange_map = tm_shape(FirstMMR_percentchange_poly)+
-  tm_fill(col= "percent_change", palette = "YlGn", title = "% change LD vs 2019")+
-  tm_layout(frame = FALSE, main.title = "First MMR Percent change",
+  tm_fill(col= "percent_change", palette = "YlGn", title = "Absolute % change LD vs 2019")+
+  tm_layout(frame = FALSE, main.title = "First MMR",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 First_MMR_percentchange_map ##NOte change in pallet as none fell. Cross checked for Moray
@@ -315,6 +368,20 @@ SecondMMR_HSCP_LD_percent = SecondMMR_HSCP_LD_percent%>%
   summarise(mean_percentuptake_LD = mean(uptake_3y5m_percent))
 colnames(SecondMMR_HSCP_LD_percent) = c("area_name", "Uptake_LD")
 
+##To get Islands only data for LD
+SecondMMR_Islands_LD_percent = Full_seconddose_MMR %>% 
+  filter(area_name %in% c("Orkney Islands", "Shetland Islands", "Western Isles")) %>% 
+  filter(!(cohort %in% c("2019", "Jan-20", "Feb-20", "Mar-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20")))
+
+SecondMMR_Islands_LD_percent = SecondMMR_Islands_LD_percent%>%
+  group_by(area_name) %>% 
+  summarise(mean_percentuptake_LD = mean(uptake_3y5m_percent))
+colnames(SecondMMR_Islands_LD_percent) = c("area_name", "Uptake_LD")
+
+#Join island LD with other HSCP
+SecondMMR_HSCP_LD_percent = rbind(SecondMMR_HSCP_LD_percent,SecondMMR_Islands_LD_percent)
+#Join 2019 and LD
+
 SecondMMR_HSPC_percentchange_2019andLD = full_join(SecondMMR_HSCP_2019_percent, SecondMMR_HSCP_LD_percent)  
 
 SecondMMR_HSPC_percentchange_2019andLD = SecondMMR_HSPC_percentchange_2019andLD %>% 
@@ -325,8 +392,8 @@ library(viridis)
 SecondMMR_percentchange_poly <- merge(x=HSCP_map, y=SecondMMR_HSPC_percentchange_2019andLD, by.x = "HIAName", by.y = "area_name")
 
 Second_MMR_percentchange_map = tm_shape(SecondMMR_percentchange_poly)+
-  tm_fill(col= "percent_change", palette = "YlGn", title = "% change LD vs 2019")+
-  tm_layout(frame = FALSE, main.title = "Second MMR Percent change",
+  tm_fill(col= "percent_change", palette = "YlGn", title = "Absolute % change LD vs 2019")+
+  tm_layout(frame = FALSE, main.title = "Second MMR",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 Second_MMR_percentchange_map
@@ -1227,3 +1294,87 @@ Second_MMR_OR_plots = ggarrange(SecondMMR_HSCP2019_forest, SummarySecondMMR_HSCP
                                legend = NULL,
                                ncol = 2, nrow = 1)
 Second_MMR_OR_plots
+
+###Secion 1 Figure 2 Make 2019 maps for all 
+#First 6in1 2019
+HSCP_2019data_First6in1 <- Full_firstdose_6in1 %>%
+  filter(str_detect(area_name,"NHS", negate=TRUE)) %>% 
+  filter(str_detect(area_name,"Scotland", negate = TRUE)) %>% 
+  filter(cohort == 2019)
+
+library(tmap) ############this works
+
+
+newPoly <- merge(x=HSCP_map, y=HSCP_2019data_First6in1, by.x = "HIAName", by.y = "area_name")
+
+First_6in1_2019_map = tm_shape(newPoly)+
+  tm_fill(col="uptake_12weeks_percent", palette = phs_spec2(7), title = "% immunised within 4 wks")+
+  tm_layout(frame = FALSE, main.title = "First 6in1 2019",
+            main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
+
+First_6in1_2019_map
+
+#Second 6in1 2019
+HSCP_2019data_Second6in1 <- Full_seconddose_6in1 %>%
+  filter(str_detect(area_name,"NHS", negate=TRUE)) %>% 
+  filter(str_detect(area_name,"Scotland", negate = TRUE)) %>% 
+  filter(cohort == 2019)
+
+library(tmap) 
+
+newPoly <- merge(x=HSCP_map, y=HSCP_2019data_Second6in1, by.x = "HIAName", by.y = "area_name")
+
+Second_6in1_2019_map = tm_shape(newPoly)+
+  tm_fill(col="uptake_16weeks_percent", palette = phs_spec2(7), title = "% immunised within 4 wks")+
+  tm_layout(frame = FALSE, main.title = "Second 6in1 2019",
+            main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
+
+Second_6in1_2019_map
+
+#Third 6in1 2019
+HSCP_2019data_Third6in1 <- Full_thirddose_6in1 %>%
+  filter(str_detect(area_name,"NHS", negate=TRUE)) %>% 
+  filter(str_detect(area_name,"Scotland", negate = TRUE)) %>% 
+  filter(cohort == 2019)
+
+library(tmap) 
+newPoly <- merge(x=HSCP_map, y=HSCP_2019data_Third6in1, by.x = "HIAName", by.y = "area_name")
+
+Third_6in1_2019_map = tm_shape(newPoly)+
+  tm_fill(col="uptake_20weeks_percent", palette = phs_spec2(7), title = "% immunised within 4 wks")+
+  tm_layout(frame = FALSE, main.title = "Third 6in1 2019",
+            main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
+
+Third_6in1_2019_map
+
+#First MMR 2019
+HSCP_2019data_FirstMMR <- Full_firstdose_MMR %>%
+  filter(str_detect(area_name,"NHS", negate=TRUE)) %>% 
+  filter(str_detect(area_name,"Scotland", negate = TRUE)) %>% 
+  filter(cohort == 2019)
+
+library(tmap) 
+newPoly <- merge(x=HSCP_map, y=HSCP_2019data_FirstMMR, by.x = "HIAName", by.y = "area_name")
+
+First_MMR_2019_map = tm_shape(newPoly)+
+  tm_fill(col="uptake_13m_percent", palette = phs_spec2(7), title = "% immunised within 4 wks")+
+  tm_layout(frame = FALSE, main.title = "First MMR 2019",
+            main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
+
+First_MMR_2019_map
+
+#Second MMR 2019
+HSCP_2019data_SecondMMR <- Full_seconddose_MMR %>%
+  filter(str_detect(area_name,"NHS", negate=TRUE)) %>% 
+  filter(str_detect(area_name,"Scotland", negate = TRUE)) %>% 
+  filter(cohort == 2019)
+
+library(tmap) 
+newPoly <- merge(x=HSCP_map, y=HSCP_2019data_SecondMMR, by.x = "HIAName", by.y = "area_name")
+
+Second_MMR_2019_map = tm_shape(newPoly)+
+  tm_fill(col="uptake_3y5m_percent", palette = phs_spec2(7), title = "% immunised within 4 wks")+
+  tm_layout(frame = FALSE, main.title = "Second MMR 2019",
+            main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
+
+Second_MMR_2019_map
