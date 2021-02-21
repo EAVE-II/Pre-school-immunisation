@@ -2656,3 +2656,57 @@ colnames(Section3_supptbl3_secondMMR_final) = c("Deprivation quintile", "number 
 Section3_supptbl3_allvaccine= rbind(Section3_supptbl3_first6in1_final, Section3_supptbl3_second6in1_final, Section3_supptbl3_third6in1_final, Section3_supptbl3_firstMMR_final, Section3_supptbl3_secondMMR_final)
 
 Section3_supptbl3_allvaccine = Section3_supptbl3_allvaccine[,c(10,1,6,2,3,4,5,7,8,9)]
+
+###Experimental graphs- scatter of %change from 2019 by LD for section 3 supp
+
+Experimental_scatter_LD = Section3_supptbl3_allvaccine %>% 
+  filter(`time period`== "LD") %>% 
+  mutate(Immunisation = factor(Immunisation, levels=c("First 6in1", "Second 6in1", "Third 6in1", "First MMR", "Second MMR"))) %>%
+  ggplot(aes(x= `Immunisation`, y= `Absolute % change from 2019`, color = `Deprivation quintile`, size = `time period`))+
+  geom_point(size = 4, shape = 18)+
+  scale_y_continuous(breaks = seq(0,20,2))+
+  scale_color_brewer(palette="Set2")+
+  labs(x = NULL, y = "Absolute % change from 2019", title = "LD")
+  Experimental_scatter_LD
+  
+  Experimental_scatter_preLD = Section3_supptbl3_allvaccine %>% 
+    filter(`time period`== "PreLD") %>% 
+    mutate(Immunisation = factor(Immunisation, levels=c("First 6in1", "Second 6in1", "Third 6in1", "First MMR", "Second MMR"))) %>%
+    ggplot(aes(x= `Immunisation`, y= `Absolute % change from 2019`, color = `Deprivation quintile`, size = `time period`))+
+    geom_point(size = 4, shape = 18)+
+    scale_y_continuous(breaks = seq(-2,5,1))+
+    scale_color_brewer(palette="Set2")+
+    geom_hline(yintercept = 0, linetype="dashed", color = "#66c2a5", size=0.75)+
+    labs(x = NULL,
+         y = "Absolute % change from 2019",
+         title = "Pre LD")
+Experimental_scatter_preLD
+
+Experimental_scatter_postLD = Section3_supptbl3_allvaccine %>% 
+  filter(`time period`== "PostLD") %>% 
+  mutate(Immunisation = factor(Immunisation, levels=c("First 6in1", "Second 6in1", "Third 6in1", "First MMR", "Second MMR"))) %>%
+  ggplot(aes(x= `Immunisation`, y= `Absolute % change from 2019`, color = `Deprivation quintile`, size = `time period`))+
+  geom_point(size = 4, shape = 18)+
+  scale_y_continuous(breaks = seq(-2,20,2))+
+  scale_color_brewer(palette="Set2")+
+  labs(x = NULL,
+       y = "Absolute % change from 2019",
+       title = "Post LD")+
+  geom_hline(yintercept = 0, linetype="dashed", color = "#66c2a5", size=0.75)
+Experimental_scatter_postLD
+
+Changefrom2019_SIMD_allvaccines = ggarrange(Experimental_scatter_preLD, Experimental_scatter_LD, Experimental_scatter_postLD,
+                                  labels = NULL,
+                                  common.legend = TRUE, legend="bottom right",
+                                  ncol = 2, nrow = 2)  
+Changefrom2019_SIMD_allvaccines
+
+#Sig checks
+Experimental_scatter_preLD_sig = Section3_supptbl3_allvaccine %>% 
+  filter(`time period`== "PreLD") ###add a annotate to graph that 6in1 changes are NS, MMR are
+Experimental_scatter_LD_sig = Section3_supptbl3_allvaccine %>% 
+  filter(`time period`== "LD") ###All sig except first 6in1 SIMD 4 and 5
+Experimental_scatter_postLD_sig = Section3_supptbl3_allvaccine %>% 
+  filter(`time period`== "PostLD")##First6in1 2 4 and 5 ns, others are sig
+
+
