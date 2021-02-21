@@ -98,12 +98,13 @@ First6in1_SIMD_grouped
 First6in1_groupedSIMD_line = SIMD_First6in1_grouped %>%
   ggplot(aes(x=lockdown.factor, y=mean_percent, group=deprivation_quintile, color=deprivation_quintile)) +
   geom_line()+
-  theme_bw()+
+  theme_classic()+
   labs(x = NULL,
        y = "% vaccinated (4 weeks)",
-       title = "First dose6in1")+
-  expand_limits(y=70)+
-  scale_y_continuous(breaks = c(70,75,80,85,90,95,100))
+       title = "First dose 6in1")+
+  expand_limits(y=85:100)+
+  scale_y_continuous(breaks = c(85,90,95,100))+
+  scale_color_brewer(palette="Set2", name = "Deprivation quintile")
 First6in1_groupedSIMD_line
 
 #Monthly by SIMD NB includes a relevel (had to restart R to get this to work not sure why)
@@ -513,12 +514,13 @@ SIMD_Second6in1_PostLD = SIMD_Second6in1_2020 %>%
 
 SIMD_Second6in1_grouped = full_join(SIMD_Second6in1_2019, SIMD_Second6in1_preLD)  
 SIMD_Second6in1_grouped = full_join(SIMD_Second6in1_grouped, SIMD_Second6in1_LD)
-SIMD_Secondin1_grouped = full_join(SIMD_Second6in1_grouped, SIMD_Second6in1_PostLD)
+SIMD_Second6in1_grouped = full_join(SIMD_Second6in1_grouped, SIMD_Second6in1_PostLD)
 SIMD_Second6in1_grouped = SIMD_Second6in1_grouped %>% 
   mutate(lockdown.factor = lockdown.factor %>%
            fct_relevel("2019"))
 
 SIMD_Second6in1_grouped$lockdown.factor = factor(SIMD_Second6in1_grouped$lockdown.factor, levels = c('2019', 'PreLD', 'LD', 'PostLD'))
+
 
 
 Second6in1_SIMD_grouped = SIMD_Second6in1_grouped %>%
@@ -535,19 +537,20 @@ Second6in1_SIMD_grouped = SIMD_Second6in1_grouped %>%
   geom_hline(yintercept = 90, linetype="dotted", ##Scotland wide mean uptake LD
              color = "black", size=0.75)
 
-Second6in1_SIMD_grouped ##############for some reason hasn't plotted postLD
+Second6in1_SIMD_grouped 
 
 #Plot grouped by SIMD on line plot
 
 Second6in1_groupedSIMD_line = SIMD_Second6in1_grouped %>%
   ggplot(aes(x=lockdown.factor, y=mean_percent, group=deprivation_quintile, color=deprivation_quintile)) +
   geom_line()+
-  theme_bw()+
+  theme_classic()+
   labs(x = NULL,
        y = "% vaccinated (4 weeks)",
-       title = "Second dose6in1")+
-  expand_limits(y=70)+
-  scale_y_continuous(breaks = c(70,75,80,85,90,95,100))
+       title = "Second dose 6in1")+
+  expand_limits(y=75:95)+
+  scale_y_continuous(breaks = c(70,75,80,85,90,95))+
+  scale_color_brewer(palette="Set2", name = "Deprivation quintile")
 Second6in1_groupedSIMD_line
 
 
@@ -916,10 +919,9 @@ SIMD_Third6in1_PostLD = SIMD_Third6in1_2020 %>%
   mutate(lockdown.factor="PostLD")
 
 #Group together then plot
-
 SIMD_Third6in1_grouped = full_join(SIMD_Third6in1_2019, SIMD_Third6in1_preLD)  
 SIMD_Third6in1_grouped = full_join(SIMD_Third6in1_grouped, SIMD_Third6in1_LD)
-SIMD_Thirdin1_grouped = full_join(SIMD_Third6in1_grouped, SIMD_Third6in1_PostLD)
+SIMD_Third6in1_grouped = full_join(SIMD_Third6in1_grouped, SIMD_Third6in1_PostLD)
 SIMD_Third6in1_grouped = SIMD_Third6in1_grouped %>% 
   mutate(lockdown.factor = lockdown.factor %>%
            fct_relevel("2019"))
@@ -948,12 +950,13 @@ Third6in1_SIMD_grouped ##############for some reason hasn't plotted postLD
 Third6in1_groupedSIMD_line = SIMD_Third6in1_grouped %>%
   ggplot(aes(x=lockdown.factor, y=mean_percent, group=deprivation_quintile, color=deprivation_quintile)) +
   geom_line()+
-  theme_bw()+
+  theme_classic()+
   labs(x = NULL,
        y = "% vaccinated (4 weeks)",
-       title = "Thirddose6in1")+
-  expand_limits(y=70)+
-  scale_y_continuous(breaks = c(70,75,80,85,90,95,100))
+       title = "Third dose 6in1")+
+  expand_limits(y=65)+
+  scale_y_continuous(breaks = c(65,70,75,80,85,90,95,100))+
+  scale_color_brewer(palette="Set2", name = "Deprivation quintile")
 Third6in1_groupedSIMD_line
 
 
@@ -1354,12 +1357,13 @@ FirstMMR_SIMD_grouped
 FirstMMR_groupedSIMD_line = SIMD_FirstMMR_grouped %>%
   ggplot(aes(x=lockdown.factor, y=mean_percent, group=deprivation_quintile, color=deprivation_quintile)) +
   geom_line()+
-  theme_bw()+
+  theme_classic()+
   labs(x = NULL,
        y = "% vaccinated (4 weeks)",
-       title = "FirstMMR")+
-  expand_limits(y=55)+
-  scale_y_continuous(breaks = c(55,60,65,70,75,80,85,90,95,100))
+       title = "First dose MMR")+
+  expand_limits(y=45)+
+  scale_y_continuous(breaks = c(45,50,55,60,65,70,75,80,85))+
+  scale_color_brewer(palette="Set2", name = "Deprivation quintile")
 FirstMMR_groupedSIMD_line
 
 
@@ -1760,12 +1764,15 @@ SecondMMR_SIMD_grouped
 SecondMMR_groupedSIMD_line = SIMD_SecondMMR_grouped %>%
   ggplot(aes(x=lockdown.factor, y=mean_percent, group=deprivation_quintile, color=deprivation_quintile)) +
   geom_line()+
-  theme_bw()+
+  theme_classic()+
   labs(x = NULL,
        y = "% vaccinated (4 weeks)",
-       title = "SecondMMR")+
-  expand_limits(y=40)+
-  scale_y_continuous(breaks = c(40,45,55,60,65,70,75,80,85,90,95,100))
+       title = "Second dose MMR")+
+  expand_limits(y=45:85)+
+  scale_y_continuous(breaks = c(45,50,55,60,65,70,75,80,85))+
+  scale_color_brewer(palette="Set2", name = "Deprivation quintile")+
+  coord_cartesian(expand = TRUE)
+
 SecondMMR_groupedSIMD_line
 
 
@@ -2116,14 +2123,14 @@ Grouped_bar_MMR_SMID_all_periods
 Grouped_line_6in1_SMID_all_periods = ggarrange(First6in1_groupedSIMD_line, Second6in1_groupedSIMD_line, Third6in1_groupedSIMD_line, 
                                               common.legend = TRUE, legend="bottom",
                                               labels = NULL,
-                                              ncol = 2, nrow = 2)
+                                              ncol = 1, nrow = 3)
 Grouped_line_6in1_SMID_all_periods
 
 
 Grouped_line_MMR_SMID_all_periods = ggarrange(FirstMMR_groupedSIMD_line, SecondMMR_groupedSIMD_line, 
                                              common.legend = TRUE, legend="bottom",
                                              labels = NULL,
-                                             ncol = 2, nrow = 1)
+                                             ncol = 1, nrow = 2)
 Grouped_line_MMR_SMID_all_periods
 
 #Comparison of OR btw LD and 2019
@@ -2146,3 +2153,506 @@ Percentchange_2019vsLD_SMID_MMR = ggarrange(FirstMMR_SIMD_percentchange_bar, Sec
                                              labels = NULL,
                                              ncol = 2, nrow = 1)
 Percentchange_2019vsLD_SMID_MMR
+
+################################
+##Table for supplementary info with % change from 2019
+##First 6in1
+#FIrst pick the data from full dataset
+
+Section3_supptbl3_first6in1 = Full_SIMD_First6in1 %>% 
+  select(cohort, deprivation_quintile, children_turn_8weeks_num, children_rec_imm_12weeks_num, uptake_12weeks_percent, absolute_change_from_baseline_percent) %>% 
+  filter(!(cohort %in% c("Mar-20","Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20", "W/B 05-OCT-20", "W/B 12-OCT-20", "W/B 19-OCT-20", "W/B 26-OCT-20", "W/B 02-NOV-20", "W/B 09-NOV-20", "W/B 16-NOV-20", "W/B 23-NOV-20", "W/B 30-NOV-20", "W/B 07-DEC-20"))) %>% 
+  mutate (lockdown.factor = cohort %>% 
+          factor() %>% 
+          fct_recode("Pre_LD_2020"="Jan-20", "Pre_LD_2020"="Feb-20", "Pre_LD_2020"="W/B 02-MAR-20","Pre_LD_2020"="W/B 09-MAR-20", "Pre_LD_2020"="W/B 16-MAR-20", "LD_2020"="W/B 23-MAR-20","LD_2020"="W/B 30-MAR-20","LD_2020"="W/B 06-APR-20","LD_2020"="W/B 13-APR-20","LD_2020"="W/B 20-APR-20","LD_2020"="W/B 27-APR-20","LD_2020"="W/B 04-MAY-20","LD_2020"="W/B 11-MAY-20","LD_2020"="W/B 18-MAY-20","LD_2020"="W/B 25-MAY-20","LD_2020"="W/B 01-JUN-20","LD_2020"="W/B 08-JUN-20","LD_2020"="W/B 15-JUN-20","LD_2020"="W/B 22-JUN-20","LD_2020"="W/B 29-JUN-20","LD_2020"="W/B 06-JUL-20","LD_2020"="W/B 13-JUL-20","LD_2020"="W/B 20-JUL-20","LD_2020"="W/B 27-JUL-20", "Post_LD_2020"="W/B 03-AUG-20","Post_LD_2020"="W/B 10-AUG-20","Post_LD_2020"="W/B 17-AUG-20","Post_LD_2020"="W/B 24-AUG-20","Post_LD_2020"="W/B 31-AUG-20","Post_LD_2020"="W/B 07-SEP-20","Post_LD_2020"="W/B 14-SEP-20","Post_LD_2020"="W/B 21-SEP-20","Post_LD_2020"="W/B 28-SEP-20"))
+#Separate into time periods to summarise data 
+Section3_supptbl3_first6in1_PreLD = Section3_supptbl3_first6in1 %>% 
+  filter(lockdown.factor == "Pre_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(denominator = sum(children_turn_8weeks_num), uptake_12weeks_num = sum(children_rec_imm_12weeks_num), uptake_12weeks_percent = mean(uptake_12weeks_percent), Percentagechange2019 = mean(absolute_change_from_baseline_percent)) %>% 
+  mutate(time_period = "PreLD")
+
+Section3_supptbl3_first6in1_LD = Section3_supptbl3_first6in1 %>% 
+  filter(lockdown.factor == "LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(denominator = sum(children_turn_8weeks_num), uptake_12weeks_num = sum(children_rec_imm_12weeks_num), uptake_12weeks_percent = mean(uptake_12weeks_percent), Percentagechange2019 = mean(absolute_change_from_baseline_percent)) %>% 
+  mutate(time_period = "LD")
+
+Section3_supptbl3_first6in1_PostLD = Section3_supptbl3_first6in1 %>% 
+  filter(lockdown.factor == "Post_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(denominator = sum(children_turn_8weeks_num), uptake_12weeks_num = sum(children_rec_imm_12weeks_num), uptake_12weeks_percent = mean(uptake_12weeks_percent), Percentagechange2019 = mean(absolute_change_from_baseline_percent)) %>% 
+  mutate(time_period = "PostLD")
+#Select out 2019 data from full dataset
+Section3_supptbl3_first6in1_2019 = Full_SIMD_First6in1 %>% 
+  filter(cohort=="Jan-20") %>% 
+  select(deprivation_quintile, children_turn_8weeks_2019_num, children_rec_imm_12weeks_2019_num, uptake_12weeks_2019_percent) %>% 
+  mutate(Percentagechange2019 = 0) %>% 
+  mutate(time_period = "2019")
+colnames(Section3_supptbl3_first6in1_2019) = c("deprivation_quintile", "denominator", "uptake_12weeks_num", "uptake_12weeks_percent", "Percentagechange2019", "time_period")
+#Join together and round
+Section3_supptbl3_first6in1 = full_join(Section3_supptbl3_first6in1_2019, Section3_supptbl3_first6in1_PreLD)
+Section3_supptbl3_first6in1 = full_join(Section3_supptbl3_first6in1, Section3_supptbl3_first6in1_LD)
+Section3_supptbl3_first6in1 = full_join(Section3_supptbl3_first6in1, Section3_supptbl3_first6in1_PostLD)
+
+Section3_supptbl3_first6in1 = Section3_supptbl3_first6in1 %>% 
+  mutate (uptake_12weeks_percent= round (uptake_12weeks_percent, digits = 1)) %>%
+  mutate (Percentagechange2019 = round (Percentagechange2019, digits = 1))
+
+##To add OR columns for comparisons with 2019
+#SIMD 1
+ORSIMD1vs2019column = First6in1_SIMDinteraction_tbl %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "1 - most deprived") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 2
+ORSIMD2vs2019column = First6in1_SIMDinteraction_tbl_BL2 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "2") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 3
+ORSIMD3vs2019column = First6in1_SIMDinteraction_tbl_BL3 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "3") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 4
+ORSIMD4vs2019column = First6in1_SIMDinteraction_tbl_BL4 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "4") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 5
+ORSIMD5vs2019column = First6in1_SIMDinteraction_tbl_BL5 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "5 - least deprived") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  
+#Join the oR tbls together
+
+ORallSIMDvs2019column = rbind(ORSIMD1vs2019column, ORSIMD2vs2019column)
+ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD3vs2019column)
+ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD4vs2019column)
+ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD5vs2019column)
+
+Section3_supptbl3_first6in1_final = full_join(Section3_supptbl3_first6in1, ORallSIMDvs2019column) %>% 
+  mutate (OR= round (OR, digits = 1)) %>%
+  mutate (lowerCI = round (lowerCI, digits = 1)) %>% 
+  mutate (upperCI = round (upperCI, digits = 1)) %>% 
+  mutate("Immunisation" = "First 6in1")
+
+####
+##Second 6in1
+#FIrst pick the data from full dataset
+
+Section3_supptbl3_second6in1 = Full_SIMD_Second6in1 %>% 
+  select(cohort, deprivation_quintile, children_turn_12weeks_num, children_rec_imm_16weeks_num, uptake_16weeks_percent, absolute_change_from_baseline_percent) %>% 
+  filter(!(cohort %in% c("Mar-20","Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20", "W/B 05-OCT-20", "W/B 12-OCT-20", "W/B 19-OCT-20", "W/B 26-OCT-20", "W/B 02-NOV-20", "W/B 09-NOV-20", "W/B 16-NOV-20", "W/B 23-NOV-20", "W/B 30-NOV-20", "W/B 07-DEC-20"))) %>% 
+  mutate (lockdown.factor = cohort %>% 
+            factor() %>% 
+            fct_recode("Pre_LD_2020"="Jan-20", "Pre_LD_2020"="Feb-20", "Pre_LD_2020"="W/B 02-MAR-20","Pre_LD_2020"="W/B 09-MAR-20", "Pre_LD_2020"="W/B 16-MAR-20", "LD_2020"="W/B 23-MAR-20","LD_2020"="W/B 30-MAR-20","LD_2020"="W/B 06-APR-20","LD_2020"="W/B 13-APR-20","LD_2020"="W/B 20-APR-20","LD_2020"="W/B 27-APR-20","LD_2020"="W/B 04-MAY-20","LD_2020"="W/B 11-MAY-20","LD_2020"="W/B 18-MAY-20","LD_2020"="W/B 25-MAY-20","LD_2020"="W/B 01-JUN-20","LD_2020"="W/B 08-JUN-20","LD_2020"="W/B 15-JUN-20","LD_2020"="W/B 22-JUN-20","LD_2020"="W/B 29-JUN-20","LD_2020"="W/B 06-JUL-20","LD_2020"="W/B 13-JUL-20","LD_2020"="W/B 20-JUL-20","LD_2020"="W/B 27-JUL-20", "Post_LD_2020"="W/B 03-AUG-20","Post_LD_2020"="W/B 10-AUG-20","Post_LD_2020"="W/B 17-AUG-20","Post_LD_2020"="W/B 24-AUG-20","Post_LD_2020"="W/B 31-AUG-20","Post_LD_2020"="W/B 07-SEP-20","Post_LD_2020"="W/B 14-SEP-20","Post_LD_2020"="W/B 21-SEP-20","Post_LD_2020"="W/B 28-SEP-20"))
+#Separate into time periods to summarise data 
+Section3_supptbl3_second6in1_PreLD = Section3_supptbl3_second6in1 %>% 
+  filter(lockdown.factor == "Pre_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(denominator = sum(children_turn_12weeks_num), uptake_16weeks_num = sum(children_rec_imm_16weeks_num), uptake_16weeks_percent = mean(uptake_16weeks_percent), Percentagechange2019 = mean(absolute_change_from_baseline_percent)) %>% 
+  mutate(time_period = "PreLD")
+
+Section3_supptbl3_second6in1_LD = Section3_supptbl3_second6in1 %>% 
+  filter(lockdown.factor == "LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(denominator = sum(children_turn_12weeks_num), uptake_16weeks_num = sum(children_rec_imm_16weeks_num), uptake_16weeks_percent = mean(uptake_16weeks_percent), Percentagechange2019 = mean(absolute_change_from_baseline_percent)) %>% 
+  mutate(time_period = "LD")
+
+Section3_supptbl3_second6in1_PostLD = Section3_supptbl3_second6in1 %>% 
+  filter(lockdown.factor == "Post_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(denominator = sum(children_turn_12weeks_num), uptake_16weeks_num = sum(children_rec_imm_16weeks_num), uptake_16weeks_percent = mean(uptake_16weeks_percent), Percentagechange2019 = mean(absolute_change_from_baseline_percent)) %>% 
+  mutate(time_period = "PostLD")
+#Select out 2019 data from full dataset
+Section3_supptbl3_second6in1_2019 = Full_SIMD_Second6in1 %>% 
+  filter(cohort=="Jan-20") %>% 
+  select(deprivation_quintile, children_turn_12weeks_2019_num, children_rec_imm_16weeks_2019_num, uptake_16weeks_2019_percent) %>% 
+  mutate(Percentagechange2019 = 0) %>% 
+  mutate(time_period = "2019")
+colnames(Section3_supptbl3_second6in1_2019) = c("deprivation_quintile", "denominator", "uptake_16weeks_num", "uptake_16weeks_percent", "Percentagechange2019", "time_period")
+#Join together and round
+Section3_supptbl3_second6in1 = full_join(Section3_supptbl3_second6in1_2019, Section3_supptbl3_second6in1_PreLD)
+Section3_supptbl3_second6in1 = full_join(Section3_supptbl3_second6in1, Section3_supptbl3_second6in1_LD)
+Section3_supptbl3_second6in1 = full_join(Section3_supptbl3_second6in1, Section3_supptbl3_second6in1_PostLD)
+
+Section3_supptbl3_second6in1 = Section3_supptbl3_second6in1 %>% 
+  mutate (uptake_16weeks_percent= round (uptake_16weeks_percent, digits = 1)) %>%
+  mutate (Percentagechange2019 = round (Percentagechange2019, digits = 1))
+
+##To add OR columns for comparisons with 2019
+#SIMD 1
+ORSIMD1vs2019column = Second6in1_SIMDinteraction_tbl %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "1 - most deprived") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 2
+ORSIMD2vs2019column = Second6in1_SIMDinteraction_tbl_BL2 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "2") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 3
+ORSIMD3vs2019column = Second6in1_SIMDinteraction_tbl_BL3 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "3") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 4
+ORSIMD4vs2019column = Second6in1_SIMDinteraction_tbl_BL4 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "4") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 5
+ORSIMD5vs2019column = Second6in1_SIMDinteraction_tbl_BL5 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "5 - least deprived") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#Join the oR tbls together
+
+ORallSIMDvs2019column = rbind(ORSIMD1vs2019column, ORSIMD2vs2019column)
+ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD3vs2019column)
+ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD4vs2019column)
+ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD5vs2019column)
+
+Section3_supptbl3_second6in1_final = full_join(Section3_supptbl3_second6in1, ORallSIMDvs2019column) %>% 
+  mutate (OR= round (OR, digits = 1)) %>%
+  mutate (lowerCI = round (lowerCI, digits = 1)) %>% 
+  mutate (upperCI = round (upperCI, digits = 1)) %>% 
+  mutate("Immunisation" = "Second 6in1")
+
+####
+##Third 6in1
+#FIrst pick the data from full dataset
+
+Section3_supptbl3_third6in1 = Full_SIMD_Third6in1 %>% 
+  select(cohort, deprivation_quintile, children_turn_16weeks_num, children_rec_imm_20weeks_num, uptake_20weeks_percent, absolute_change_from_baseline_percent) %>% 
+  filter(!(cohort %in% c("Mar-20","Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20", "W/B 05-OCT-20", "W/B 12-OCT-20", "W/B 19-OCT-20", "W/B 26-OCT-20", "W/B 02-NOV-20", "W/B 09-NOV-20", "W/B 16-NOV-20", "W/B 23-NOV-20", "W/B 30-NOV-20", "W/B 07-DEC-20"))) %>% 
+  mutate (lockdown.factor = cohort %>% 
+            factor() %>% 
+            fct_recode("Pre_LD_2020"="Jan-20", "Pre_LD_2020"="Feb-20", "Pre_LD_2020"="W/B 02-MAR-20","Pre_LD_2020"="W/B 09-MAR-20", "Pre_LD_2020"="W/B 16-MAR-20", "LD_2020"="W/B 23-MAR-20","LD_2020"="W/B 30-MAR-20","LD_2020"="W/B 06-APR-20","LD_2020"="W/B 13-APR-20","LD_2020"="W/B 20-APR-20","LD_2020"="W/B 27-APR-20","LD_2020"="W/B 04-MAY-20","LD_2020"="W/B 11-MAY-20","LD_2020"="W/B 18-MAY-20","LD_2020"="W/B 25-MAY-20","LD_2020"="W/B 01-JUN-20","LD_2020"="W/B 08-JUN-20","LD_2020"="W/B 15-JUN-20","LD_2020"="W/B 22-JUN-20","LD_2020"="W/B 29-JUN-20","LD_2020"="W/B 06-JUL-20","LD_2020"="W/B 13-JUL-20","LD_2020"="W/B 20-JUL-20","LD_2020"="W/B 27-JUL-20", "Post_LD_2020"="W/B 03-AUG-20","Post_LD_2020"="W/B 10-AUG-20","Post_LD_2020"="W/B 17-AUG-20","Post_LD_2020"="W/B 24-AUG-20","Post_LD_2020"="W/B 31-AUG-20","Post_LD_2020"="W/B 07-SEP-20","Post_LD_2020"="W/B 14-SEP-20","Post_LD_2020"="W/B 21-SEP-20","Post_LD_2020"="W/B 28-SEP-20"))
+#Separate into time periods to summarise data 
+Section3_supptbl3_third6in1_PreLD = Section3_supptbl3_third6in1 %>% 
+  filter(lockdown.factor == "Pre_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(denominator = sum(children_turn_16weeks_num), uptake_20weeks_num = sum(children_rec_imm_20weeks_num), uptake_20weeks_percent = mean(uptake_20weeks_percent), Percentagechange2019 = mean(absolute_change_from_baseline_percent)) %>% 
+  mutate(time_period = "PreLD")
+
+Section3_supptbl3_third6in1_LD = Section3_supptbl3_third6in1 %>% 
+  filter(lockdown.factor == "LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(denominator = sum(children_turn_16weeks_num), uptake_20weeks_num = sum(children_rec_imm_20weeks_num), uptake_20weeks_percent = mean(uptake_20weeks_percent), Percentagechange2019 = mean(absolute_change_from_baseline_percent)) %>% 
+  mutate(time_period = "LD")
+
+Section3_supptbl3_third6in1_PostLD = Section3_supptbl3_third6in1 %>% 
+  filter(lockdown.factor == "Post_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(denominator = sum(children_turn_16weeks_num), uptake_20weeks_num = sum(children_rec_imm_20weeks_num), uptake_20weeks_percent = mean(uptake_20weeks_percent), Percentagechange2019 = mean(absolute_change_from_baseline_percent)) %>% 
+  mutate(time_period = "PostLD")
+#Select out 2019 data from full dataset
+Section3_supptbl3_third6in1_2019 = Full_SIMD_Third6in1 %>% 
+  filter(cohort=="Jan-20") %>% 
+  select(deprivation_quintile, children_turn_16weeks_2019_num, children_rec_imm_20weeks_2019_num, uptake_20weeks_2019_percent) %>% 
+  mutate(Percentagechange2019 = 0) %>% 
+  mutate(time_period = "2019")
+colnames(Section3_supptbl3_third6in1_2019) = c("deprivation_quintile", "denominator", "uptake_20weeks_num", "uptake_20weeks_percent", "Percentagechange2019", "time_period")
+#Join together and round
+Section3_supptbl3_third6in1 = full_join(Section3_supptbl3_third6in1_2019, Section3_supptbl3_third6in1_PreLD)
+Section3_supptbl3_third6in1 = full_join(Section3_supptbl3_third6in1, Section3_supptbl3_third6in1_LD)
+Section3_supptbl3_third6in1 = full_join(Section3_supptbl3_third6in1, Section3_supptbl3_third6in1_PostLD)
+
+Section3_supptbl3_third6in1 = Section3_supptbl3_third6in1 %>% 
+  mutate (uptake_20weeks_percent= round (uptake_20weeks_percent, digits = 1)) %>%
+  mutate (Percentagechange2019 = round (Percentagechange2019, digits = 1))
+
+##To add OR columns for comparisons with 2019
+#SIMD 1
+ORSIMD1vs2019column = Third6in1_SIMDinteraction_tbl %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "1 - most deprived") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 2
+ORSIMD2vs2019column = Third6in1_SIMDinteraction_tbl_BL2 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "2") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 3
+ORSIMD3vs2019column = Third6in1_SIMDinteraction_tbl_BL3 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "3") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 4
+ORSIMD4vs2019column = Third6in1_SIMDinteraction_tbl_BL4 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "4") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 5
+ORSIMD5vs2019column = Third6in1_SIMDinteraction_tbl_BL5 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "5 - least deprived") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#Join the oR tbls together
+
+ORallSIMDvs2019column = rbind(ORSIMD1vs2019column, ORSIMD2vs2019column)
+ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD3vs2019column)
+ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD4vs2019column)
+ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD5vs2019column)
+
+Section3_supptbl3_third6in1_final = full_join(Section3_supptbl3_third6in1, ORallSIMDvs2019column) %>% 
+  mutate (OR= round (OR, digits = 1)) %>%
+  mutate (lowerCI = round (lowerCI, digits = 1)) %>% 
+  mutate (upperCI = round (upperCI, digits = 1)) %>% 
+  mutate("Immunisation" = "Third 6in1")
+
+##First MMR
+#FIrst pick the data from full dataset
+
+Section3_supptbl3_firstMMR = Full_SIMD_FirstMMR %>% 
+  select(cohort, deprivation_quintile, children_turn_12months_num, children_rec_imm_13months_num, uptake_13months_percent, absolute_change_from_baseline_percent) %>% 
+  filter(!(cohort %in% c("Mar-20","Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20", "W/B 05-OCT-20", "W/B 12-OCT-20", "W/B 19-OCT-20", "W/B 26-OCT-20", "W/B 02-NOV-20", "W/B 09-NOV-20", "W/B 16-NOV-20", "W/B 23-NOV-20", "W/B 30-NOV-20", "W/B 07-DEC-20"))) %>% 
+  mutate (lockdown.factor = cohort %>% 
+            factor() %>% 
+            fct_recode("Pre_LD_2020"="Jan-20", "Pre_LD_2020"="Feb-20", "Pre_LD_2020"="W/B 02-MAR-20","Pre_LD_2020"="W/B 09-MAR-20", "Pre_LD_2020"="W/B 16-MAR-20", "LD_2020"="W/B 23-MAR-20","LD_2020"="W/B 30-MAR-20","LD_2020"="W/B 06-APR-20","LD_2020"="W/B 13-APR-20","LD_2020"="W/B 20-APR-20","LD_2020"="W/B 27-APR-20","LD_2020"="W/B 04-MAY-20","LD_2020"="W/B 11-MAY-20","LD_2020"="W/B 18-MAY-20","LD_2020"="W/B 25-MAY-20","LD_2020"="W/B 01-JUN-20","LD_2020"="W/B 08-JUN-20","LD_2020"="W/B 15-JUN-20","LD_2020"="W/B 22-JUN-20","LD_2020"="W/B 29-JUN-20","LD_2020"="W/B 06-JUL-20","LD_2020"="W/B 13-JUL-20","LD_2020"="W/B 20-JUL-20","LD_2020"="W/B 27-JUL-20", "Post_LD_2020"="W/B 03-AUG-20","Post_LD_2020"="W/B 10-AUG-20","Post_LD_2020"="W/B 17-AUG-20","Post_LD_2020"="W/B 24-AUG-20","Post_LD_2020"="W/B 31-AUG-20","Post_LD_2020"="W/B 07-SEP-20","Post_LD_2020"="W/B 14-SEP-20","Post_LD_2020"="W/B 21-SEP-20","Post_LD_2020"="W/B 28-SEP-20"))
+#Separate into time periods to summarise data 
+Section3_supptbl3_firstMMR_PreLD = Section3_supptbl3_firstMMR %>% 
+  filter(lockdown.factor == "Pre_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(denominator = sum(children_turn_12months_num), uptake_13months_num = sum(children_rec_imm_13months_num), uptake_13months_percent = mean(uptake_13months_percent), Percentagechange2019 = mean(absolute_change_from_baseline_percent)) %>% 
+  mutate(time_period = "PreLD")
+
+Section3_supptbl3_firstMMR_LD = Section3_supptbl3_firstMMR %>% 
+  filter(lockdown.factor == "LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(denominator = sum(children_turn_12months_num), uptake_13months_num = sum(children_rec_imm_13months_num), uptake_13months_percent = mean(uptake_13months_percent), Percentagechange2019 = mean(absolute_change_from_baseline_percent)) %>% 
+  mutate(time_period = "LD")
+
+Section3_supptbl3_firstMMR_PostLD = Section3_supptbl3_firstMMR %>% 
+  filter(lockdown.factor == "Post_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(denominator = sum(children_turn_12months_num), uptake_13months_num = sum(children_rec_imm_13months_num), uptake_13months_percent = mean(uptake_13months_percent), Percentagechange2019 = mean(absolute_change_from_baseline_percent)) %>% 
+  mutate(time_period = "PostLD")
+#Select out 2019 data from full dataset
+Section3_supptbl3_firstMMR_2019 = Full_SIMD_FirstMMR %>% 
+  filter(cohort=="Jan-20") %>% 
+  select(deprivation_quintile, children_turn_12months_2019_num, children_rec_imm_13months_2019_num, uptake_13months_2019_percent) %>% 
+  mutate(Percentagechange2019 = 0) %>% 
+  mutate(time_period = "2019")
+colnames(Section3_supptbl3_firstMMR_2019) = c("deprivation_quintile", "denominator", "uptake_13months_num", "uptake_13months_percent", "Percentagechange2019", "time_period")
+#Join together and round
+Section3_supptbl3_firstMMR = full_join(Section3_supptbl3_firstMMR_2019, Section3_supptbl3_firstMMR_PreLD)
+Section3_supptbl3_firstMMR = full_join(Section3_supptbl3_firstMMR, Section3_supptbl3_firstMMR_LD)
+Section3_supptbl3_firstMMR = full_join(Section3_supptbl3_firstMMR, Section3_supptbl3_firstMMR_PostLD)
+
+Section3_supptbl3_firstMMR = Section3_supptbl3_firstMMR %>% 
+  mutate (uptake_13months_percent= round (uptake_13months_percent, digits = 1)) %>%
+  mutate (Percentagechange2019 = round (Percentagechange2019, digits = 1))
+
+##To add OR columns for comparisons with 2019
+#SIMD 1
+ORSIMD1vs2019column = FirstMMR_SIMDinteraction_tbl %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "1 - most deprived") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 2
+ORSIMD2vs2019column = FirstMMR_SIMDinteraction_tbl_BL2 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "2") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+
+#SIMD 3
+ORSIMD3vs2019column = FirstMMR_SIMDinteraction_tbl_BL3 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "3") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 4
+ORSIMD4vs2019column = FirstMMR_SIMDinteraction_tbl_BL4 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "4") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 5
+ORSIMD5vs2019column = FirstMMR_SIMDinteraction_tbl_BL5 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "5 - least deprived") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#Join the oR tbls together
+
+ORallSIMDvs2019column = rbind(ORSIMD1vs2019column, ORSIMD2vs2019column)
+ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD3vs2019column)
+ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD4vs2019column)
+ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD5vs2019column)
+
+Section3_supptbl3_firstMMR_final = full_join(Section3_supptbl3_firstMMR, ORallSIMDvs2019column) %>% 
+  mutate (OR= round (OR, digits = 1)) %>%
+  mutate (lowerCI = round (lowerCI, digits = 1)) %>% 
+  mutate (upperCI = round (upperCI, digits = 1)) %>% 
+  mutate("Immunisation" = "First MMR")
+
+##Second MMR
+#FIrst pick the data from full dataset
+
+Section3_supptbl3_secondMMR = Full_SIMD_SecondMMR %>% 
+  select(cohort, deprivation_quintile, children_turn_3y4months_num, children_rec_imm_3y5months_num, uptake_3y5months_percent, absolute_change_from_baseline_percent) %>% 
+  filter(!(cohort %in% c("Mar-20","Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20", "W/B 05-OCT-20", "W/B 12-OCT-20", "W/B 19-OCT-20", "W/B 26-OCT-20", "W/B 02-NOV-20", "W/B 09-NOV-20", "W/B 16-NOV-20", "W/B 23-NOV-20", "W/B 30-NOV-20", "W/B 07-DEC-20"))) %>% 
+  mutate (lockdown.factor = cohort %>% 
+            factor() %>% 
+            fct_recode("Pre_LD_2020"="Jan-20", "Pre_LD_2020"="Feb-20", "Pre_LD_2020"="W/B 02-MAR-20","Pre_LD_2020"="W/B 09-MAR-20", "Pre_LD_2020"="W/B 16-MAR-20", "LD_2020"="W/B 23-MAR-20","LD_2020"="W/B 30-MAR-20","LD_2020"="W/B 06-APR-20","LD_2020"="W/B 13-APR-20","LD_2020"="W/B 20-APR-20","LD_2020"="W/B 27-APR-20","LD_2020"="W/B 04-MAY-20","LD_2020"="W/B 11-MAY-20","LD_2020"="W/B 18-MAY-20","LD_2020"="W/B 25-MAY-20","LD_2020"="W/B 01-JUN-20","LD_2020"="W/B 08-JUN-20","LD_2020"="W/B 15-JUN-20","LD_2020"="W/B 22-JUN-20","LD_2020"="W/B 29-JUN-20","LD_2020"="W/B 06-JUL-20","LD_2020"="W/B 13-JUL-20","LD_2020"="W/B 20-JUL-20","LD_2020"="W/B 27-JUL-20", "Post_LD_2020"="W/B 03-AUG-20","Post_LD_2020"="W/B 10-AUG-20","Post_LD_2020"="W/B 17-AUG-20","Post_LD_2020"="W/B 24-AUG-20","Post_LD_2020"="W/B 31-AUG-20","Post_LD_2020"="W/B 07-SEP-20","Post_LD_2020"="W/B 14-SEP-20","Post_LD_2020"="W/B 21-SEP-20","Post_LD_2020"="W/B 28-SEP-20"))
+#Separate into time periods to summarise data 
+Section3_supptbl3_secondMMR_PreLD = Section3_supptbl3_secondMMR %>% 
+  filter(lockdown.factor == "Pre_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(denominator = sum(children_turn_3y4months_num), uptake_3y5months_num = sum(children_rec_imm_3y5months_num), uptake_3y5months_percent = mean(uptake_3y5months_percent), Percentagechange2019 = mean(absolute_change_from_baseline_percent)) %>% 
+  mutate(time_period = "PreLD")
+
+Section3_supptbl3_secondMMR_LD = Section3_supptbl3_secondMMR %>% 
+  filter(lockdown.factor == "LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(denominator = sum(children_turn_3y4months_num), uptake_3y5months_num = sum(children_rec_imm_3y5months_num), uptake_3y5months_percent = mean(uptake_3y5months_percent), Percentagechange2019 = mean(absolute_change_from_baseline_percent)) %>% 
+  mutate(time_period = "LD")
+
+Section3_supptbl3_secondMMR_PostLD = Section3_supptbl3_secondMMR %>% 
+  filter(lockdown.factor == "Post_LD_2020") %>% 
+  group_by(deprivation_quintile) %>% 
+  summarise(denominator = sum(children_turn_3y4months_num), uptake_3y5months_num = sum(children_rec_imm_3y5months_num), uptake_3y5months_percent = mean(uptake_3y5months_percent), Percentagechange2019 = mean(absolute_change_from_baseline_percent)) %>% 
+  mutate(time_period = "PostLD")
+#Select out 2019 data from full dataset
+Section3_supptbl3_secondMMR_2019 = Full_SIMD_SecondMMR %>% 
+  filter(cohort=="Jan-20") %>% 
+  select(deprivation_quintile, children_turn_3y4months_2019_num, children_rec_imm_3y5months_2019_num, uptake_3y5months_2019_percent) %>% 
+  mutate(Percentagechange2019 = 0) %>% 
+  mutate(time_period = "2019")
+colnames(Section3_supptbl3_secondMMR_2019) = c("deprivation_quintile", "denominator", "uptake_3y5months_num", "uptake_3y5months_percent", "Percentagechange2019", "time_period")
+#Join together and round
+Section3_supptbl3_secondMMR = full_join(Section3_supptbl3_secondMMR_2019, Section3_supptbl3_secondMMR_PreLD)
+Section3_supptbl3_secondMMR = full_join(Section3_supptbl3_secondMMR, Section3_supptbl3_secondMMR_LD)
+Section3_supptbl3_secondMMR = full_join(Section3_supptbl3_secondMMR, Section3_supptbl3_secondMMR_PostLD)
+
+Section3_supptbl3_secondMMR = Section3_supptbl3_secondMMR %>% 
+  mutate (uptake_3y5months_percent= round (uptake_3y5months_percent, digits = 1)) %>%
+  mutate (Percentagechange2019 = round (Percentagechange2019, digits = 1))
+
+##To add OR columns for comparisons with 2019
+#SIMD 1
+ORSIMD1vs2019column = SecondMMR_SIMDinteraction_tbl %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "1 - most deprived") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 2
+ORSIMD2vs2019column = SecondMMR_SIMDinteraction_tbl_BL2 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "2") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+
+#SIMD 3
+ORSIMD3vs2019column = FirstMMR_SIMDinteraction_tbl_BL3 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "3") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 4
+ORSIMD4vs2019column = SecondMMR_SIMDinteraction_tbl_BL4 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "4") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#SIMD 5
+ORSIMD5vs2019column = SecondMMR_SIMDinteraction_tbl_BL5 %>% 
+  filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
+  select(term, OR, lowerCI, upperCI) %>% 
+  mutate(deprivation_quintile = "5 - least deprived") %>% 
+  mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+
+#Join the oR tbls together
+
+ORallSIMDvs2019column = rbind(ORSIMD1vs2019column, ORSIMD2vs2019column)
+ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD3vs2019column)
+ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD4vs2019column)
+ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD5vs2019column)
+
+Section3_supptbl3_secondMMR_final = full_join(Section3_supptbl3_secondMMR, ORallSIMDvs2019column) %>% 
+  mutate (OR= round (OR, digits = 1)) %>%
+  mutate (lowerCI = round (lowerCI, digits = 1)) %>% 
+  mutate (upperCI = round (upperCI, digits = 1)) %>% 
+  mutate("Immunisation" = "Second MMR")
+
+##########
+##Join tables together for giant table
+colnames(Section3_supptbl3_first6in1_final) = c("Deprivation quintile", "number eligable", "number received within 4 weeks", "% received within 4 weeks", "Absolute % change from 2019", "time period", "OR", "lowerCI", "upperCI", "Immunisation")
+colnames(Section3_supptbl3_second6in1_final) = c("Deprivation quintile", "number eligable", "number received within 4 weeks", "% received within 4 weeks", "Absolute % change from 2019", "time period", "OR", "lowerCI", "upperCI", "Immunisation")
+colnames(Section3_supptbl3_third6in1_final) = c("Deprivation quintile", "number eligable", "number received within 4 weeks", "% received within 4 weeks", "Absolute % change from 2019", "time period", "OR", "lowerCI", "upperCI", "Immunisation")
+colnames(Section3_supptbl3_firstMMR_final) = c("Deprivation quintile", "number eligable", "number received within 4 weeks", "% received within 4 weeks", "Absolute % change from 2019", "time period", "OR", "lowerCI", "upperCI", "Immunisation")
+colnames(Section3_supptbl3_secondMMR_final) = c("Deprivation quintile", "number eligable", "number received within 4 weeks", "% received within 4 weeks", "Absolute % change from 2019", "time period", "OR", "lowerCI", "upperCI", "Immunisation")
+
+Section3_supptbl3_allvaccine= rbind(Section3_supptbl3_first6in1_final, Section3_supptbl3_second6in1_final, Section3_supptbl3_third6in1_final, Section3_supptbl3_firstMMR_final, Section3_supptbl3_secondMMR_final)
+
+Section3_supptbl3_allvaccine = Section3_supptbl3_allvaccine[,c(10,1,6,2,3,4,5,7,8,9)]
