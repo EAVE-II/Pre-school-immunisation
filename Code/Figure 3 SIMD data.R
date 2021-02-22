@@ -1568,6 +1568,7 @@ model_SIMD_FirstMMR<- glm(FirstMMR_interaction_tbl ~ tp*SIMD,
 summary(model_SIMD_FirstMMR) ##cf 2019, change for SIMD1 was sig increase pre, post and during LD
 exp(model_SIMD_FirstMMR$coefficients)
 exp(confint(model_SIMD_FirstMMR))
+exp(0.346090)
 
 library(broom)
 FirstMMR_SIMDinteraction_tbl = model_SIMD_FirstMMR%>% 
@@ -2656,6 +2657,7 @@ colnames(Section3_supptbl3_secondMMR_final) = c("Deprivation quintile", "number 
 Section3_supptbl3_allvaccine= rbind(Section3_supptbl3_first6in1_final, Section3_supptbl3_second6in1_final, Section3_supptbl3_third6in1_final, Section3_supptbl3_firstMMR_final, Section3_supptbl3_secondMMR_final)
 
 Section3_supptbl3_allvaccine = Section3_supptbl3_allvaccine[,c(10,1,6,2,3,4,5,7,8,9)]
+write.csv(Section3_supptbl3_allvaccine, file = "Exported tables/Section3_supptbl3_allvaccine.csv")
 
 ###Experimental graphs- scatter of %change from 2019 by LD for section 3 supp
 
@@ -2666,7 +2668,9 @@ Experimental_scatter_LD = Section3_supptbl3_allvaccine %>%
   geom_point(size = 4, shape = 18)+
   scale_y_continuous(breaks = seq(0,20,2))+
   scale_color_brewer(palette="Set2")+
-  labs(x = NULL, y = "Absolute % change from 2019", title = "LD")
+  labs(x = NULL, y = "Absolute % change from 2019", title = "LD")+
+  annotate("text", x= "Second 6in1", y = 14, label = "All comparisons with 2019 reach statistical significance
+           except First dose 6in1 for SIMD 4 &5, see table S3", size = 3) 
   Experimental_scatter_LD
   
   Experimental_scatter_preLD = Section3_supptbl3_allvaccine %>% 
@@ -2679,7 +2683,10 @@ Experimental_scatter_LD = Section3_supptbl3_allvaccine %>%
     geom_hline(yintercept = 0, linetype="dashed", color = "#66c2a5", size=0.75)+
     labs(x = NULL,
          y = "Absolute % change from 2019",
-         title = "Pre LD")
+         title = "Pre LD")+
+    annotate("text", x= "Second 6in1", y = 3, label = "Comparison with 2019 for all doses 6in1 are ns, 
+           changes for MMR reach satistical significance 
+             (except First MMR SIMD 2,4 and second MMR SIMD 4), see table S3", size = 3)
 Experimental_scatter_preLD
 
 Experimental_scatter_postLD = Section3_supptbl3_allvaccine %>% 
@@ -2692,14 +2699,12 @@ Experimental_scatter_postLD = Section3_supptbl3_allvaccine %>%
   labs(x = NULL,
        y = "Absolute % change from 2019",
        title = "Post LD")+
-  geom_hline(yintercept = 0, linetype="dashed", color = "#66c2a5", size=0.75)
+  geom_hline(yintercept = 0, linetype="dashed", color = "#66c2a5", size=0.75)+
+  annotate("text", x= "Second 6in1", y = 11, label = "All comparisons with 2019 reach statistical significance
+           except first dose 6in1 for SIMD 2, 3, 4 & 5 
+           and second dose 6in1 for SIMD 4, see table S3", size = 3)
 Experimental_scatter_postLD
 
-Changefrom2019_SIMD_allvaccines = ggarrange(Experimental_scatter_preLD, Experimental_scatter_LD, Experimental_scatter_postLD,
-                                  labels = NULL,
-                                  common.legend = TRUE, legend="bottom right",
-                                  ncol = 2, nrow = 2)  
-Changefrom2019_SIMD_allvaccines
 
 #Sig checks
 Experimental_scatter_preLD_sig = Section3_supptbl3_allvaccine %>% 
@@ -2708,5 +2713,169 @@ Experimental_scatter_LD_sig = Section3_supptbl3_allvaccine %>%
   filter(`time period`== "LD") ###All sig except first 6in1 SIMD 4 and 5
 Experimental_scatter_postLD_sig = Section3_supptbl3_allvaccine %>% 
   filter(`time period`== "PostLD")##First6in1 2 4 and 5 ns, others are sig
+##Bar charts
+Experimental_bar_LD = Section3_supptbl3_allvaccine %>% 
+  filter(`time period`== "LD") %>% 
+  mutate(Immunisation = factor(Immunisation, levels=c("First 6in1", "Second 6in1", "Third 6in1", "First MMR", "Second MMR"))) %>%
+  ggplot(aes(x= `Immunisation`, y= `Absolute % change from 2019`, fill = `Deprivation quintile`))+
+  geom_bar(position="dodge", stat="identity")+
+  scale_y_continuous(breaks = seq(0,20,2))+
+  scale_fill_brewer(palette="GnBu")+
+  labs(x = NULL, y = "Absolute % change from 2019", title = "LD")+
+  annotate("text", x= "Second 6in1", y = 14, label = "All comparisons with 2019 reach statistical significance
+           except First dose 6in1 for SIMD 4 &5, see table", size = 3) 
+Experimental_bar_LD
 
+Experimental_bar_preLD = Section3_supptbl3_allvaccine %>% 
+  filter(`time period`== "PreLD") %>% 
+  mutate(Immunisation = factor(Immunisation, levels=c("First 6in1", "Second 6in1", "Third 6in1", "First MMR", "Second MMR"))) %>%
+  ggplot(aes(x= `Immunisation`, y= `Absolute % change from 2019`, fill = `Deprivation quintile`))+
+  geom_bar(position="dodge", stat="identity")+
+  scale_y_continuous(breaks = seq(-2,5,1))+
+  scale_fill_brewer(palette="GnBu")+
+  geom_hline(yintercept = 0, linetype="dashed", color = "#66c2a5", size=0.75)+
+  labs(x = NULL,
+       y = "Absolute % change from 2019",
+       title = "Pre LD")+
+  annotate("text", x= "Second 6in1", y = 3, label = "Comparison with 2019 for all doses 6in1 are ns, 
+           changes for MMR reach satistical significance, see table", size = 3) 
+Experimental_bar_preLD
 
+Experimental_bar_postLD = Section3_supptbl3_allvaccine %>% 
+  filter(`time period`== "PostLD") %>% 
+  mutate(Immunisation = factor(Immunisation, levels=c("First 6in1", "Second 6in1", "Third 6in1", "First MMR", "Second MMR"))) %>%
+  ggplot(aes(x= `Immunisation`, y= `Absolute % change from 2019`, fill = `Deprivation quintile`))+
+  geom_bar(position="dodge", stat="identity")+
+  scale_y_continuous(breaks = seq(-2,20,2))+
+  scale_fill_brewer(palette="GnBu")+
+  labs(x = NULL,
+       y = "Absolute % change from 2019",
+       title = "Post LD")+
+  geom_hline(yintercept = 0, linetype="dashed", color = "#66c2a5", size=0.75)+
+  annotate("text", x= "Second 6in1", y = 11, label = "All comparisons with 2019 reach statistical significance
+           except First dose 6in1 for SIMD 2, 4 & 5, see table", size = 3) 
+Experimental_bar_postLD
+#Export as pdf
+Changefrom2019_SIMD_allvaccines = ggarrange(Experimental_bar_preLD, Experimental_bar_LD, Experimental_bar_postLD,
+                                            labels = NULL,
+                                            common.legend = TRUE, legend="bottom",
+                                            ncol = 2, nrow = 2)  
+Changefrom2019_SIMD_allvaccines
+
+Changefrom2019_SIMD_allvaccines_scatter = ggarrange(Experimental_scatter_preLD, Experimental_scatter_LD, Experimental_scatter_postLD,
+                                            labels = NULL,
+                                            common.legend = TRUE, legend="bottom",
+                                            ncol = 2, nrow = 2)  
+Changefrom2019_SIMD_allvaccines_scatter
+
+###Plot lines just between 2019 and LD by SIMD
+#First6in1
+First6in1_groupedSIMD_2019_line = SIMD_First6in1_grouped %>%
+  filter(lockdown.factor== "2019")
+First6in1_groupedSIMD_LD_line = SIMD_First6in1_grouped %>%
+  filter(lockdown.factor== "LD")
+First6in1_groupedSIMD_2019LD_line = rbind(First6in1_groupedSIMD_2019_line, First6in1_groupedSIMD_LD_line)
+
+First6in1_groupedSIMD_2019LD_lineplot = First6in1_groupedSIMD_2019LD_line %>% 
+  ggplot(aes(x=lockdown.factor, y=mean_percent, group=deprivation_quintile, color=deprivation_quintile)) +
+  geom_line()+
+  theme_classic()+
+  labs(x = NULL,
+       y = "% vaccinated (4 weeks)",
+       title = "First dose 6in1 2019 to LD")+
+  expand_limits(y=85:100)+
+  scale_y_continuous(breaks = c(85,90,95,100))+
+  scale_color_brewer(palette="Set2", name = "Deprivation quintile")
+First6in1_groupedSIMD_2019LD_lineplot
+
+#Third6in1
+
+Third6in1_groupedSIMD_2019_line = SIMD_Third6in1_grouped %>%
+  filter(lockdown.factor== "2019")
+Third6in1_groupedSIMD_LD_line = SIMD_Third6in1_grouped %>%
+  filter(lockdown.factor== "LD")
+Third6in1_groupedSIMD_2019LD_line = rbind(Third6in1_groupedSIMD_2019_line, Third6in1_groupedSIMD_LD_line)
+
+Third6in1_groupedSIMD_2019LD_lineplot = Third6in1_groupedSIMD_2019LD_line %>% 
+  ggplot(aes(x=lockdown.factor, y=mean_percent, group=deprivation_quintile, color=deprivation_quintile)) +
+  geom_line()+
+  theme_classic()+
+  labs(x = NULL,
+       y = "% vaccinated (4 weeks)",
+       title = "Third dose 6in1 2019 to LD")+
+  expand_limits(y=65:100)+
+  scale_y_continuous(breaks = c(65,70,75,80,85,90,95,100))+
+  scale_color_brewer(palette="Set2", name = "Deprivation quintile")
+Third6in1_groupedSIMD_2019LD_lineplot
+
+#First MMR
+FirstMMR_groupedSIMD_2019_line = SIMD_FirstMMR_grouped %>%
+  filter(lockdown.factor== "2019")
+FirstMMR_groupedSIMD_LD_line = SIMD_FirstMMR_grouped %>%
+  filter(lockdown.factor== "LD")
+FirstMMR_groupedSIMD_2019LD_line = rbind(FirstMMR_groupedSIMD_2019_line, FirstMMR_groupedSIMD_LD_line)
+
+FirstMMR_groupedSIMD_2019LD_lineplot = FirstMMR_groupedSIMD_2019LD_line %>% 
+  ggplot(aes(x=lockdown.factor, y=mean_percent, group=deprivation_quintile, color=deprivation_quintile)) +
+  geom_line()+
+  theme_classic()+
+  labs(x = NULL,
+       y = "% vaccinated (4 weeks)",
+       title = "FirstMMR 2019 to LD")+
+  expand_limits(y=60:100)+
+  scale_y_continuous(breaks = c(60,65,70,75,80,85,90,95,100))+
+  scale_color_brewer(palette="Set2", name = "Deprivation quintile")
+FirstMMR_groupedSIMD_2019LD_lineplot
+
+###Try to make table S4 interaction table, first arrange tables for each vaccine
+
+FigS4_First6in1_SIMDinteractiontbl = First6in1_SIMDinteraction_tbl %>% 
+  slice(8:19) %>% 
+  mutate(Immunisation = "First 6in1") %>% 
+  select(term, OR, p.value, lowerCI, upperCI, Immunisation) %>% 
+  mutate (OR= round (OR, digits = 2)) %>% 
+  mutate (p.value= round (p.value, digits = 2)) %>% 
+  mutate (lowerCI= round (lowerCI, digits = 2)) %>% 
+  mutate (upperCI= round (upperCI, digits = 2)) 
+
+FigS4_Second6in1_SIMDinteractiontbl = Second6in1_SIMDinteraction_tbl %>% 
+  slice(8:19) %>% 
+  mutate(Immunisation = "Second 6in1") %>% 
+  select(term, OR, p.value, lowerCI, upperCI, Immunisation) %>% 
+  mutate (OR= round (OR, digits = 2)) %>% 
+  mutate (p.value= round (p.value, digits = 2)) %>% 
+  mutate (lowerCI= round (lowerCI, digits = 2)) %>% 
+  mutate (upperCI= round (upperCI, digits = 2)) 
+
+FigS4_Third6in1_SIMDinteractiontbl = Third6in1_SIMDinteraction_tbl %>% 
+  slice(8:19) %>% 
+  mutate(Immunisation = "Third 6in1") %>% 
+  select(term, OR, p.value, lowerCI, upperCI, Immunisation) %>% 
+  mutate (OR= round (OR, digits = 2)) %>% 
+  mutate (p.value= round (p.value, digits = 2)) %>% 
+  mutate (lowerCI= round (lowerCI, digits = 2)) %>% 
+  mutate (upperCI= round (upperCI, digits = 2)) 
+
+FigS4_FirstMMR_SIMDinteractiontbl = FirstMMR_SIMDinteraction_tbl %>% 
+  slice(8:19) %>% 
+  mutate(Immunisation = "First MMR") %>% 
+  select(term, OR, p.value, lowerCI, upperCI, Immunisation) %>% 
+  mutate (OR= round (OR, digits = 2)) %>% 
+  mutate (p.value= round (p.value, digits = 2)) %>% 
+  mutate (lowerCI= round (lowerCI, digits = 2)) %>% 
+  mutate (upperCI= round (upperCI, digits = 2)) 
+
+FigS4_SecondMMR_SIMDinteractiontbl = SecondMMR_SIMDinteraction_tbl %>% 
+  slice(8:19) %>% 
+  mutate(Immunisation = "Second MMR") %>% 
+  select(term, OR, p.value, lowerCI, upperCI, Immunisation) %>% 
+  mutate (OR= round (OR, digits = 2)) %>% 
+  mutate (p.value= round (p.value, digits = 2)) %>% 
+  mutate (lowerCI= round (lowerCI, digits = 2)) %>% 
+  mutate (upperCI= round (upperCI, digits = 2)) 
+#and join
+
+FigS4_allvaccines_SIMDinteractiontbl = rbind(FigS4_First6in1_SIMDinteractiontbl, FigS4_Second6in1_SIMDinteractiontbl, FigS4_Third6in1_SIMDinteractiontbl, FigS4_FirstMMR_SIMDinteractiontbl, FigS4_SecondMMR_SIMDinteractiontbl)
+FigS4_allvaccines_SIMDinteractiontbl = FigS4_allvaccines_SIMDinteractiontbl[,c(6,1,2,3,4,5)]
+
+write_csv(FigS4_allvaccines_SIMDinteractiontbl, file = "Exported tables/FigS4_allvaccines_SIMDinteractiontbl.csv")
