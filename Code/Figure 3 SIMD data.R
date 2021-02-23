@@ -99,6 +99,7 @@ First6in1_groupedSIMD_line = SIMD_First6in1_grouped %>%
   ggplot(aes(x=lockdown.factor, y=mean_percent, group=deprivation_quintile, color=deprivation_quintile)) +
   geom_line()+
   theme_classic()+
+  theme(legend.position = "none")+
   labs(x = NULL,
        y = "% vaccinated (4 weeks)",
        title = "First dose 6in1")+
@@ -342,9 +343,10 @@ MergeLD2019ORandCI_first6in1_SIMD_forest = MergeLD2019ORandCI_first6in1_SIMD_for
   geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
   geom_point(size = 3.5) +
   theme_bw()+
-  labs(x = "First6in1 OR compared to most deprived",
+  labs(x = "OR compared to SIMD 1",
        y = NULL,
        title = NULL)+
+  annotate("text", x= 2.0, y = "3-2019", label = "First 6in1", size = 5)+ 
   theme(legend.position="none")
 
 MergeLD2019ORandCI_first6in1_SIMD_forest
@@ -545,6 +547,7 @@ Second6in1_groupedSIMD_line = SIMD_Second6in1_grouped %>%
   ggplot(aes(x=lockdown.factor, y=mean_percent, group=deprivation_quintile, color=deprivation_quintile)) +
   geom_line()+
   theme_classic()+
+  theme(legend.position = "none")+
   labs(x = NULL,
        y = "% vaccinated (4 weeks)",
        title = "Second dose 6in1")+
@@ -723,9 +726,10 @@ MergeLD2019ORandCI_second6in1_SIMD_forest = MergeLD2019ORandCI_second6in1_SIMD_f
   geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
   geom_point(size = 3.5) +
   theme_bw()+
-  labs(x = "Second6in1 OR compared to most deprived",
+  labs(x = "OR compared to SIMD 1",
        y = NULL,
        title = NULL)+
+  annotate("text", x= 2.0, y = "3-2019", label = "Second 6in1", size = 5)+
   theme(legend.position="none")
 
 MergeLD2019ORandCI_second6in1_SIMD_forest
@@ -951,6 +955,7 @@ Third6in1_groupedSIMD_line = SIMD_Third6in1_grouped %>%
   ggplot(aes(x=lockdown.factor, y=mean_percent, group=deprivation_quintile, color=deprivation_quintile)) +
   geom_line()+
   theme_classic()+
+  theme(legend.position = "none")+
   labs(x = NULL,
        y = "% vaccinated (4 weeks)",
        title = "Third dose 6in1")+
@@ -1129,9 +1134,10 @@ MergeLD2019ORandCI_Third6in1_SIMD_forest = MergeLD2019ORandCI_Third6in1_SIMD_for
   geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
   geom_point(size = 3.5) +
   theme_bw()+
-  labs(x = "Third6in1 OR compared to most deprived",
+  labs(x = "OR compared to SIMD 1",
        y = NULL,
        title = NULL)+
+  annotate("text", x= 2.0, y = "3-2019", label = "Third 6in1", size = 5)+
   theme(legend.position="none")
 
 MergeLD2019ORandCI_Third6in1_SIMD_forest
@@ -1536,9 +1542,10 @@ MergeLD2019ORandCI_FirstMMR_SIMD_forest = MergeLD2019ORandCI_FirstMMR_SIMD_fores
   geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
   geom_point(size = 3.5) +
   theme_bw()+
-  labs(x = "FirstMMR OR compared to most deprived",
+  labs(x = "OR compared to SIMD 1",
        y = NULL,
        title = NULL)+
+  annotate("text", x= 2.0, y = "3-2019", label = "First MMR", size = 5)+
   theme(legend.position="none")
 
 MergeLD2019ORandCI_FirstMMR_SIMD_forest
@@ -1946,9 +1953,10 @@ MergeLD2019ORandCI_SecondMMR_SIMD_forest = MergeLD2019ORandCI_SecondMMR_SIMD_for
   geom_errorbarh(aes(xmax = boxCIHigh, xmin = boxCILow), size = .5, height = .2, color = "gray50") +
   geom_point(size = 3.5) +
   theme_bw()+
-  labs(x = "SecondMMR OR compared to most deprived",
+  labs(x = "OR compared to SIMD 1",
        y = NULL,
        title = NULL)+
+  annotate("text", x= 2.0, y = "3-2019", label = "Second MMR", size = 5)+
   theme(legend.position="none")
 
 MergeLD2019ORandCI_SecondMMR_SIMD_forest
@@ -1978,6 +1986,8 @@ model_SIMD_SecondMMR<- glm(SecondMMR_interaction_tbl ~ tp*SIMD,
 summary(model_SIMD_SecondMMR) ##cf 2019, change for SIMD1 was sig increase pre, post and during LD
 exp(model_SIMD_SecondMMR$coefficients)
 exp(confint(model_SIMD_SecondMMR))
+
+
 
 library(broom)
 SecondMMR_SIMDinteraction_tbl = model_SIMD_SecondMMR%>% 
@@ -2108,7 +2118,7 @@ theme_set(theme_pubr())
 #Grouped bar charts
 
 Grouped_bar_6in1_SMID_all_periods = ggarrange(First6in1_SIMD_grouped, Second6in1_SIMD_grouped, Third6in1_SIMD_grouped, 
-                                                      common.legend = TRUE, legend="bottom",
+                                                      legend = NULL,
                                                       labels = NULL,
                                                       ncol = 2, nrow = 2)
 Grouped_bar_6in1_SMID_all_periods
@@ -2122,24 +2132,43 @@ Grouped_bar_MMR_SMID_all_periods
 
 #Grouped line plots
 Grouped_line_6in1_SMID_all_periods = ggarrange(First6in1_groupedSIMD_line, Second6in1_groupedSIMD_line, Third6in1_groupedSIMD_line, 
-                                              common.legend = TRUE, legend="bottom",
-                                              labels = NULL,
+                                              legend = NULL,
+                                              labels = "A",
                                               ncol = 1, nrow = 3)
 Grouped_line_6in1_SMID_all_periods
 
 
 Grouped_line_MMR_SMID_all_periods = ggarrange(FirstMMR_groupedSIMD_line, SecondMMR_groupedSIMD_line, 
                                              common.legend = TRUE, legend="bottom",
-                                             labels = NULL,
+                                             labels = "B",
                                              ncol = 1, nrow = 2)
 Grouped_line_MMR_SMID_all_periods
 
+Grouped_line_allvaccines_SIMD_allperiods = ggarrange(Grouped_line_6in1_SMID_all_periods,Grouped_line_MMR_SMID_all_periods,
+                                                   legend=NULL,
+                                                    labels = NULL,
+                                                    ncol = 2, nrow = 1)
+Grouped_line_allvaccines_SIMD_allperiods
+
 #Comparison of OR btw LD and 2019
-OR2019vsLD_6in1_SMID_all_periods = ggarrange(MergeLD2019ORandCI_first6in1_SIMD_forest, MergeLD2019ORandCI_second6in1_SIMD_forest, MergeLD2019ORandCI_Third6in1_SIMD_forest, MergeLD2019ORandCI_FirstMMR_SIMD_forest, MergeLD2019ORandCI_SecondMMR_SIMD_forest,
+OR2019vsLD_6in1_SMID_all_periods = ggarrange(MergeLD2019ORandCI_first6in1_SIMD_forest, MergeLD2019ORandCI_second6in1_SIMD_forest, MergeLD2019ORandCI_Third6in1_SIMD_forest, 
                                                legend=NULL,
                                                labels = NULL,
-                                               ncol = 2, nrow = 3)
+                                               ncol = 1, nrow = 3)
 OR2019vsLD_6in1_SMID_all_periods
+
+OR2019vsLD_MMR_SMID_all_periods = ggarrange(MergeLD2019ORandCI_FirstMMR_SIMD_forest, MergeLD2019ORandCI_SecondMMR_SIMD_forest,
+                                            legend=NULL,
+                                            labels = NULL,
+                                            ncol = 1, nrow = 3)
+OR2019vsLD_MMR_SMID_all_periods
+
+OR2019vsLD_allvaccines_SMID_all_periods= ggarrange(OR2019vsLD_6in1_SMID_all_periods, OR2019vsLD_MMR_SMID_all_periods,
+                                                legend=NULL,
+                                                labels = c("A", "B"),
+                                                ncol = 2, nrow = 1)
+OR2019vsLD_allvaccines_SMID_all_periods
+
 
 #percentage change plots
 
@@ -2669,8 +2698,7 @@ Experimental_scatter_LD = Section3_supptbl3_allvaccine %>%
   scale_y_continuous(breaks = seq(0,20,2))+
   scale_color_brewer(palette="Set2")+
   labs(x = NULL, y = "Absolute % change from 2019", title = "LD")+
-  annotate("text", x= "Second 6in1", y = 14, label = "All comparisons with 2019 reach statistical significance
-           except First dose 6in1 for SIMD 4 &5, see table S3", size = 3) 
+  annotate("text", x= "Second 6in1", y = 14, label = "All change stat. sig. except First6in1 SIMD4/5", size = 3.5) 
   Experimental_scatter_LD
   
   Experimental_scatter_preLD = Section3_supptbl3_allvaccine %>% 
@@ -2684,9 +2712,9 @@ Experimental_scatter_LD = Section3_supptbl3_allvaccine %>%
     labs(x = NULL,
          y = "Absolute % change from 2019",
          title = "Pre LD")+
-    annotate("text", x= "Second 6in1", y = 3, label = "Comparison with 2019 for all doses 6in1 are ns, 
-           changes for MMR reach satistical significance 
-             (except First MMR SIMD 2,4 and second MMR SIMD 4), see table S3", size = 3)
+    annotate("text", x= "Second 6in1", y = 3, label = "All changes for 6in1 are ns, 
+    changes for MMR reach stat.sig. 
+    (see table S3 for details)", size = 3.5)
 Experimental_scatter_preLD
 
 Experimental_scatter_postLD = Section3_supptbl3_allvaccine %>% 
@@ -2700,9 +2728,10 @@ Experimental_scatter_postLD = Section3_supptbl3_allvaccine %>%
        y = "Absolute % change from 2019",
        title = "Post LD")+
   geom_hline(yintercept = 0, linetype="dashed", color = "#66c2a5", size=0.75)+
-  annotate("text", x= "Second 6in1", y = 11, label = "All comparisons with 2019 reach statistical significance
+  annotate("text", x= "Second 6in1", y = 11, label = "All changes stat. sig.
            except first dose 6in1 for SIMD 2, 3, 4 & 5 
-           and second dose 6in1 for SIMD 4, see table S3", size = 3)
+           and second dose 6in1 for SIMD 4 
+           (see table S3 for details)", size = 3.5)
 Experimental_scatter_postLD
 
 
@@ -2722,8 +2751,7 @@ Experimental_bar_LD = Section3_supptbl3_allvaccine %>%
   scale_y_continuous(breaks = seq(0,20,2))+
   scale_fill_brewer(palette="GnBu")+
   labs(x = NULL, y = "Absolute % change from 2019", title = "LD")+
-  annotate("text", x= "Second 6in1", y = 14, label = "All comparisons with 2019 reach statistical significance
-           except First dose 6in1 for SIMD 4 &5, see table", size = 3) 
+  annotate("text", x= "Second 6in1", y = 14, label = "All change stat. sig. except First6in1 SIMD4/5", size = 3) 
 Experimental_bar_LD
 
 Experimental_bar_preLD = Section3_supptbl3_allvaccine %>% 
@@ -2737,8 +2765,9 @@ Experimental_bar_preLD = Section3_supptbl3_allvaccine %>%
   labs(x = NULL,
        y = "Absolute % change from 2019",
        title = "Pre LD")+
-  annotate("text", x= "Second 6in1", y = 3, label = "Comparison with 2019 for all doses 6in1 are ns, 
-           changes for MMR reach satistical significance, see table", size = 3) 
+  annotate("text", x= "Second 6in1", y = 3, label = "All changes for 6in1 are ns, 
+    changes for MMR reach stat.sig. 
+    (see table S3 for details)", size = 3) 
 Experimental_bar_preLD
 
 Experimental_bar_postLD = Section3_supptbl3_allvaccine %>% 
@@ -2752,18 +2781,20 @@ Experimental_bar_postLD = Section3_supptbl3_allvaccine %>%
        y = "Absolute % change from 2019",
        title = "Post LD")+
   geom_hline(yintercept = 0, linetype="dashed", color = "#66c2a5", size=0.75)+
-  annotate("text", x= "Second 6in1", y = 11, label = "All comparisons with 2019 reach statistical significance
-           except First dose 6in1 for SIMD 2, 4 & 5, see table", size = 3) 
+  annotate("text", x= "Second 6in1", y = 11, label = "All changes stat. sig.
+           except first dose 6in1 for SIMD 2, 3, 4 & 5 
+           and second dose 6in1 for SIMD 4 
+           (see table S3 for details)", size = 3) 
 Experimental_bar_postLD
 #Export as pdf
-Changefrom2019_SIMD_allvaccines = ggarrange(Experimental_bar_preLD, Experimental_bar_LD, Experimental_bar_postLD,
-                                            labels = NULL,
+Changefrom2019_SIMD_allvaccines_bar = ggarrange(Experimental_bar_preLD, Experimental_bar_LD, Experimental_bar_postLD,
+                                            labels = c("A", "B", "C"),
                                             common.legend = TRUE, legend="bottom",
                                             ncol = 2, nrow = 2)  
-Changefrom2019_SIMD_allvaccines
+Changefrom2019_SIMD_allvaccines_bar
 
 Changefrom2019_SIMD_allvaccines_scatter = ggarrange(Experimental_scatter_preLD, Experimental_scatter_LD, Experimental_scatter_postLD,
-                                            labels = NULL,
+                                            labels = c("A", "B", "C"),
                                             common.legend = TRUE, legend="bottom",
                                             ncol = 2, nrow = 2)  
 Changefrom2019_SIMD_allvaccines_scatter

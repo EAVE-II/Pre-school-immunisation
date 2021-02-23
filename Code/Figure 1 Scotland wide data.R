@@ -11,6 +11,7 @@ library(finalfit)
 library(dplyr)
 library(RColorBrewer)
 library(broom)
+library(plotrix)
 
 #Loading datasets (pre load modification, removed "NHS" from Orkney, Shetland and Western Isles)
 Full_firstdose_6in1 = read.csv(here("Data", "First_dose_6in1_3_feb_21.csv"))
@@ -1019,6 +1020,9 @@ Combined_weekly_6in1_no2019_line = Combined_weekly_6in1_no2019 %>%
   theme(axis.text.x = element_text(angle = 90))+
   annotate("rect", xmin = "W/B 23-MAR-20", xmax = "W/B 03-AUG-20", ymin = 70, ymax = 100,
            alpha = .1,fill = "blue")+
+  annotate("rect", xmin = "Jan-20", xmax = "W/B 02-MAR-20", ymin = 68, ymax = 68.5,
+           alpha = .1,fill = "black")+
+  annotate("text", x = "Feb-20", y = 69, size = 2, label = "Monthly data")+
   scale_x_discrete(breaks =c("Jan-20", "Feb-20", "W/B 02-MAR-20", "W/B 30-MAR-20", "W/B 04-MAY-20", "W/B 01-JUN-20", "W/B 29-JUN-20", "W/B 03-AUG-20", "W/B 31-AUG-20"), label = c("Jan 20", "Feb 20", "Mar 20", "Apr 20", "May 20", "Jun 20", "Jul 20", "Aug 20", "Sept 20")) 
 Combined_weekly_6in1_no2019_line
   
@@ -1058,7 +1062,10 @@ Combined_weekly_MMR_no2019_line = Combined_weekly_MMR_no2019 %>%
   geom_hline(yintercept = 51.8, linetype="dashed", color = "#fc8d62", size=0.75)+
   theme(axis.text.x = element_text(angle = 90))+
   annotate("rect", xmin = "W/B 23-MAR-20", xmax = "W/B 03-AUG-20", ymin = 40, ymax = 100,
-           alpha = .1,fill = "blue")+ 
+           alpha = .1,fill = "blue")+
+  annotate("rect", xmin = "Jan-20", xmax = "W/B 02-MAR-20", ymin = 40, ymax = 41,
+           alpha = .1,fill = "black")+
+  annotate("text", x = "Feb-20", y = 42, size = 2, label = "Monthly data")+
   scale_x_discrete(breaks =c("Jan-20", "Feb-20", "W/B 02-MAR-20", "W/B 30-MAR-20", "W/B 04-MAY-20", "W/B 01-JUN-20", "W/B 29-JUN-20", "W/B 03-AUG-20", "W/B 31-AUG-20"), label = c("Jan 20", "Feb 20", "Mar 20", "Apr 20", "May 20", "Jun 20", "Jul 20", "Aug 20", "Sept 20")) 
 Combined_weekly_MMR_no2019_line
 
@@ -1068,7 +1075,7 @@ library(ggpubr)
 theme_set(theme_pubr())
 
 Figure_1_weeklylineplots = ggarrange(Combined_weekly_6in1_no2019_line, Combined_weekly_MMR_no2019_line,
-                              labels = NULL,
+                              labels = c("A", "B"),
                               legend=NULL,
                               ncol = 1, nrow = 2)
 Figure_1_weeklylineplots
@@ -1103,3 +1110,4 @@ Section1_supptbl1_allMMR = full_join(Section1_supptbl1_firstMMR, Section1_supptb
 Section1_supptbl_full = full_join(Section1_supptbl1_all6in1, Section1_supptbl1_allMMR)
 
 write_csv(Section1_supptbl_full, file = "Exported tables/Section1_supptbl_full.csv")
+
