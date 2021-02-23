@@ -444,11 +444,10 @@ colnames(First6in1_HSCP_LD_percent)=c("Area","Uptake","Time period")
 First6in1_Absolute_percentage = full_join(First6in1_HSCP_2019_percent, First6in1_HSCP_LD_percent)
 
 Grouped_First6in1_2019LDpercentages = First6in1_Absolute_percentage %>%
-  mutate(Area = fct_reorder(Area, Uptake)) %>% 
+  mutate(Area = fct_relevel(Area, "Perth and Kinross", "Glasgow City", "Dundee City", "Highland", "West Dunbartonshire", "Edinburgh", "Orkney Islands", "Angus", "Aberdeen City","Argyll and Bute", "Clackmannanshire and Stirling", "Falkirk", "Midlothian", "Scottish Borders", "Dumfries and Galloway", "East Lothian", "West Lothian", "North Lanarkshire", "Fife", "Shetland Islands", "Western Isles", "Moray", "Renfrewshire", "South Lanarkshire", "East Dunbartonshire", "South Ayrshire", "Aberdeenshire", "North Ayrshire", "East Ayrshire", "East Renfrewshire", "Inverclyde")) %>% 
   ggplot(aes(fill=`Time period` , y=Uptake, x=Area)) +
   geom_bar(position="dodge", stat="identity")+
-  theme_bw()+
-  coord_flip()+
+  theme_classic()+
   labs(x = NULL,
        y = "% vaccinated (4 weeks)",
        title = "First dose6in1")+
@@ -457,7 +456,9 @@ Grouped_First6in1_2019LDpercentages = First6in1_Absolute_percentage %>%
              color = "#fc9272", size=0.75)+
   geom_hline(yintercept = 94.9, linetype="dotted", ##Scotland wide mean uptake LD
              color = "#de2d26", size=0.75)+
-  scale_fill_brewer(palette="Reds")
+  coord_flip()+
+  scale_fill_brewer(palette="Reds")+
+  scale_y_continuous(breaks = seq(0,100,10))
 
 Grouped_First6in1_2019LDpercentages
 
@@ -474,20 +475,25 @@ colnames(Second6in1_HSCP_LD_percent)=c("Area","Uptake","Time period")
 Second6in1_Absolute_percentage = full_join(Second6in1_HSCP_2019_percent, Second6in1_HSCP_LD_percent)
 
 Grouped_Second6in1_2019LDpercentages = Second6in1_Absolute_percentage %>%
+  mutate(Area = fct_relevel(Area, "Dundee City", "Glasgow City", "West Dunbartonshire", "Highland", "Edinburgh", "Argyll and Bute", "Perth and Kinross", "Dumfries and Galloway", "Falkirk", "Angus", "West Lothian", "Midlothian", "East Lothian", "Aberdeen City", "Clackmannanshire and Stirling", "Orkney Islands", "Scottish Borders", "North Ayrshire", "Fife", "North Lanarkshire", "Renfrewshire", "South Lanarkshire", "East Dunbartonshire", "East Ayrshire", "Western Isles", "Shetland Islands", "Moray", "East Renfrewshire", "Inverclyde", "South Ayrshire", "Aberdeenshire")) %>% 
   ggplot(aes(fill=`Time period` , y=Uptake, x=Area)) +
   geom_bar(position="dodge", stat="identity")+
-  theme_bw()+
+  theme_classic()+
   coord_flip()+
   labs(x = NULL,
        y = "% vaccinated (4 weeks)",
        title = "Second dose6in1")+
   theme(axis.text.y = element_text(size = 7))+
   geom_hline(yintercept = 84.8, linetype="dotted", ##Scotland wide mean uptake 2019
-             color = "red", size=0.75)+
-  geom_hline(yintercept = 90, linetype="dotted", ##Scotland wide mean uptake LD+++CONFIRM
-             color = "blue", size=0.75)
+               color = "#fc9272", size=0.75)+
+  geom_hline(yintercept = 89.7, linetype="dotted", ##Scotland wide mean uptake LD
+               color = "#de2d26", size=0.75)+
+  coord_flip()+
+  scale_fill_brewer(palette="Reds")+
+  scale_y_continuous(breaks = seq(0,100,10))
 
 Grouped_Second6in1_2019LDpercentages
+
 
 #Grouped bar chart LD vs 2019 percent uptake Third 6in1
 
@@ -501,18 +507,22 @@ colnames(Third6in1_HSCP_LD_percent)=c("Area","Uptake","Time period")
 Third6in1_Absolute_percentage = full_join(Third6in1_HSCP_2019_percent, Third6in1_HSCP_LD_percent)
 
 Grouped_Third6in1_2019LDpercentages = Third6in1_Absolute_percentage %>%
+  mutate(Area = fct_relevel(Area, "Falkirk", "Dundee City", "West Lothian", "Highland", "West Dunbartonshire", "Edinburgh", "Dumfries and Galloway", "Glasgow City", "Midlothian", "Argyll and Bute", "Perth and Kinross", "East Lothian", "North Ayrshire", "Angus", "Clackmannanshire and Stirling", "Aberdeen City", "Western Isles", "North Lanarkshire", "Fife", "Orkney Islands", "Scottish Borders", "South Lanarkshire", "Shetland Islands", "Renfrewshire", "East Ayrshire", "East Dunbartonshire", "Moray", "South Ayrshire", "Inverclyde", "East Renfrewshire", "Aberdeenshire")) %>% 
   ggplot(aes(fill=`Time period` , y=Uptake, x=Area)) +
   geom_bar(position="dodge", stat="identity")+
-  theme_bw()+
+  theme_classic()+
   coord_flip()+
   labs(x = NULL,
        y = "% vaccinated (4 weeks)",
        title = "Third dose6in1")+
   theme(axis.text.y = element_text(size = 7))+
-  geom_hline(yintercept = 73, linetype="dotted", ##Scotland wide mean uptake 2019
-             color = "red", size=0.75)+
-  geom_hline(yintercept = 83, linetype="dotted", ##Scotland wide mean uptake LD+++CONFIRM
-             color = "blue", size=0.75)
+    geom_hline(yintercept = 73, linetype="dotted", ##Scotland wide mean uptake 2019
+               color = "#fc9272", size=0.75)+
+    geom_hline(yintercept = 82.1, linetype="dotted", ##Scotland wide mean uptake LD
+               color = "#de2d26", size=0.75)+
+    coord_flip()+
+    scale_fill_brewer(palette="Reds")+
+    scale_y_continuous(breaks = seq(0,100,10))
 
 Grouped_Third6in1_2019LDpercentages
 
@@ -528,19 +538,23 @@ colnames(FirstMMR_HSCP_LD_percent)=c("Area","Uptake","Time period")
 FirstMMR_Absolute_percentage = full_join(FirstMMR_HSCP_2019_percent, FirstMMR_HSCP_LD_percent)
 
 Grouped_FirstMMR_2019LDpercentages = FirstMMR_Absolute_percentage %>%
-  ggplot(aes(fill=`Time period` , y=Uptake, x=Area)) +
+  mutate(Area = fct_relevel(Area,"Shetland Islands", "Aberdeenshire", "Western Isles", "Orkney Islands", "Moray", "Aberdeen City", "North Ayrshire", "Highland", "East Ayrshire", "Dundee City", "South Ayrshire", "Argyll and Bute", "Midlothian", "West Dunbartonshire", "Perth and Kinross", "West Lothian", "Fife", "Glasgow City", "Scottish Borders", "Edinburgh", "Falkirk", "Renfrewshire", "Angus", "North Lanarkshire", "South Lanarkshire", "Clackmannanshire and Stirling", "East Lothian", "Dumfries and Galloway", "East Renfrewshire", "Inverclyde", "East Dunbartonshire")) %>% 
+  ggplot(aes(fill=`Time period`, y=Uptake, x=Area)) +
   geom_bar(position="dodge", stat="identity")+
-  theme_bw()+
+  theme_classic()+
   coord_flip()+
   labs(x = NULL,
        y = "% vaccinated (4 weeks)",
        title = "First dose MMR")+
   theme(axis.text.y = element_text(size = 7))+
-  geom_hline(yintercept = 65.2, linetype="dotted", ##Scotland wide mean uptake 2019
-             color = "red", size=0.75)+
-  geom_hline(yintercept = 78, linetype="dotted", ##Scotland wide mean uptake LD+++CONFIRM
-             color = "blue", size=0.75)
-
+    geom_hline(yintercept = 65.2, linetype="dotted", ##Scotland wide mean uptake 2019
+               color = "#fc9272", size=0.75)+
+    geom_hline(yintercept = 78.4, linetype="dotted", ##Scotland wide mean uptake LD
+               color = "#de2d26", size=0.75)+
+    coord_flip()+
+    scale_fill_brewer(palette="Reds")+
+    scale_y_continuous(breaks = seq(0,100,10))
+  
 Grouped_FirstMMR_2019LDpercentages
 
 #Grouped bar chart LD vs 2019 percent uptake Second MMR
@@ -555,18 +569,22 @@ colnames(SecondMMR_HSCP_LD_percent)=c("Area","Uptake","Time period")
 SecondMMR_Absolute_percentage = full_join(SecondMMR_HSCP_2019_percent, SecondMMR_HSCP_LD_percent)
 
 Grouped_SecondMMR_2019LDpercentages = SecondMMR_Absolute_percentage %>%
-  ggplot(aes(fill=`Time period` , y=Uptake, x=Area)) +
+  mutate(Area = fct_relevel(Area,"Shetland Islands", "Dundee City", "Orkney Islands", "North Ayrshire","East Ayrshire", "South Ayrshire", "Angus", "Perth and Kinross", "Western Isles", "Fife", "Falkirk", "Highland", "Glasgow City", "Clackmannanshire and Stirling", "North Lanarkshire", "West Dunbartonshire", "South Lanarkshire", "Scottish Borders", "Edinburgh", "East Dunbartonshire", "Argyll and Bute", "Renfrewshire", "West Lothian", "East Lothian", "Midlothian", "Inverclyde", "East Renfrewshire", "Dumfries and Galloway")) %>%   ggplot(aes(fill=`Time period` , y=Uptake, x=Area)) +
   geom_bar(position="dodge", stat="identity")+
-  theme_bw()+
+  theme_classic()+
   coord_flip()+
   labs(x = NULL,
        y = "% vaccinated (4 weeks)",
        title = "Second dose MMR")+
   theme(axis.text.y = element_text(size = 7))+
-  geom_hline(yintercept = 51.8, linetype="dotted", ##Scotland wide mean uptake 2019
-             color = "red", size=0.75)+
-  geom_hline(yintercept = 61, linetype="dotted", ##Scotland wide mean uptake LD+++CONFIRM
-             color = "blue", size=0.75)
+    geom_hline(yintercept = 51.8, linetype="dotted", ##Scotland wide mean uptake 2019
+               color = "#fc9272", size=0.75)+
+    geom_hline(yintercept = 66.1, linetype="dotted", ##Scotland wide mean uptake LD
+               color = "#de2d26", size=0.75)+
+    coord_flip()+
+    scale_fill_brewer(palette="Reds")+
+    scale_y_continuous(breaks = seq(0,100,10))
+ 
 
 Grouped_SecondMMR_2019LDpercentages
 
@@ -574,14 +592,20 @@ Grouped_SecondMMR_2019LDpercentages
 Grouped_bar_HSCP_LDvs2019percentages_6in1 = ggarrange(Grouped_First6in1_2019LDpercentages,Grouped_Second6in1_2019LDpercentages, Grouped_Third6in1_2019LDpercentages,
                                   common.legend = TRUE, legend="bottom",
                                   labels = NULL,
-                                  ncol = 2, nrow = 2)
+                                  ncol = 1, nrow = 3)
 Grouped_bar_HSCP_LDvs2019percentages_6in1
 
 Grouped_bar_HSCP_LDvs2019percentages_MMR = ggarrange(Grouped_FirstMMR_2019LDpercentages, Grouped_SecondMMR_2019LDpercentages,
                                                       common.legend = TRUE, legend="bottom",
                                                       labels = NULL,
-                                                      ncol = 2, nrow = 1)
+                                                      ncol = 1, nrow = 2)
 Grouped_bar_HSCP_LDvs2019percentages_MMR
+
+Grouped_bar_HSCP_LDvs2019percentages_allvaccine = ggarrange(Grouped_bar_HSCP_LDvs2019percentages_6in1, Grouped_bar_HSCP_LDvs2019percentages_MMR,
+                                                            common.legend = TRUE, legend="bottom",
+                                                            labels = c("A", "B"),
+                                                            ncol = 2, nrow = 1)
+Grouped_bar_HSCP_LDvs2019percentages_allvaccine
 
 ####Logistic regression analysis of uptake rates between HSCP for 2019 and LD
 ##First 6in1 Log regression
