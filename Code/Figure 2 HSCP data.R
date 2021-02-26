@@ -135,7 +135,10 @@ First6in1_HSPC_percentchange_2019andLD = full_join(First6in1_HSCP_2019_percent, 
 
 First6in1_HSPC_percentchange_2019andLD = First6in1_HSPC_percentchange_2019andLD %>% 
   mutate(percent_change = Uptake_LD-Uptake_2019)
+##Select out signifcnat changes only
 
+First6in1_HSPC_percentchange_2019andLD_SIGONLY = First6in1_HSPC_percentchange_2019andLD %>% 
+  filter(area_name %in% c("Clackmannanshire and Stirling", "East Dunbartonshire", "Edinburgh", "Falkirk", "Fife", "Glasgow City", "South Ayrshire", "South Lanarkshire"))
 
 #Plot percent change 
 
@@ -145,10 +148,21 @@ First6in1_percentchange_poly <- merge(x=HSCP_map, y=First6in1_HSPC_percentchange
 
 First_6in1_percentchange_map = tm_shape(First6in1_percentchange_poly)+
   tm_fill(col= "percent_change", palette = "RdYlGn", title = "Absolute % change LD vs 2019")+
-  tm_layout(frame = FALSE, main.title = "First 6in1",
+  tm_layout(frame = FALSE, main.title = "First 6in1 % change from 2019",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 First_6in1_percentchange_map
+
+#For significant changes only 
+First6in1_percentchange_poly_sig <- merge(x=HSCP_map, y=First6in1_HSPC_percentchange_2019andLD_SIGONLY, by.x = "HIAName", by.y = "area_name")
+
+First_6in1_percentchange_map_sig = tm_shape(First6in1_percentchange_poly_sig)+
+  tm_fill(col= "percent_change", palette = "RdYlGn", title = "Absolute % change LD vs 2019")+
+  tm_layout(frame = FALSE, main.title = "First 6in1 % change from 2019 (stat sig)",
+            main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
+
+First_6in1_percentchange_map_sig
+
 #Bar chart plot
 library(RColorBrewer)
 First6in1_HSPC_percentchange_bar = First6in1_HSPC_percentchange_2019andLD %>% 
@@ -208,10 +222,23 @@ Second6in1_percentchange_poly <- merge(x=HSCP_map, y=Second6in1_HSPC_percentchan
 
 Second_6in1_percentchange_map = tm_shape(Second6in1_percentchange_poly)+
   tm_fill(col= "percent_change", palette = "RdYlGn", title = "Absolute % change LD vs 2019")+
-  tm_layout(frame = FALSE, main.title = "Second 6in1",
+  tm_layout(frame = FALSE, main.title = "Second 6in1 % change from 2019",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 Second_6in1_percentchange_map
+
+#For significant changes only 
+
+Second6in1_HSPC_percentchange_2019andLD_SIGONLY = Second6in1_HSPC_percentchange_2019andLD %>% 
+  filter(area_name %in% c("Argyll and Bute", "Clackmannanshire and Stirling", "Dumfries and Galloway", "East Ayrshire", "East Dunbartonshire", "East Lothian", "East Renfrewshire", "Edinburgh", "Falkirk", "Fife", "Glasgow City", "Highland", "North Lanarkshire", "Orkney Islands", "Renfrewshire", "Shetland Islands",  "South Lanarkshire", "Westh Dunbartonshire", "West Lothian"))
+Second6in1_percentchange_poly_sig <- merge(x=HSCP_map, y=Second6in1_HSPC_percentchange_2019andLD_SIGONLY, by.x = "HIAName", by.y = "area_name")
+
+Second_6in1_percentchange_map_sig = tm_shape(Second6in1_percentchange_poly_sig)+
+  tm_fill(col= "percent_change", palette = "RdYlGn", title = "Absolute % change LD vs 2019")+
+  tm_layout(frame = FALSE, main.title = "Second 6in1 % change from 2019 (stat sig)",
+            main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
+
+Second_6in1_percentchange_map_sig
 
 #Bar chart plot
 Second6in1_HSPC_percentchange_bar = Second6in1_HSPC_percentchange_2019andLD %>% 
@@ -270,7 +297,7 @@ Third6in1_percentchange_poly <- merge(x=HSCP_map, y=Third6in1_HSPC_percentchange
 
 Third_6in1_percentchange_map = tm_shape(Third6in1_percentchange_poly)+
   tm_fill(col= "percent_change", palette = "RdYlGn", title = "Absolute % change LD vs 2019")+
-  tm_layout(frame = FALSE, main.title = "Third 6in1",
+  tm_layout(frame = FALSE, main.title = "Third 6in1 % change from 2019",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 Third_6in1_percentchange_map
@@ -331,7 +358,7 @@ FirstMMR_percentchange_poly <- merge(x=HSCP_map, y=FirstMMR_HSPC_percentchange_2
 
 First_MMR_percentchange_map = tm_shape(FirstMMR_percentchange_poly)+
   tm_fill(col= "percent_change", palette = "YlGn", title = "Absolute % change LD vs 2019")+
-  tm_layout(frame = FALSE, main.title = "First MMR",
+  tm_layout(frame = FALSE, main.title = "First MMR % change from 2019",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 First_MMR_percentchange_map ##NOte change in pallet as none fell. Cross checked for Moray
@@ -393,7 +420,7 @@ SecondMMR_percentchange_poly <- merge(x=HSCP_map, y=SecondMMR_HSPC_percentchange
 
 Second_MMR_percentchange_map = tm_shape(SecondMMR_percentchange_poly)+
   tm_fill(col= "percent_change", palette = "YlGn", title = "Absolute % change LD vs 2019")+
-  tm_layout(frame = FALSE, main.title = "Second MMR",
+  tm_layout(frame = FALSE, main.title = "Second MMR % change from 2019",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 Second_MMR_percentchange_map
@@ -1510,3 +1537,488 @@ FullSection2suptbl2_First6in1 = FullSection2suptbl2_First6in1%>%
 FullSection2suptbl2_First6in1 = FullSection2suptbl2_First6in1[,c(1,5,4,3,2,6)]
 
 write_csv(FullSection2suptbl2_First6in1, file = "Exported tables/FullSection2suptbl2_First6in1.csv")
+
+###Try to add data from tidy loop tables (need to run loop script first)
+#cahnge colnames
+colnames(FullSection2suptbl2_First6in1) = c("HSCP", "time_period", "% uptake", "num uptake", "denominator", "%change from 2019")
+#seprate out OR tbl by period and add column in order to join properly (need to run loop script)
+First6in1_HSCPORtbl_tidypreLD = First6in1_HSCPORtbl_tidy %>% 
+  select(c(HSCP, OR_2019_PreLD, OR_2019_PreLD_lwr, OR_2019_PreLD_upr, OR_2019_PreLD_pvalue, OR_2019_PreLD_sig_diff)) %>% 
+  mutate(time_period = "PreLD")
+First6in1_HSCPORtbl_tidyLD = First6in1_HSCPORtbl_tidy %>% 
+  select(c(HSCP, OR_2019_LD, OR_2019_LD_lwr, OR_2019_LD_upr, OR_2019_LD_pvalue, OR_2019_LD_sig_diff)) %>% 
+  mutate(time_period = "LD")
+First6in1_HSCPORtbl_tidyPostLD = First6in1_HSCPORtbl_tidy %>% 
+  select(c(HSCP, OR_2019_PostLD, OR_2019_PostLD_lwr, OR_2019_PostLD_upr, OR_2019_PostLD_pvalue, OR_2019_PostLD_sig_diff)) %>% 
+  mutate(time_period = "PostLD")
+#Join
+FullSection2suptbl2_First6in1_OR = full_join(FullSection2suptbl2_First6in1, First6in1_HSCPORtbl_tidypreLD)
+FullSection2suptbl2_First6in1_OR = full_join(FullSection2suptbl2_First6in1_OR, First6in1_HSCPORtbl_tidyLD)
+FullSection2suptbl2_First6in1_OR = full_join(FullSection2suptbl2_First6in1_OR, First6in1_HSCPORtbl_tidyPostLD)
+
+write_csv(FullSection2suptbl2_First6in1_OR, file = "Exported tables/FullSection2suptbl2_First6in1_OR.csv")
+###################
+##Second 6in1
+
+Section2suptbl2_Second6in1 = Full_seconddose_6in1 %>% 
+  select(area_name, cohort, denominator, uptake_16weeks_num, uptake_16weeks_percent) %>% 
+  filter(!(cohort %in% c("Mar-20","Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20", "W/B 05-OCT-20", "W/B 12-OCT-20", "W/B 19-OCT-20", "W/B 26-OCT-20", "W/B 02-NOV-20", "W/B 09-NOV-20", "W/B 16-NOV-20", "W/B 23-NOV-20", "W/B 30-NOV-20", "W/B 07-DEC-20")))%>%
+  filter(str_detect(area_name,"NHS", negate=TRUE)) %>% 
+  filter(str_detect(area_name,"Scotland", negate = TRUE)) %>% 
+  mutate (lockdown.factor = cohort %>% 
+            factor() %>% 
+            fct_recode("Baseline_2019"="2019", "Pre_LD_2020"="Jan-20", "Pre_LD_2020"="Feb-20", "Pre_LD_2020"="W/B 02-MAR-20","Pre_LD_2020"="W/B 09-MAR-20", "Pre_LD_2020"="W/B 16-MAR-20", "LD_2020"="W/B 23-MAR-20","LD_2020"="W/B 30-MAR-20","LD_2020"="W/B 06-APR-20","LD_2020"="W/B 13-APR-20","LD_2020"="W/B 20-APR-20","LD_2020"="W/B 27-APR-20","LD_2020"="W/B 04-MAY-20","LD_2020"="W/B 11-MAY-20","LD_2020"="W/B 18-MAY-20","LD_2020"="W/B 25-MAY-20","LD_2020"="W/B 01-JUN-20","LD_2020"="W/B 08-JUN-20","LD_2020"="W/B 15-JUN-20","LD_2020"="W/B 22-JUN-20","LD_2020"="W/B 29-JUN-20","LD_2020"="W/B 06-JUL-20","LD_2020"="W/B 13-JUL-20","LD_2020"="W/B 20-JUL-20","LD_2020"="W/B 27-JUL-20", "Post_LD_2020"="W/B 03-AUG-20","Post_LD_2020"="W/B 10-AUG-20","Post_LD_2020"="W/B 17-AUG-20","Post_LD_2020"="W/B 24-AUG-20","Post_LD_2020"="W/B 31-AUG-20","Post_LD_2020"="W/B 07-SEP-20","Post_LD_2020"="W/B 14-SEP-20","Post_LD_2020"="W/B 21-SEP-20","Post_LD_2020"="W/B 28-SEP-20"))
+
+#2019
+Section2suptbl2_Second6in1_2019 = Section2suptbl2_Second6in1 %>% 
+  filter(lockdown.factor == "Baseline_2019") %>% 
+  mutate(time_period = "2019") %>% 
+  select(area_name, denominator, uptake_16weeks_num, uptake_16weeks_percent, time_period)
+#Take out the 2019 percentage to get % change for table
+Second6in1_2019areapercentage = Section2suptbl2_Second6in1_2019 %>% 
+  select(area_name, uptake_16weeks_percent)
+colnames(Second6in1_2019areapercentage) = c("area_name", "percentuptake2019")
+
+#preLD period
+Section2suptbl2_Second6in1_PreLD = Section2suptbl2_Second6in1 %>% 
+  filter(lockdown.factor == "Pre_LD_2020") %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_16weeks_num = sum(uptake_16weeks_num), uptake_16weeks_percent = mean(uptake_16weeks_percent)) %>% 
+  mutate(time_period = "PreLD")
+#join preLD and 2019percentage tbls
+Section2suptbl2_Second6in1_PreLD = full_join(Section2suptbl2_Second6in1_PreLD, Second6in1_2019areapercentage)
+#add column for difference btw time period and 2019
+Section2suptbl2_Second6in1_PreLD = Section2suptbl2_Second6in1_PreLD %>% 
+  mutate(changecf2019 = uptake_16weeks_percent-percentuptake2019)
+#Remove 2019
+Section2suptbl2_Second6in1_PreLD = Section2suptbl2_Second6in1_PreLD %>% 
+  select(area_name, denominator, uptake_16weeks_percent, uptake_16weeks_num, time_period, changecf2019)
+
+#LD period
+Section2suptbl2_Second6in1_LD = Section2suptbl2_Second6in1 %>% 
+  filter(lockdown.factor == "LD_2020") %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_16weeks_num = sum(uptake_16weeks_num), uptake_16weeks_percent = mean(uptake_16weeks_percent)) %>% 
+  mutate(time_period = "LD")
+#Add in Island data
+Second6in1_Islands = Full_seconddose_6in1 %>% 
+  filter(area_name %in% c("Orkney Islands", "Shetland Islands", "Western Isles")) %>% 
+  filter(!(cohort %in% c("2019", "Jan-20", "Feb-20", "Mar-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20"))) %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_16weeks_num = sum(uptake_16weeks_num), uptake_16weeks_percent = mean(uptake_16weeks_percent)) %>% 
+  mutate(time_period = "LD")
+#and join
+Section2suptbl2_Second6in1_LD = rbind(Section2suptbl2_Second6in1_LD, Second6in1_Islands)
+
+#Back to obtaining change from 2019
+Section2suptbl2_Second6in1_LD = full_join(Section2suptbl2_Second6in1_LD, Second6in1_2019areapercentage)
+Section2suptbl2_Second6in1_LD = Section2suptbl2_Second6in1_LD %>% 
+  mutate(changecf2019 = uptake_16weeks_percent-percentuptake2019)
+Section2suptbl2_Second6in1_LD = Section2suptbl2_Second6in1_LD %>% 
+  select(area_name, denominator, uptake_16weeks_percent, uptake_16weeks_num, time_period, changecf2019)
+
+#Post LD
+Section2suptbl2_Second6in1_PostLD = Section2suptbl2_Second6in1 %>% 
+  filter(lockdown.factor == "Post_LD_2020") %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_16weeks_num = sum(uptake_16weeks_num), uptake_16weeks_percent = mean(uptake_16weeks_percent)) %>% 
+  mutate(time_period = "PostLD")
+
+#Add in Island data
+Second6in1_Islands_PostLD = Full_seconddose_6in1 %>% 
+  filter(area_name %in% c("Orkney Islands", "Shetland Islands", "Western Isles")) %>% 
+  filter(cohort== c("Aug-20", "Sep-20")) %>% 
+  select(area_name, cohort, denominator, uptake_16weeks_num, uptake_16weeks_percent) %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_16weeks_num = sum(uptake_16weeks_num), uptake_16weeks_percent = mean(uptake_16weeks_percent)) %>% 
+  mutate(time_period = "PostLD")
+#and join
+Section2suptbl2_Second6in1_PostLD = rbind(Section2suptbl2_Second6in1_PostLD, Second6in1_Islands_PostLD)
+#Get change cf 2019
+Section2suptbl2_Second6in1_PostLD = full_join(Section2suptbl2_Second6in1_PostLD, Second6in1_2019areapercentage)
+Section2suptbl2_Second6in1_PostLD = Section2suptbl2_Second6in1_PostLD %>% 
+  mutate(changecf2019 = uptake_16weeks_percent-percentuptake2019)
+Section2suptbl2_Second6in1_PostLD = Section2suptbl2_Second6in1_PostLD %>% 
+  select(area_name, denominator, uptake_16weeks_percent, uptake_16weeks_num, time_period, changecf2019)
+
+
+#Join together
+FullSection2suptbl2_Second6in1 = full_join(Section2suptbl2_Second6in1_2019, Section2suptbl2_Second6in1_PreLD)
+FullSection2suptbl2_Second6in1 = full_join(FullSection2suptbl2_Second6in1, Section2suptbl2_Second6in1_LD)
+FullSection2suptbl2_Second6in1 = full_join(FullSection2suptbl2_Second6in1, Section2suptbl2_Second6in1_PostLD)
+FullSection2suptbl2_Second6in1 = FullSection2suptbl2_Second6in1%>% 
+  mutate (uptake_16weeks_percent= round (uptake_16weeks_percent, digits = 1)) %>% 
+  mutate (changecf2019= round (changecf2019,digits = 1))
+
+FullSection2suptbl2_Second6in1 = FullSection2suptbl2_Second6in1[,c(1,5,4,3,2,6)]
+
+write_csv(FullSection2suptbl2_First6in1, file = "Exported tables/FullSection2suptbl2_First6in1.csv")
+
+###Try to add data from tidy loop tables (need to run loop script first)
+#cahnge colnames
+colnames(FullSection2suptbl2_Second6in1) = c("HSCP", "time_period", "% uptake", "num uptake", "denominator", "%change from 2019")
+#seprate out OR tbl by period and add column in order to join properly (need to run loop script)
+Second6in1_HSCPORtbl_tidypreLD = Second6in1_HSCPORtbl_tidy %>% 
+  select(c(HSCP, OR_2019_PreLD, OR_2019_PreLD_lwr, OR_2019_PreLD_upr, OR_2019_PreLD_pvalue, OR_2019_PreLD_sig_diff)) %>% 
+  mutate(time_period = "PreLD")
+Second6in1_HSCPORtbl_tidyLD = Second6in1_HSCPORtbl_tidy %>% 
+  select(c(HSCP, OR_2019_LD, OR_2019_LD_lwr, OR_2019_LD_upr, OR_2019_LD_pvalue, OR_2019_LD_sig_diff)) %>% 
+  mutate(time_period = "LD")
+Second6in1_HSCPORtbl_tidyPostLD = Second6in1_HSCPORtbl_tidy %>% 
+  select(c(HSCP, OR_2019_PostLD, OR_2019_PostLD_lwr, OR_2019_PostLD_upr, OR_2019_PostLD_pvalue, OR_2019_PostLD_sig_diff)) %>% 
+  mutate(time_period = "PostLD")
+#Join
+FullSection2suptbl2_Second6in1_OR = full_join(FullSection2suptbl2_Second6in1, Second6in1_HSCPORtbl_tidypreLD)
+FullSection2suptbl2_Second6in1_OR = full_join(FullSection2suptbl2_Second6in1_OR, Second6in1_HSCPORtbl_tidyLD)
+FullSection2suptbl2_Second6in1_OR = full_join(FullSection2suptbl2_Second6in1_OR, Second6in1_HSCPORtbl_tidyPostLD)
+
+write_csv(FullSection2suptbl2_Second6in1_OR, file = "Exported tables/FullSection2suptbl2_Second6in1_OR.csv")
+
+###################
+##Third 6in1
+
+Section2suptbl2_Third6in1 = Full_thirddose_6in1 %>% 
+  select(area_name, cohort, denominator, uptake_20weeks_num, uptake_20weeks_percent) %>% 
+  filter(!(cohort %in% c("Mar-20","Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20", "W/B 05-OCT-20", "W/B 12-OCT-20", "W/B 19-OCT-20", "W/B 26-OCT-20", "W/B 02-NOV-20", "W/B 09-NOV-20", "W/B 16-NOV-20", "W/B 23-NOV-20", "W/B 30-NOV-20", "W/B 07-DEC-20")))%>%
+  filter(str_detect(area_name,"NHS", negate=TRUE)) %>% 
+  filter(str_detect(area_name,"Scotland", negate = TRUE)) %>% 
+  mutate (lockdown.factor = cohort %>% 
+            factor() %>% 
+            fct_recode("Baseline_2019"="2019", "Pre_LD_2020"="Jan-20", "Pre_LD_2020"="Feb-20", "Pre_LD_2020"="W/B 02-MAR-20","Pre_LD_2020"="W/B 09-MAR-20", "Pre_LD_2020"="W/B 16-MAR-20", "LD_2020"="W/B 23-MAR-20","LD_2020"="W/B 30-MAR-20","LD_2020"="W/B 06-APR-20","LD_2020"="W/B 13-APR-20","LD_2020"="W/B 20-APR-20","LD_2020"="W/B 27-APR-20","LD_2020"="W/B 04-MAY-20","LD_2020"="W/B 11-MAY-20","LD_2020"="W/B 18-MAY-20","LD_2020"="W/B 25-MAY-20","LD_2020"="W/B 01-JUN-20","LD_2020"="W/B 08-JUN-20","LD_2020"="W/B 15-JUN-20","LD_2020"="W/B 22-JUN-20","LD_2020"="W/B 29-JUN-20","LD_2020"="W/B 06-JUL-20","LD_2020"="W/B 13-JUL-20","LD_2020"="W/B 20-JUL-20","LD_2020"="W/B 27-JUL-20", "Post_LD_2020"="W/B 03-AUG-20","Post_LD_2020"="W/B 10-AUG-20","Post_LD_2020"="W/B 17-AUG-20","Post_LD_2020"="W/B 24-AUG-20","Post_LD_2020"="W/B 31-AUG-20","Post_LD_2020"="W/B 07-SEP-20","Post_LD_2020"="W/B 14-SEP-20","Post_LD_2020"="W/B 21-SEP-20","Post_LD_2020"="W/B 28-SEP-20"))
+
+#2019
+Section2suptbl2_Third6in1_2019 = Section2suptbl2_Third6in1 %>% 
+  filter(lockdown.factor == "Baseline_2019") %>% 
+  mutate(time_period = "2019") %>% 
+  select(area_name, denominator, uptake_20weeks_num, uptake_20weeks_percent, time_period)
+#Take out the 2019 percentage to get % change for table
+Third6in1_2019areapercentage = Section2suptbl2_Third6in1_2019 %>% 
+  select(area_name, uptake_20weeks_percent)
+colnames(Third6in1_2019areapercentage) = c("area_name", "percentuptake2019")
+
+#preLD period
+Section2suptbl2_Third6in1_PreLD = Section2suptbl2_Third6in1 %>% 
+  filter(lockdown.factor == "Pre_LD_2020") %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_20weeks_num = sum(uptake_20weeks_num), uptake_20weeks_percent = mean(uptake_20weeks_percent)) %>% 
+  mutate(time_period = "PreLD")
+#join preLD and 2019percentage tbls
+Section2suptbl2_Third6in1_PreLD = full_join(Section2suptbl2_Third6in1_PreLD, Third6in1_2019areapercentage)
+#add column for difference btw time period and 2019
+Section2suptbl2_Third6in1_PreLD = Section2suptbl2_Third6in1_PreLD %>% 
+  mutate(changecf2019 = uptake_20weeks_percent-percentuptake2019)
+#Remove 2019
+Section2suptbl2_Third6in1_PreLD = Section2suptbl2_Third6in1_PreLD %>% 
+  select(area_name, denominator, uptake_20weeks_percent, uptake_20weeks_num, time_period, changecf2019)
+
+#LD period
+Section2suptbl2_Third6in1_LD = Section2suptbl2_Third6in1 %>% 
+  filter(lockdown.factor == "LD_2020") %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_20weeks_num = sum(uptake_20weeks_num), uptake_20weeks_percent = mean(uptake_20weeks_percent)) %>% 
+  mutate(time_period = "LD")
+#Add in Island data
+Third6in1_Islands = Full_thirddose_6in1 %>% 
+  filter(area_name %in% c("Orkney Islands", "Shetland Islands", "Western Isles")) %>% 
+  filter(!(cohort %in% c("2019", "Jan-20", "Feb-20", "Mar-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20"))) %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_20weeks_num = sum(uptake_20weeks_num), uptake_20weeks_percent = mean(uptake_20weeks_percent)) %>% 
+  mutate(time_period = "LD")
+#and join
+Section2suptbl2_Third6in1_LD = rbind(Section2suptbl2_Third6in1_LD, Third6in1_Islands)
+
+#Back to obtaining change from 2019
+Section2suptbl2_Third6in1_LD = full_join(Section2suptbl2_Third6in1_LD, Third6in1_2019areapercentage)
+Section2suptbl2_Third6in1_LD = Section2suptbl2_Third6in1_LD %>% 
+  mutate(changecf2019 = uptake_20weeks_percent-percentuptake2019)
+Section2suptbl2_Third6in1_LD = Section2suptbl2_Third6in1_LD %>% 
+  select(area_name, denominator, uptake_20weeks_percent, uptake_20weeks_num, time_period, changecf2019)
+
+#Post LD
+Section2suptbl2_Third6in1_PostLD = Section2suptbl2_Third6in1 %>% 
+  filter(lockdown.factor == "Post_LD_2020") %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_20weeks_num = sum(uptake_20weeks_num), uptake_20weeks_percent = mean(uptake_20weeks_percent)) %>% 
+  mutate(time_period = "PostLD")
+
+#Add in Island data
+Third6in1_Islands_PostLD = Full_thirddose_6in1 %>% 
+  filter(area_name %in% c("Orkney Islands", "Shetland Islands", "Western Isles")) %>% 
+  filter(cohort== c("Aug-20", "Sep-20")) %>% 
+  select(area_name, cohort, denominator, uptake_20weeks_num, uptake_20weeks_percent) %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_20weeks_num = sum(uptake_20weeks_num), uptake_20weeks_percent = mean(uptake_20weeks_percent)) %>% 
+  mutate(time_period = "PostLD")
+#and join
+Section2suptbl2_Third6in1_PostLD = rbind(Section2suptbl2_Third6in1_PostLD, Third6in1_Islands_PostLD)
+#Get change cf 2019
+Section2suptbl2_Third6in1_PostLD = full_join(Section2suptbl2_Third6in1_PostLD, Third6in1_2019areapercentage)
+Section2suptbl2_Third6in1_PostLD = Section2suptbl2_Third6in1_PostLD %>% 
+  mutate(changecf2019 = uptake_20weeks_percent-percentuptake2019)
+Section2suptbl2_Third6in1_PostLD = Section2suptbl2_Third6in1_PostLD %>% 
+  select(area_name, denominator, uptake_20weeks_percent, uptake_20weeks_num, time_period, changecf2019)
+
+
+#Join together
+FullSection2suptbl2_Third6in1 = full_join(Section2suptbl2_Third6in1_2019, Section2suptbl2_Third6in1_PreLD)
+FullSection2suptbl2_Third6in1 = full_join(FullSection2suptbl2_Third6in1, Section2suptbl2_Third6in1_LD)
+FullSection2suptbl2_Third6in1 = full_join(FullSection2suptbl2_Third6in1, Section2suptbl2_Third6in1_PostLD)
+FullSection2suptbl2_Third6in1 = FullSection2suptbl2_Third6in1%>% 
+  mutate (uptake_20weeks_percent= round (uptake_20weeks_percent, digits = 1)) %>% 
+  mutate (changecf2019= round (changecf2019,digits = 1))
+
+FullSection2suptbl2_Third6in1 = FullSection2suptbl2_Third6in1[,c(1,5,4,3,2,6)]
+
+write_csv(FullSection2suptbl2_Third6in1, file = "Exported tables/FullSection2suptbl2_Third6in1.csv")
+
+###Try to add data from tidy loop tables (need to run loop script first)
+#cahnge colnames
+colnames(FullSection2suptbl2_Third6in1) = c("HSCP", "time_period", "% uptake", "num uptake", "denominator", "%change from 2019")
+#seprate out OR tbl by period and add column in order to join properly (need to run loop script)
+Third6in1_HSCPORtbl_tidypreLD = Third6in1_HSCPORtbl_tidy %>% 
+  select(c(HSCP, OR_2019_PreLD, OR_2019_PreLD_lwr, OR_2019_PreLD_upr, OR_2019_PreLD_pvalue, OR_2019_PreLD_sig_diff)) %>% 
+  mutate(time_period = "PreLD")
+Third6in1_HSCPORtbl_tidyLD = Third6in1_HSCPORtbl_tidy %>% 
+  select(c(HSCP, OR_2019_LD, OR_2019_LD_lwr, OR_2019_LD_upr, OR_2019_LD_pvalue, OR_2019_LD_sig_diff)) %>% 
+  mutate(time_period = "LD")
+Third6in1_HSCPORtbl_tidyPostLD = Third6in1_HSCPORtbl_tidy %>% 
+  select(c(HSCP, OR_2019_PostLD, OR_2019_PostLD_lwr, OR_2019_PostLD_upr, OR_2019_PostLD_pvalue, OR_2019_PostLD_sig_diff)) %>% 
+  mutate(time_period = "PostLD")
+#Join
+FullSection2suptbl2_Third6in1_OR = full_join(FullSection2suptbl2_Third6in1, Third6in1_HSCPORtbl_tidypreLD)
+FullSection2suptbl2_Third6in1_OR = full_join(FullSection2suptbl2_Third6in1_OR, Third6in1_HSCPORtbl_tidyLD)
+FullSection2suptbl2_Third6in1_OR = full_join(FullSection2suptbl2_Third6in1_OR, Third6in1_HSCPORtbl_tidyPostLD)
+
+write_csv(FullSection2suptbl2_Third6in1_OR, file = "Exported tables/FullSection2suptbl2_Third6in1_OR.csv")
+
+##First MMR
+
+Section2suptbl2_FirstMMR = Full_firstdose_MMR %>% 
+  select(area_name, cohort, denominator, uptake_13m_num, uptake_13m_percent) %>% 
+  filter(!(cohort %in% c("Mar-20","Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20", "W/B 05-OCT-20", "W/B 12-OCT-20", "W/B 19-OCT-20", "W/B 26-OCT-20", "W/B 02-NOV-20", "W/B 09-NOV-20", "W/B 16-NOV-20", "W/B 23-NOV-20", "W/B 30-NOV-20", "W/B 07-DEC-20")))%>%
+  filter(str_detect(area_name,"NHS", negate=TRUE)) %>% 
+  filter(str_detect(area_name,"Scotland", negate = TRUE)) %>% 
+  mutate (lockdown.factor = cohort %>% 
+            factor() %>% 
+            fct_recode("Baseline_2019"="2019", "Pre_LD_2020"="Jan-20", "Pre_LD_2020"="Feb-20", "Pre_LD_2020"="W/B 02-MAR-20","Pre_LD_2020"="W/B 09-MAR-20", "Pre_LD_2020"="W/B 16-MAR-20", "LD_2020"="W/B 23-MAR-20","LD_2020"="W/B 30-MAR-20","LD_2020"="W/B 06-APR-20","LD_2020"="W/B 13-APR-20","LD_2020"="W/B 20-APR-20","LD_2020"="W/B 27-APR-20","LD_2020"="W/B 04-MAY-20","LD_2020"="W/B 11-MAY-20","LD_2020"="W/B 18-MAY-20","LD_2020"="W/B 25-MAY-20","LD_2020"="W/B 01-JUN-20","LD_2020"="W/B 08-JUN-20","LD_2020"="W/B 15-JUN-20","LD_2020"="W/B 22-JUN-20","LD_2020"="W/B 29-JUN-20","LD_2020"="W/B 06-JUL-20","LD_2020"="W/B 13-JUL-20","LD_2020"="W/B 20-JUL-20","LD_2020"="W/B 27-JUL-20", "Post_LD_2020"="W/B 03-AUG-20","Post_LD_2020"="W/B 10-AUG-20","Post_LD_2020"="W/B 17-AUG-20","Post_LD_2020"="W/B 24-AUG-20","Post_LD_2020"="W/B 31-AUG-20","Post_LD_2020"="W/B 07-SEP-20","Post_LD_2020"="W/B 14-SEP-20","Post_LD_2020"="W/B 21-SEP-20","Post_LD_2020"="W/B 28-SEP-20"))
+
+#2019
+Section2suptbl2_FirstMMR_2019 = Section2suptbl2_FirstMMR %>% 
+  filter(lockdown.factor == "Baseline_2019") %>% 
+  mutate(time_period = "2019") %>% 
+  select(area_name, denominator, uptake_13m_num, uptake_13m_percent, time_period)
+#Take out the 2019 percentage to get % change for table
+FirstMMR_2019areapercentage = Section2suptbl2_FirstMMR_2019 %>% 
+  select(area_name, uptake_13m_percent)
+colnames(FirstMMR_2019areapercentage) = c("area_name", "percentuptake2019")
+
+#preLD period
+Section2suptbl2_FirstMMR_PreLD = Section2suptbl2_FirstMMR %>% 
+  filter(lockdown.factor == "Pre_LD_2020") %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_13m_num = sum(uptake_13m_num), uptake_13m_percent = mean(uptake_13m_percent)) %>% 
+  mutate(time_period = "PreLD")
+#join preLD and 2019percentage tbls
+Section2suptbl2_FirstMMR_PreLD = full_join(Section2suptbl2_FirstMMR_PreLD, FirstMMR_2019areapercentage)
+#add column for difference btw time period and 2019
+Section2suptbl2_FirstMMR_PreLD = Section2suptbl2_FirstMMR_PreLD %>% 
+  mutate(changecf2019 = uptake_13m_percent-percentuptake2019)
+#Remove 2019
+Section2suptbl2_FirstMMR_PreLD = Section2suptbl2_FirstMMR_PreLD %>% 
+  select(area_name, denominator, uptake_13m_percent, uptake_13m_num, time_period, changecf2019)
+
+#LD period
+Section2suptbl2_FirstMMR_LD = Section2suptbl2_FirstMMR %>% 
+  filter(lockdown.factor == "LD_2020") %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_13m_num = sum(uptake_13m_num), uptake_13m_percent = mean(uptake_13m_percent)) %>% 
+  mutate(time_period = "LD")
+#Add in Island data
+FirstMMR_Islands = Full_firstdose_MMR %>% 
+  filter(area_name %in% c("Orkney Islands", "Shetland Islands", "Western Isles")) %>% 
+  filter(!(cohort %in% c("2019", "Jan-20", "Feb-20", "Mar-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20"))) %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_13m_num = sum(uptake_13m_num), uptake_13m_percent = mean(uptake_13m_percent)) %>% 
+  mutate(time_period = "LD")
+#and join
+Section2suptbl2_FirstMMR_LD = rbind(Section2suptbl2_FirstMMR_LD, FirstMMR_Islands)
+
+#Back to obtaining change from 2019
+Section2suptbl2_FirstMMR_LD = full_join(Section2suptbl2_FirstMMR_LD, FirstMMR_2019areapercentage)
+Section2suptbl2_FirstMMR_LD = Section2suptbl2_FirstMMR_LD %>% 
+  mutate(changecf2019 = uptake_13m_percent-percentuptake2019)
+Section2suptbl2_FirstMMR_LD = Section2suptbl2_FirstMMR_LD %>% 
+  select(area_name, denominator, uptake_13m_percent, uptake_13m_num, time_period, changecf2019)
+
+#Post LD
+Section2suptbl2_FirstMMR_PostLD = Section2suptbl2_FirstMMR %>% 
+  filter(lockdown.factor == "Post_LD_2020") %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_13m_num = sum(uptake_13m_num), uptake_13m_percent = mean(uptake_13m_percent)) %>% 
+  mutate(time_period = "PostLD")
+
+#Add in Island data
+FirstMMR_Islands_PostLD = Full_firstdose_MMR %>% 
+  filter(area_name %in% c("Orkney Islands", "Shetland Islands", "Western Isles")) %>% 
+  filter(cohort== c("Aug-20", "Sep-20")) %>% 
+  select(area_name, cohort, denominator, uptake_13m_num, uptake_13m_percent) %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_13m_num = sum(uptake_13m_num), uptake_13m_percent = mean(uptake_13m_percent)) %>% 
+  mutate(time_period = "PostLD")
+#and join
+Section2suptbl2_FirstMMR_PostLD = rbind(Section2suptbl2_FirstMMR_PostLD, FirstMMR_Islands_PostLD)
+#Get change cf 2019
+Section2suptbl2_FirstMMR_PostLD = full_join(Section2suptbl2_FirstMMR_PostLD, FirstMMR_2019areapercentage)
+Section2suptbl2_FirstMMR_PostLD = Section2suptbl2_FirstMMR_PostLD %>% 
+  mutate(changecf2019 = uptake_13m_percent-percentuptake2019)
+Section2suptbl2_FirstMMR_PostLD = Section2suptbl2_FirstMMR_PostLD %>% 
+  select(area_name, denominator, uptake_13m_percent, uptake_13m_num, time_period, changecf2019)
+
+
+#Join together
+FullSection2suptbl2_FirstMMR = full_join(Section2suptbl2_FirstMMR_2019, Section2suptbl2_FirstMMR_PreLD)
+FullSection2suptbl2_FirstMMR = full_join(FullSection2suptbl2_FirstMMR, Section2suptbl2_FirstMMR_LD)
+FullSection2suptbl2_FirstMMR = full_join(FullSection2suptbl2_FirstMMR, Section2suptbl2_FirstMMR_PostLD)
+FullSection2suptbl2_FirstMMR = FullSection2suptbl2_FirstMMR%>% 
+  mutate (uptake_13m_percent= round (uptake_13m_percent, digits = 1)) %>% 
+  mutate (changecf2019= round (changecf2019,digits = 1))
+
+FullSection2suptbl2_FirstMMR = FullSection2suptbl2_FirstMMR[,c(1,5,4,3,2,6)]
+
+write_csv(FullSection2suptbl2_FirstMMR, file = "Exported tables/FullSection2suptbl2_FirstMMR.csv")
+
+###Try to add data from tidy loop tables (need to run loop script first)
+#cahnge colnames
+colnames(FullSection2suptbl2_FirstMMR) = c("HSCP", "time_period", "% uptake", "num uptake", "denominator", "%change from 2019")
+#seprate out OR tbl by period and add column in order to join properly (need to run loop script)
+FirstMMR_HSCPORtbl_tidypreLD = FirstMMR_HSCPORtbl_tidy %>% 
+  select(c(HSCP, OR_2019_PreLD, OR_2019_PreLD_lwr, OR_2019_PreLD_upr, OR_2019_PreLD_pvalue, OR_2019_PreLD_sig_diff)) %>% 
+  mutate(time_period = "PreLD")
+FirstMMR_HSCPORtbl_tidyLD = FirstMMR_HSCPORtbl_tidy %>% 
+  select(c(HSCP, OR_2019_LD, OR_2019_LD_lwr, OR_2019_LD_upr, OR_2019_LD_pvalue, OR_2019_LD_sig_diff)) %>% 
+  mutate(time_period = "LD")
+FirstMMR_HSCPORtbl_tidyPostLD = FirstMMR_HSCPORtbl_tidy %>% 
+  select(c(HSCP, OR_2019_PostLD, OR_2019_PostLD_lwr, OR_2019_PostLD_upr, OR_2019_PostLD_pvalue, OR_2019_PostLD_sig_diff)) %>% 
+  mutate(time_period = "PostLD")
+#Join
+FullSection2suptbl2_FirstMMR_OR = full_join(FullSection2suptbl2_FirstMMR, FirstMMR_HSCPORtbl_tidypreLD)
+FullSection2suptbl2_FirstMMR_OR = full_join(FullSection2suptbl2_FirstMMR_OR, FirstMMR_HSCPORtbl_tidyLD)
+FullSection2suptbl2_FirstMMR_OR = full_join(FullSection2suptbl2_FirstMMR_OR, FirstMMR_HSCPORtbl_tidyPostLD)
+
+write_csv(FullSection2suptbl2_FirstMMR_OR, file = "Exported tables/FullSection2suptbl2_FirstMMR_OR.csv")
+
+######Second MMR
+
+Section2suptbl2_SecondMMR = Full_seconddose_MMR %>% 
+  select(area_name, cohort, denominator, uptake_3y5m_num, uptake_3y5m_percent) %>% 
+  filter(!(cohort %in% c("Mar-20","Apr-20", "May-20", "Jun-20", "Jul-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20", "W/B 05-OCT-20", "W/B 12-OCT-20", "W/B 19-OCT-20", "W/B 26-OCT-20", "W/B 02-NOV-20", "W/B 09-NOV-20", "W/B 16-NOV-20", "W/B 23-NOV-20", "W/B 30-NOV-20", "W/B 07-DEC-20")))%>%
+  filter(str_detect(area_name,"NHS", negate=TRUE)) %>% 
+  filter(str_detect(area_name,"Scotland", negate = TRUE)) %>% 
+  mutate (lockdown.factor = cohort %>% 
+            factor() %>% 
+            fct_recode("Baseline_2019"="2019", "Pre_LD_2020"="Jan-20", "Pre_LD_2020"="Feb-20", "Pre_LD_2020"="W/B 02-MAR-20","Pre_LD_2020"="W/B 09-MAR-20", "Pre_LD_2020"="W/B 16-MAR-20", "LD_2020"="W/B 23-MAR-20","LD_2020"="W/B 30-MAR-20","LD_2020"="W/B 06-APR-20","LD_2020"="W/B 13-APR-20","LD_2020"="W/B 20-APR-20","LD_2020"="W/B 27-APR-20","LD_2020"="W/B 04-MAY-20","LD_2020"="W/B 11-MAY-20","LD_2020"="W/B 18-MAY-20","LD_2020"="W/B 25-MAY-20","LD_2020"="W/B 01-JUN-20","LD_2020"="W/B 08-JUN-20","LD_2020"="W/B 15-JUN-20","LD_2020"="W/B 22-JUN-20","LD_2020"="W/B 29-JUN-20","LD_2020"="W/B 06-JUL-20","LD_2020"="W/B 13-JUL-20","LD_2020"="W/B 20-JUL-20","LD_2020"="W/B 27-JUL-20", "Post_LD_2020"="W/B 03-AUG-20","Post_LD_2020"="W/B 10-AUG-20","Post_LD_2020"="W/B 17-AUG-20","Post_LD_2020"="W/B 24-AUG-20","Post_LD_2020"="W/B 31-AUG-20","Post_LD_2020"="W/B 07-SEP-20","Post_LD_2020"="W/B 14-SEP-20","Post_LD_2020"="W/B 21-SEP-20","Post_LD_2020"="W/B 28-SEP-20"))
+
+#2019
+Section2suptbl2_SecondMMR_2019 = Section2suptbl2_SecondMMR %>% 
+  filter(lockdown.factor == "Baseline_2019") %>% 
+  mutate(time_period = "2019") %>% 
+  select(area_name, denominator, uptake_3y5m_num, uptake_3y5m_percent, time_period)
+#Take out the 2019 percentage to get % change for table
+SecondMMR_2019areapercentage = Section2suptbl2_SecondMMR_2019 %>% 
+  select(area_name, uptake_3y5m_percent)
+colnames(SecondMMR_2019areapercentage) = c("area_name", "percentuptake2019")
+
+#preLD period
+Section2suptbl2_SecondMMR_PreLD = Section2suptbl2_SecondMMR %>% 
+  filter(lockdown.factor == "Pre_LD_2020") %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_3y5m_num = sum(uptake_3y5m_num), uptake_3y5m_percent = mean(uptake_3y5m_percent)) %>% 
+  mutate(time_period = "PreLD")
+#join preLD and 2019percentage tbls
+Section2suptbl2_SecondMMR_PreLD = full_join(Section2suptbl2_SecondMMR_PreLD, SecondMMR_2019areapercentage)
+#add column for difference btw time period and 2019
+Section2suptbl2_SecondMMR_PreLD = Section2suptbl2_SecondMMR_PreLD %>% 
+  mutate(changecf2019 = uptake_3y5m_percent-percentuptake2019)
+#Remove 2019
+Section2suptbl2_SecondMMR_PreLD = Section2suptbl2_SecondMMR_PreLD %>% 
+  select(area_name, denominator, uptake_3y5m_percent, uptake_3y5m_num, time_period, changecf2019)
+
+#LD period
+Section2suptbl2_SecondMMR_LD = Section2suptbl2_SecondMMR %>% 
+  filter(lockdown.factor == "LD_2020") %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_3y5m_num = sum(uptake_3y5m_num), uptake_3y5m_percent = mean(uptake_3y5m_percent)) %>% 
+  mutate(time_period = "LD")
+#Add in Island data
+SecondMMR_Islands = Full_seconddose_MMR %>% 
+  filter(area_name %in% c("Orkney Islands", "Shetland Islands", "Western Isles")) %>% 
+  filter(!(cohort %in% c("2019", "Jan-20", "Feb-20", "Mar-20", "Aug-20", "Sep-20", "Oct-20", "Nov-20"))) %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_3y5m_num = sum(uptake_3y5m_num), uptake_3y5m_percent = mean(uptake_3y5m_percent)) %>% 
+  mutate(time_period = "LD")
+#and join
+Section2suptbl2_SecondMMR_LD = rbind(Section2suptbl2_SecondMMR_LD, SecondMMR_Islands)
+
+#Back to obtaining change from 2019
+Section2suptbl2_SecondMMR_LD = full_join(Section2suptbl2_SecondMMR_LD, SecondMMR_2019areapercentage)
+Section2suptbl2_SecondMMR_LD = Section2suptbl2_SecondMMR_LD %>% 
+  mutate(changecf2019 = uptake_3y5m_percent-percentuptake2019)
+Section2suptbl2_SecondMMR_LD = Section2suptbl2_SecondMMR_LD %>% 
+  select(area_name, denominator, uptake_3y5m_percent, uptake_3y5m_num, time_period, changecf2019)
+
+#Post LD
+Section2suptbl2_SecondMMR_PostLD = Section2suptbl2_SecondMMR %>% 
+  filter(lockdown.factor == "Post_LD_2020") %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_3y5m_num = sum(uptake_3y5m_num), uptake_3y5m_percent = mean(uptake_3y5m_percent)) %>% 
+  mutate(time_period = "PostLD")
+
+#Add in Island data
+SecondMMR_Islands_PostLD = Full_seconddose_MMR %>% 
+  filter(area_name %in% c("Orkney Islands", "Shetland Islands", "Western Isles")) %>% 
+  filter(cohort== c("Aug-20", "Sep-20")) %>% 
+  select(area_name, cohort, denominator, uptake_3y5m_num, uptake_3y5m_percent) %>% 
+  group_by(area_name) %>% 
+  summarise(denominator = sum(denominator), uptake_3y5m_num = sum(uptake_3y5m_num), uptake_3y5m_percent = mean(uptake_3y5m_percent)) %>% 
+  mutate(time_period = "PostLD")
+#and join
+Section2suptbl2_SecondMMR_PostLD = rbind(Section2suptbl2_SecondMMR_PostLD, SecondMMR_Islands_PostLD)
+#Get change cf 2019
+Section2suptbl2_SecondMMR_PostLD = full_join(Section2suptbl2_SecondMMR_PostLD, SecondMMR_2019areapercentage)
+Section2suptbl2_SecondMMR_PostLD = Section2suptbl2_SecondMMR_PostLD %>% 
+  mutate(changecf2019 = uptake_3y5m_percent-percentuptake2019)
+Section2suptbl2_SecondMMR_PostLD = Section2suptbl2_SecondMMR_PostLD %>% 
+  select(area_name, denominator, uptake_3y5m_percent, uptake_3y5m_num, time_period, changecf2019)
+
+
+#Join together
+FullSection2suptbl2_SecondMMR = full_join(Section2suptbl2_SecondMMR_2019, Section2suptbl2_SecondMMR_PreLD)
+FullSection2suptbl2_SecondMMR = full_join(FullSection2suptbl2_SecondMMR, Section2suptbl2_SecondMMR_LD)
+FullSection2suptbl2_SecondMMR = full_join(FullSection2suptbl2_SecondMMR, Section2suptbl2_SecondMMR_PostLD)
+FullSection2suptbl2_SecondMMR = FullSection2suptbl2_SecondMMR%>% 
+  mutate (uptake_3y5m_percent= round (uptake_3y5m_percent, digits = 1)) %>% 
+  mutate (changecf2019= round (changecf2019,digits = 1))
+
+FullSection2suptbl2_SecondMMR = FullSection2suptbl2_SecondMMR[,c(1,5,4,3,2,6)]
+
+write_csv(FullSection2suptbl2_SecondMMR, file = "Exported tables/FullSection2suptbl2_SecondMMR.csv")
+
+###Try to add data from tidy loop tables (need to run loop script Second)
+#cahnge colnames
+colnames(FullSection2suptbl2_SecondMMR) = c("HSCP", "time_period", "% uptake", "num uptake", "denominator", "%change from 2019")
+#seprate out OR tbl by period and add column in order to join properly (need to run loop script)
+SecondMMR_HSCPORtbl_tidypreLD = SecondMMR_HSCPORtbl_tidy %>% 
+  select(c(HSCP, OR_2019_PreLD, OR_2019_PreLD_lwr, OR_2019_PreLD_upr, OR_2019_PreLD_pvalue, OR_2019_PreLD_sig_diff)) %>% 
+  mutate(time_period = "PreLD")
+SecondMMR_HSCPORtbl_tidyLD = SecondMMR_HSCPORtbl_tidy %>% 
+  select(c(HSCP, OR_2019_LD, OR_2019_LD_lwr, OR_2019_LD_upr, OR_2019_LD_pvalue, OR_2019_LD_sig_diff)) %>% 
+  mutate(time_period = "LD")
+SecondMMR_HSCPORtbl_tidyPostLD = SecondMMR_HSCPORtbl_tidy %>% 
+  select(c(HSCP, OR_2019_PostLD, OR_2019_PostLD_lwr, OR_2019_PostLD_upr, OR_2019_PostLD_pvalue, OR_2019_PostLD_sig_diff)) %>% 
+  mutate(time_period = "PostLD")
+#Join
+FullSection2suptbl2_SecondMMR_OR = full_join(FullSection2suptbl2_SecondMMR, SecondMMR_HSCPORtbl_tidypreLD)
+FullSection2suptbl2_SecondMMR_OR = full_join(FullSection2suptbl2_SecondMMR_OR, SecondMMR_HSCPORtbl_tidyLD)
+FullSection2suptbl2_SecondMMR_OR = full_join(FullSection2suptbl2_SecondMMR_OR, SecondMMR_HSCPORtbl_tidyPostLD)
+
+write_csv(FullSection2suptbl2_SecondMMR_OR, file = "Exported tables/FullSection2suptbl2_SecondMMR_OR.csv")

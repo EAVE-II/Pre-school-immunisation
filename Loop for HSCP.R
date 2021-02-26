@@ -102,18 +102,19 @@ for(i in 1:nrow(First6in1_HSCPORtbl)){
   First6in1_HSCPORtbl[i,11] <- ifelse(First6in1_HSCPORtbl[i,10] < 0.05, 1, 0)
   # Repeat for PostLD
   # For 2019 vs Jan-Mar for NHS HB level of interest (ith one), the OR of interest is the tp
-  First6in1_HSCPORtbl[i,12] <- odd_ratios[3]
-  First6in1_HSCPORtbl[i,13] <- odd_ratio_confint[3,1]
-  First6in1_HSCPORtbl[i,14] <- odd_ratio_confint[3,2]
+  First6in1_HSCPORtbl[i,12] <- odd_ratios[4]
+  First6in1_HSCPORtbl[i,13] <- odd_ratio_confint[4,1]
+  First6in1_HSCPORtbl[i,14] <- odd_ratio_confint[4,2]
   
   # Put in p-value and decide if sig diff (<0.05)
-  First6in1_HSCPORtbl[i,15] <- model_pvalues[3]
+  First6in1_HSCPORtbl[i,15] <- model_pvalues[4]
   
   First6in1_HSCPORtbl[i,16] <- ifelse(First6in1_HSCPORtbl[i,15] < 0.05, 1, 0)
 }
 
 First6in1_HSCPORtbl
 summary(First6in1model_HSCP)
+
 anova(First6in1model_HSCP, test="LRT")
 ##Tidy the tbl with rounding
 First6in1_HSCPORtbl_tidy = First6in1_HSCPORtbl %>% 
@@ -230,12 +231,12 @@ for(i in 1:nrow(Second6in1_HSCPORtbl)){
   Second6in1_HSCPORtbl[i,11] <- ifelse(Second6in1_HSCPORtbl[i,10] < 0.05, 1, 0)
   # Repeat for PostLD
   # For 2019 vs Jan-Mar for NHS HB level of interest (ith one), the OR of interest is the tp
-  Second6in1_HSCPORtbl[i,12] <- odd_ratios[3]
-  Second6in1_HSCPORtbl[i,13] <- odd_ratio_confint[3,1]
-  Second6in1_HSCPORtbl[i,14] <- odd_ratio_confint[3,2]
+  Second6in1_HSCPORtbl[i,12] <- odd_ratios[4]
+  Second6in1_HSCPORtbl[i,13] <- odd_ratio_confint[4,1]
+  Second6in1_HSCPORtbl[i,14] <- odd_ratio_confint[4,2]
   
   # Put in p-value and decide if sig diff (<0.05)
-  Second6in1_HSCPORtbl[i,15] <- model_pvalues[3]
+  Second6in1_HSCPORtbl[i,15] <- model_pvalues[4]
   
   Second6in1_HSCPORtbl[i,16] <- ifelse(Second6in1_HSCPORtbl[i,15] < 0.05, 1, 0)
 }
@@ -359,12 +360,12 @@ for(i in 1:nrow(Third6in1_HSCPORtbl)){
   Third6in1_HSCPORtbl[i,11] <- ifelse(Third6in1_HSCPORtbl[i,10] < 0.05, 1, 0)
   # Repeat for PostLD
   # For 2019 vs Jan-Mar for NHS HB level of interest (ith one), the OR of interest is the tp
-  Third6in1_HSCPORtbl[i,12] <- odd_ratios[3]
-  Third6in1_HSCPORtbl[i,13] <- odd_ratio_confint[3,1]
-  Third6in1_HSCPORtbl[i,14] <- odd_ratio_confint[3,2]
+  Third6in1_HSCPORtbl[i,12] <- odd_ratios[4]
+  Third6in1_HSCPORtbl[i,13] <- odd_ratio_confint[4,1]
+  Third6in1_HSCPORtbl[i,14] <- odd_ratio_confint[4,2]
   
   # Put in p-value and decide if sig diff (<0.05)
-  Third6in1_HSCPORtbl[i,15] <- model_pvalues[3]
+  Third6in1_HSCPORtbl[i,15] <- model_pvalues[4]
   
   Third6in1_HSCPORtbl[i,16] <- ifelse(Third6in1_HSCPORtbl[i,15] < 0.05, 1, 0)
 }
@@ -488,12 +489,12 @@ for(i in 1:nrow(FirstMMR_HSCPORtbl)){
   FirstMMR_HSCPORtbl[i,11] <- ifelse(FirstMMR_HSCPORtbl[i,10] < 0.05, 1, 0)
   # Repeat for PostLD
   # For 2019 vs Jan-Mar for NHS HB level of interest (ith one), the OR of interest is the tp
-  FirstMMR_HSCPORtbl[i,12] <- odd_ratios[3]
-  FirstMMR_HSCPORtbl[i,13] <- odd_ratio_confint[3,1]
-  FirstMMR_HSCPORtbl[i,14] <- odd_ratio_confint[3,2]
+  FirstMMR_HSCPORtbl[i,12] <- odd_ratios[4]
+  FirstMMR_HSCPORtbl[i,13] <- odd_ratio_confint[4,1]
+  FirstMMR_HSCPORtbl[i,14] <- odd_ratio_confint[4,2]
   
   # Put in p-value and decide if sig diff (<0.05)
-  FirstMMR_HSCPORtbl[i,15] <- model_pvalues[3]
+  FirstMMR_HSCPORtbl[i,15] <- model_pvalues[4]
   
   FirstMMR_HSCPORtbl[i,16] <- ifelse(FirstMMR_HSCPORtbl[i,15] < 0.05, 1, 0)
 }
@@ -618,12 +619,12 @@ for(i in 1:nrow(SecondMMR_HSCPORtbl)){
   SecondMMR_HSCPORtbl[i,11] <- ifelse(SecondMMR_HSCPORtbl[i,10] < 0.05, 1, 0)
   # Repeat for PostLD
   # For 2019 vs Jan-Mar for NHS HB level of interest (ith one), the OR of interest is the tp
-  SecondMMR_HSCPORtbl[i,12] <- odd_ratios[3]
-  SecondMMR_HSCPORtbl[i,13] <- odd_ratio_confint[3,1]
-  SecondMMR_HSCPORtbl[i,14] <- odd_ratio_confint[3,2]
+  SecondMMR_HSCPORtbl[i,12] <- odd_ratios[4]
+  SecondMMR_HSCPORtbl[i,13] <- odd_ratio_confint[4,1]
+  SecondMMR_HSCPORtbl[i,14] <- odd_ratio_confint[4,2]
   
   # Put in p-value and decide if sig diff (<0.05)
-  SecondMMR_HSCPORtbl[i,15] <- model_pvalues[3]
+  SecondMMR_HSCPORtbl[i,15] <- model_pvalues[4]
   
   SecondMMR_HSCPORtbl[i,16] <- ifelse(SecondMMR_HSCPORtbl[i,15] < 0.05, 1, 0)
 }
