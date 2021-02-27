@@ -147,7 +147,7 @@ library(viridis)
 First6in1_percentchange_poly <- merge(x=HSCP_map, y=First6in1_HSPC_percentchange_2019andLD, by.x = "HIAName", by.y = "area_name")
 
 First_6in1_percentchange_map = tm_shape(First6in1_percentchange_poly)+
-  tm_fill(col= "percent_change", palette = "RdYlGn", title = "Absolute % change LD vs 2019")+
+  tm_fill(col= "percent_change", palette = "RdYlGn", title = "% point change LD vs 2019")+
   tm_layout(frame = FALSE, main.title = "First 6in1 % change from 2019",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
@@ -157,7 +157,7 @@ First_6in1_percentchange_map
 First6in1_percentchange_poly_sig <- merge(x=HSCP_map, y=First6in1_HSPC_percentchange_2019andLD_SIGONLY, by.x = "HIAName", by.y = "area_name")
 
 First_6in1_percentchange_map_sig = tm_shape(First6in1_percentchange_poly_sig)+
-  tm_fill(col= "percent_change", palette = "RdYlGn", title = "Absolute % change LD vs 2019")+
+  tm_fill(col= "percent_change", palette = "RdYlGn", title = "% point change LD vs 2019")+
   tm_layout(frame = FALSE, main.title = "First 6in1 % change from 2019 (stat sig)",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
@@ -221,7 +221,7 @@ library(viridis)
 Second6in1_percentchange_poly <- merge(x=HSCP_map, y=Second6in1_HSPC_percentchange_2019andLD, by.x = "HIAName", by.y = "area_name")
 
 Second_6in1_percentchange_map = tm_shape(Second6in1_percentchange_poly)+
-  tm_fill(col= "percent_change", palette = "RdYlGn", title = "Absolute % change LD vs 2019")+
+  tm_fill(col= "percent_change", palette = "RdYlGn", title = "% point change LD vs 2019")+
   tm_layout(frame = FALSE, main.title = "Second 6in1 % change from 2019",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
@@ -234,7 +234,7 @@ Second6in1_HSPC_percentchange_2019andLD_SIGONLY = Second6in1_HSPC_percentchange_
 Second6in1_percentchange_poly_sig <- merge(x=HSCP_map, y=Second6in1_HSPC_percentchange_2019andLD_SIGONLY, by.x = "HIAName", by.y = "area_name")
 
 Second_6in1_percentchange_map_sig = tm_shape(Second6in1_percentchange_poly_sig)+
-  tm_fill(col= "percent_change", palette = "RdYlGn", title = "Absolute % change LD vs 2019")+
+  tm_fill(col= "percent_change", palette = "RdYlGn", title = "% point change LD vs 2019")+
   tm_layout(frame = FALSE, main.title = "Second 6in1 % change from 2019 (stat sig)",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
@@ -296,11 +296,24 @@ library(viridis)
 Third6in1_percentchange_poly <- merge(x=HSCP_map, y=Third6in1_HSPC_percentchange_2019andLD, by.x = "HIAName", by.y = "area_name")
 
 Third_6in1_percentchange_map = tm_shape(Third6in1_percentchange_poly)+
-  tm_fill(col= "percent_change", palette = "RdYlGn", title = "Absolute % change LD vs 2019")+
+  tm_fill(col= "percent_change", palette = "RdYlGn", title = "% point change LD vs 2019")+
   tm_layout(frame = FALSE, main.title = "Third 6in1 % change from 2019",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 Third_6in1_percentchange_map
+
+#For significant changes only 
+
+Third6in1_HSPC_percentchange_2019andLD_SIGONLY = Third6in1_HSPC_percentchange_2019andLD %>% 
+  filter(!(area_name %in% c("Moray", "Inverclyde", "Angus", "Aberdeenshire")))
+Third6in1_percentchange_poly_sig <- merge(x=HSCP_map, y=Third6in1_HSPC_percentchange_2019andLD_SIGONLY, by.x = "HIAName", by.y = "area_name")
+
+Third_6in1_percentchange_map_sig = tm_shape(Third6in1_percentchange_poly_sig)+
+  tm_fill(col= "percent_change", palette = "RdYlGn", title =  "% point change LD vs 2019")+
+  tm_layout(frame = FALSE, main.title = "Third 6in1 % change from 2019 (stat sig)",
+            main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
+
+Third_6in1_percentchange_map_sig
 
 #Bar chart plot
 Third6in1_HSPC_percentchange_bar = Third6in1_HSPC_percentchange_2019andLD %>% 
@@ -357,11 +370,14 @@ library(viridis)
 FirstMMR_percentchange_poly <- merge(x=HSCP_map, y=FirstMMR_HSPC_percentchange_2019andLD, by.x = "HIAName", by.y = "area_name")
 
 First_MMR_percentchange_map = tm_shape(FirstMMR_percentchange_poly)+
-  tm_fill(col= "percent_change", palette = "YlGn", title = "Absolute % change LD vs 2019")+
+  tm_fill(col= "percent_change", palette = "YlGn", title = "% point change LD vs 2019")+
   tm_layout(frame = FALSE, main.title = "First MMR % change from 2019",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
-First_MMR_percentchange_map ##NOte change in pallet as none fell. Cross checked for Moray
+First_MMR_percentchange_map ##NOte change in pallet as none fell. Cross checked for Moray +++++all theses results were sigfnicant 
+
+First_MMR_percentchange_map_sig = First_MMR_percentchange_map
+First_MMR_percentchange_map_sig
 #Bar chart plot
 FirstMMR_HSPC_percentchange_bar = FirstMMR_HSPC_percentchange_2019andLD %>% 
   ggplot(aes(y=percent_change, x=area_name)) + 
@@ -419,11 +435,26 @@ library(viridis)
 SecondMMR_percentchange_poly <- merge(x=HSCP_map, y=SecondMMR_HSPC_percentchange_2019andLD, by.x = "HIAName", by.y = "area_name")
 
 Second_MMR_percentchange_map = tm_shape(SecondMMR_percentchange_poly)+
-  tm_fill(col= "percent_change", palette = "YlGn", title = "Absolute % change LD vs 2019")+
+  tm_fill(col= "percent_change", palette = "YlGn", title = "% point change LD vs 2019")+
   tm_layout(frame = FALSE, main.title = "Second MMR % change from 2019",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 Second_MMR_percentchange_map
+
+#For significant changes only 
+
+SecondMMR_HSPC_percentchange_2019andLD_SIGONLY = SecondMMR_HSPC_percentchange_2019andLD %>% 
+  filter(!(area_name %in% c("East Ayrshire", "Argyll and Bute")))
+
+SecondMMR_percentchange_poly_sig <- merge(x=HSCP_map, y=SecondMMR_HSPC_percentchange_2019andLD_SIGONLY, by.x = "HIAName", by.y = "area_name")
+
+Second_MMR_percentchange_map_sig = tm_shape(SecondMMR_percentchange_poly_sig)+
+  tm_fill(col= "percent_change", palette = "RdYlGn", title = "% point change LD vs 2019")+
+  tm_layout(frame = FALSE, main.title = "Second MMR % change from 2019 (stat sig)",
+            main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
+
+Second_MMR_percentchange_map_sig
+
 #Bar chart plot
 SecondMMR_HSPC_percentchange_bar = SecondMMR_HSPC_percentchange_2019andLD %>% 
   ggplot(aes(y=percent_change, x=area_name)) + 
@@ -1439,6 +1470,16 @@ tmap_arrange(First_6in1_2019_map, First_6in1_percentchange_map, Second_6in1_2019
              nrow = 3) 
 tmap_arrange(First_MMR_2019_map, First_MMR_percentchange_map, Second_MMR_2019_map, Second_MMR_percentchange_map,  ncol = 2,
              nrow = 2)
+
+###Export the sig only percent change maps with 2019
+tmap_arrange(First_6in1_2019_map, First_6in1_percentchange_map_sig, Second_6in1_2019_map, Second_6in1_percentchange_map_sig, Third_6in1_2019_map, Third_6in1_percentchange_map_sig,  ncol = 2,
+             nrow = 3) 
+tmap_arrange(First_MMR_2019_map, First_MMR_percentchange_map_sig, Second_MMR_2019_map, Second_MMR_percentchange_map_sig,  ncol = 2,
+             nrow = 2)
+##Export the point change maps only
+tmap_arrange(First_6in1_percentchange_map, Second_6in1_percentchange_map, Third_6in1_percentchange_map, First_MMR_percentchange_map, Second_MMR_percentchange_map, ncol = 3,
+             nrow = 2)
+
 debuggingState(on=FALSE)
 ###########Make the table for supplementary info
 ####Making tablefor Section1 table 1
