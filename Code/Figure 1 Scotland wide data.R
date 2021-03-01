@@ -1111,3 +1111,459 @@ Section1_supptbl_full = full_join(Section1_supptbl1_all6in1, Section1_supptbl1_a
 
 write_csv(Section1_supptbl_full, file = "Exported tables/Section1_supptbl_full.csv")
 
+
+############
+##For comparison with English data, 6 monthly uptakes
+First_6in1_by_LDperiod_cfEngland = Scotland_firstdose_6in1 %>%
+  group_by(lockdown.factor) %>% 
+  summarise(denominator, uptake_24weeks_num, uptake_24weeks_percent) %>% 
+  mutate(unvaccinated = denominator-uptake_24weeks_num)%>% 
+  group_by(lockdown.factor)%>% 
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(uptake_24weeks_num), total_unvaccinated = sum(unvaccinated), mean_percent = mean(uptake_24weeks_percent)) %>% 
+  mutate (vaccinated.factor = total_vaccinated %>% 
+            factor())%>%
+  mutate (unvaccinated.factor = 
+            total_unvaccinated %>% 
+            factor()) 
+
+
+Second_6in1_by_LDperiod_cfEngland = Scotland_seconddose_6in1 %>%
+  group_by(lockdown.factor) %>% 
+  summarise(denominator, uptake_28weeks_num, uptake_28weeks_percent) %>% 
+  mutate(unvaccinated = denominator-uptake_28weeks_num)%>% 
+  group_by(lockdown.factor)%>% 
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(uptake_28weeks_num), total_unvaccinated = sum(unvaccinated), mean_percent = mean(uptake_28weeks_percent)) %>% 
+  mutate (vaccinated.factor = total_vaccinated %>% 
+            factor())%>%
+  mutate (unvaccinated.factor = 
+            total_unvaccinated %>% 
+            factor())
+
+Third_6in1_by_LDperiod_cfEngland = Scotland_thirddose_6in1 %>%
+  group_by(lockdown.factor) %>% 
+  summarise(denominator, uptake_32weeks_num, uptake_32weeks_percent) %>% 
+  mutate(unvaccinated = denominator-uptake_32weeks_num)%>% 
+  group_by(lockdown.factor)%>% 
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(uptake_32weeks_num), total_unvaccinated = sum(unvaccinated), mean_percent = mean(uptake_32weeks_percent)) %>% 
+  mutate (vaccinated.factor = total_vaccinated %>% 
+            factor())%>%
+  mutate (unvaccinated.factor = 
+            total_unvaccinated %>% 
+            factor())
+
+First_MMR_by_LDperiod_cfEngland = Scotland_firstdose_MMR %>%
+  group_by(lockdown.factor) %>% 
+  summarise(denominator, uptake_16m_num, uptake_16m_percent) %>% 
+  mutate(unvaccinated = denominator-uptake_16m_num)%>% 
+  group_by(lockdown.factor)%>% 
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(uptake_16m_num), total_unvaccinated = sum(unvaccinated), mean_percent = mean(uptake_16m_percent)) %>% 
+  mutate (vaccinated.factor = total_vaccinated %>% 
+            factor())%>%
+  mutate (unvaccinated.factor = 
+            total_unvaccinated %>% 
+            factor())
+
+#Second MMR (no compaison for Enlgand)
+Second_MMR_by_LDperiod_cfEngland = Scotland_seconddose_MMR %>%
+  group_by(lockdown.factor) %>% 
+  summarise(denominator, uptake_3y8m_num, uptake_3y8m_percent) %>% 
+  mutate(unvaccinated = denominator-uptake_3y8m_num)%>% 
+  group_by(lockdown.factor)%>% 
+  summarise(total_eligable = sum(denominator), total_vaccinated = sum(uptake_3y8m_num), total_unvaccinated = sum(unvaccinated), mean_percent = mean(uptake_3y8m_percent)) %>% 
+  mutate (vaccinated.factor = total_vaccinated %>% 
+            factor())%>%
+  mutate (unvaccinated.factor = 
+            total_unvaccinated %>% 
+            factor())
+
+##LD bar plots for comparison with England
+First_6in1_LDplot_cfEngland = First_6in1_by_LDperiod_cfEngland %>% 
+  ggplot(aes(x=lockdown.factor, y=mean_percent, fill = lockdown.factor)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  theme_classic()+
+  theme(legend.position="none")+
+  labs(x = "Lockdown period",
+       y = "% vaccinated by age 24weeks",
+       title = "First dose 6in1")+
+  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
+  scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))+
+  scale_fill_brewer(palette="PRGn")+
+  theme(aspect.ratio = 1.5/1)
+
+First_6in1_LDplot_cfEngland= First_6in1_LDplot_cfEngland + geom_hline(yintercept = 97.9, linetype="dashed", 
+                                                  color = "Purple", size=0.5)
+First_6in1_LDplot_cfEngland
+
+#Second dose 6in1
+Second_6in1_LDplot_cfEngland = Second_6in1_by_LDperiod_cfEngland %>% 
+  ggplot(aes(x=lockdown.factor, y=mean_percent, fill = lockdown.factor)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  theme_classic()+
+  theme(legend.position="none")+
+  labs(x = "Lockdown period",
+       y = "% vaccinated by age 28 weeks",
+       title = "Second dose 6in1")+
+  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
+  scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))+
+  scale_fill_brewer(palette="PRGn")+
+  theme(aspect.ratio = 1.5/1)
+  
+
+Second_6in1_LDplot_cfEngland= Second_6in1_LDplot_cfEngland + geom_hline(yintercept = 96.7, linetype="dashed", 
+                                                    color = "purple", size=0.5)
+Second_6in1_LDplot_cfEngland
+
+#Third dose 6in1
+Third_6in1_LDplot_cfEngland = Third_6in1_by_LDperiod_cfEngland %>% 
+  ggplot(aes(x=lockdown.factor, y=mean_percent, fill = lockdown.factor)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  theme_classic()+
+  theme(legend.position="none")+
+  labs(x = "Lockdown period",
+       y = "% vaccinated by age 32 weeks",
+       title = "Third dose 6in1")+
+  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
+  scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))+
+  scale_fill_brewer(palette="PRGn")+
+  theme(aspect.ratio = 1.5/1)
+
+Third_6in1_LDplot_cfEngland= Third_6in1_LDplot_cfEngland + geom_hline(yintercept = 94, linetype="dashed", 
+                                                  color = "Purple", size=0.5)
+Third_6in1_LDplot_cfEngland
+
+#First dose MMR
+First_MMR_LDplot_cfEngland = First_MMR_by_LDperiod_cfEngland %>% 
+  ggplot(aes(x=lockdown.factor, y=mean_percent, fill = lockdown.factor)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  theme_classic()+
+  theme(legend.position="none")+
+  labs(x = "Lockdown period",
+       y = "% vaccinated by 16 months",
+       title = "First dose MMR")+
+  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
+  scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))+
+  scale_fill_brewer(palette="PRGn")+
+  theme(aspect.ratio = 1.5/1)
+
+First_MMR_LDplot_cfEngland= First_MMR_LDplot_cfEngland + geom_hline(yintercept = 91.1, linetype="dashed", 
+                                                color = "Purple", size=0.5)
+First_MMR_LDplot_cfEngland
+
+
+##Second dose MMR (not for ENgland)
+Second_MMR_LDplot_cfEngland = Second_MMR_by_LDperiod_cfEngland %>% 
+  ggplot(aes(x=lockdown.factor, y=mean_percent, fill = lockdown.factor)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  theme_classic()+
+  theme(legend.position="none")+
+  labs(x = "Lockdown period",
+       y = "% vaccinated by 16 months",
+       title = "Second dose MMR")+
+  scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
+  scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))+
+  scale_fill_brewer(palette="PRGn")+
+  theme(aspect.ratio = 1.5/1)
+
+Second_MMR_LDplot_cfEngland= Second_MMR_LDplot_cfEngland + geom_hline(yintercept = 80.8, linetype="dashed", 
+                                                                      color = "Purple", size=0.5)
+Second_MMR_LDplot_cfEngland
+
+Scottishuptake_forcomaprisonwithEnlgand = ggarrange(First_6in1_LDplot_cfEngland, Second_6in1_LDplot_cfEngland, Third_6in1_LDplot_cfEngland, First_MMR_LDplot_cfEngland, Second_MMR_LDplot_cfEngland,
+                                                    labels = "Scotland",
+                                                    legend = NULL,
+                                                    ncol = 3, nrow = 2)
+Scottishuptake_forcomaprisonwithEnlgand
+
+###Logestic regression for comparisons with ENgland nad later time periods
+#First6in1
+Weekly_first6in1_LDperiod_cfEnlgand = Scotland_firstdose_6in1 %>% 
+  group_by(lockdown.factor) %>% 
+  summarise(cohort, denominator, uptake_24weeks_num, uptake_24weeks_percent)%>% 
+  mutate(unvaccinated = denominator-uptake_24weeks_num) %>% 
+  mutate (vaccinated.factor = 
+            uptake_24weeks_num %>% 
+            factor()) %>% 
+  mutate (unvaccinated.factor = 
+            unvaccinated %>% 
+            factor())
+
+Weekly_first6in1_LDperiod_cfEnlgand = Weekly_first6in1_LDperiod_cfEnlgand %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("Baseline_2019"))
+
+First6in1_Single_regression_tbl_cfEnlgand = cbind(Weekly_first6in1_LDperiod_cfEnlgand$uptake_24weeks_num, Weekly_first6in1_LDperiod_cfEnlgand$unvaccinated)
+
+model_first6in1_scotland_2019_cfEnlgand = glm(First6in1_Single_regression_tbl_cfEnlgand ~ Weekly_first6in1_LDperiod_cfEnlgand$lockdown.factor,
+                                    family="binomial")
+
+summary(model_first6in1_scotland_2019_cfEnlgand)
+
+exp(model_first6in1_scotland_2019_cfEnlgand$coefficients)
+exp(confint(model_first6in1_scotland_2019_cfEnlgand))  
+#Second6in1
+Weekly_second6in1_LDperiod_cfEnlgand = Scotland_seconddose_6in1 %>% 
+  group_by(lockdown.factor) %>% 
+  summarise(cohort, denominator, uptake_28weeks_num, uptake_28weeks_percent)%>% 
+  mutate(unvaccinated = denominator-uptake_28weeks_num) %>% 
+  mutate (vaccinated.factor = 
+            uptake_28weeks_num %>% 
+            factor()) %>% 
+  mutate (unvaccinated.factor = 
+            unvaccinated %>% 
+            factor())
+
+Weekly_second6in1_LDperiod_cfEnlgand = Weekly_second6in1_LDperiod_cfEnlgand %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("Baseline_2019"))
+
+Second6in1_Single_regression_tbl_cfEnlgand = cbind(Weekly_second6in1_LDperiod_cfEnlgand$uptake_28weeks_num, Weekly_second6in1_LDperiod_cfEnlgand$unvaccinated)
+
+model_second6in1_scotland_2019_cfEnlgand = glm(Second6in1_Single_regression_tbl_cfEnlgand ~ Weekly_second6in1_LDperiod_cfEnlgand$lockdown.factor,
+                                              family="binomial")
+
+summary(model_second6in1_scotland_2019_cfEnlgand)
+
+exp(model_second6in1_scotland_2019_cfEnlgand$coefficients)
+exp(confint(model_second6in1_scotland_2019_cfEnlgand)) 
+
+#Third6in1
+Weekly_third6in1_LDperiod_cfEnlgand = Scotland_thirddose_6in1 %>% 
+  group_by(lockdown.factor) %>% 
+  summarise(cohort, denominator, uptake_32weeks_num, uptake_32weeks_percent)%>% 
+  mutate(unvaccinated = denominator-uptake_32weeks_num) %>% 
+  mutate (vaccinated.factor = 
+            uptake_32weeks_num %>% 
+            factor()) %>% 
+  mutate (unvaccinated.factor = 
+            unvaccinated %>% 
+            factor())
+
+Weekly_third6in1_LDperiod_cfEnlgand = Weekly_third6in1_LDperiod_cfEnlgand %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("Baseline_2019"))
+
+Third6in1_Single_regression_tbl_cfEnlgand = cbind(Weekly_third6in1_LDperiod_cfEnlgand$uptake_32weeks_num, Weekly_third6in1_LDperiod_cfEnlgand$unvaccinated)
+
+model_third6in1_scotland_2019_cfEnlgand = glm(Third6in1_Single_regression_tbl_cfEnlgand ~ Weekly_third6in1_LDperiod_cfEnlgand$lockdown.factor,
+                                               family="binomial")
+
+summary(model_third6in1_scotland_2019_cfEnlgand)
+
+exp(model_third6in1_scotland_2019_cfEnlgand$coefficients)
+exp(confint(model_third6in1_scotland_2019_cfEnlgand)) 
+
+#First MME
+Weekly_firstMMR_LDperiod_cfEnlgand = Scotland_firstdose_MMR %>% 
+  group_by(lockdown.factor) %>% 
+  summarise(cohort, denominator, uptake_16m_num, uptake_16m_percent)%>% 
+  mutate(unvaccinated = denominator-uptake_16m_num) %>% 
+  mutate (vaccinated.factor = 
+            uptake_16m_num %>% 
+            factor()) %>% 
+  mutate (unvaccinated.factor = 
+            unvaccinated %>% 
+            factor())
+
+Weekly_firstMMR_LDperiod_cfEnlgand = Weekly_firstMMR_LDperiod_cfEnlgand %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("Baseline_2019"))
+
+FirstMMR_Single_regression_tbl_cfEnlgand = cbind(Weekly_firstMMR_LDperiod_cfEnlgand$uptake_16m_num, Weekly_firstMMR_LDperiod_cfEnlgand$unvaccinated)
+
+model_firstMMR_scotland_2019_cfEnlgand = glm(FirstMMR_Single_regression_tbl_cfEnlgand ~ Weekly_firstMMR_LDperiod_cfEnlgand$lockdown.factor,
+                                              family="binomial")
+
+summary(model_firstMMR_scotland_2019_cfEnlgand)
+
+exp(model_firstMMR_scotland_2019_cfEnlgand$coefficients)
+exp(confint(model_firstMMR_scotland_2019_cfEnlgand)) 
+
+##Second MMR (NB no data for England)
+Weekly_SecondMMR_LDperiod_cfEnlgand = Scotland_seconddose_MMR %>% 
+  group_by(lockdown.factor) %>% 
+  summarise(cohort, denominator, uptake_3y8m_num, uptake_3y8m_percent)%>% 
+  mutate(unvaccinated = denominator-uptake_3y8m_num) %>% 
+  mutate (vaccinated.factor = 
+            uptake_3y8m_num %>% 
+            factor()) %>% 
+  mutate (unvaccinated.factor = 
+            unvaccinated %>% 
+            factor())
+
+Weekly_SecondMMR_LDperiod_cfEnlgand = Weekly_SecondMMR_LDperiod_cfEnlgand %>% 
+  mutate(lockdown.factor = lockdown.factor %>%
+           fct_relevel("Baseline_2019"))
+
+SecondMMR_Single_regression_tbl_cfEnlgand = cbind(Weekly_SecondMMR_LDperiod_cfEnlgand$uptake_3y8m_num, Weekly_SecondMMR_LDperiod_cfEnlgand$unvaccinated)
+
+model_SecondMMR_scotland_2019_cfEnlgand = glm(SecondMMR_Single_regression_tbl_cfEnlgand ~ Weekly_SecondMMR_LDperiod_cfEnlgand$lockdown.factor,
+                                              family="binomial")
+
+summary(model_SecondMMR_scotland_2019_cfEnlgand)
+
+exp(model_SecondMMR_scotland_2019_cfEnlgand$coefficients)
+exp(confint(model_SecondMMR_scotland_2019_cfEnlgand)) 
+
+
+
+##PUt above results into a nice table
+library(broom)
+First6in1_model_tbl_cfEnlgand = model_first6in1_scotland_2019_cfEnlgand%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low) %>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE)) %>% 
+  mutate(lockdown.factor = term) 
+First6in1_model_tbl_cfEnlgand
+
+Second6in1_model_tbl_cfEnlgand = model_second6in1_scotland_2019_cfEnlgand%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low)%>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+Third6in1_model_tbl_cfEnlgand = model_third6in1_scotland_2019_cfEnlgand%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low)%>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+FirstMMR_model_tbl_cfEnlgand = model_firstMMR_scotland_2019_cfEnlgand%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low)%>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+SecondMMR_model_tbl_cfEnlgand = model_SecondMMR_scotland_2019_cfEnlgand%>% 
+  tidy(conf.int = TRUE, exp = TRUE) %>% 
+  rename(OR = estimate, upperCI = conf.high, lowerCI = conf.low)%>% 
+  filter(str_detect(term,"(Intercept)", negate = TRUE))
+
+###Making table S5 for later age comparisons (similar to table 10)
+##First 6in1
+
+TblS5_First_6in1_by_LDperiod = First_6in1_by_LDperiod_cfEngland%>% 
+  mutate (mean_percent= round (mean_percent, digits = 1)) 
+TblS5_First_6in1_by_LDperiod$time_period <- c("2019", "Pre LD", "LD", "Post LD")
+TblS5_First_6in1_by_LDperiod = TblS5_First_6in1_by_LDperiod %>% 
+  select(time_period, mean_percent) %>% 
+  mutate("Vaccine"="First6in1") %>% 
+  mutate("% point  change from 2019" = mean_percent-97.9)
+TblS5_First_6in1_by_LDperiod = TblS5_First_6in1_by_LDperiod[,c(3,1,2,4)]
+
+First6in1_model_tbl_cfEnlgand$time_period <- c("Pre LD", "LD", "Post LD") 
+First6in1_model_tbl_cfEnlgand = First6in1_model_tbl_cfEnlgand %>% 
+  select(time_period, OR, lowerCI, upperCI, p.value) %>% 
+  mutate (OR= round (OR, digits = 2)) %>% 
+  mutate (lowerCI= round (lowerCI, digits = 2)) %>%  
+  mutate (upperCI= round (upperCI, digits = 2)) %>% 
+  mutate (p.value = round (p.value, digits =2))
+
+TblS5_First_6in1_by_LDperiod = full_join(TblS5_First_6in1_by_LDperiod, First6in1_model_tbl_cfEnlgand)
+
+colnames(TblS5_First_6in1_by_LDperiod) = c("Vaccine", "Time period", "% uptake", "% point change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI", "p-value")
+
+write_csv(TblS5_First_6in1_by_LDperiod, file = "Exported tables/TblS5_First6in1_byLDperiod.csv")
+
+##Second 6in1
+
+TblS5_Second_6in1_by_LDperiod = Second_6in1_by_LDperiod_cfEngland%>% 
+  mutate (mean_percent= round (mean_percent, digits = 1)) 
+TblS5_Second_6in1_by_LDperiod$time_period <- c("2019", "Pre LD", "LD", "Post LD")
+TblS5_Second_6in1_by_LDperiod = TblS5_Second_6in1_by_LDperiod %>% 
+  select(time_period, mean_percent) %>% 
+  mutate("Vaccine"="Second6in1") %>% 
+  mutate("% point change from 2019" = mean_percent-96.7)
+TblS5_Second_6in1_by_LDperiod = TblS5_Second_6in1_by_LDperiod[,c(3,1,2,4)]
+
+Second6in1_model_tbl_cfEnlgand$time_period <- c("Pre LD", "LD", "Post LD") 
+Second6in1_model_tbl_cfEnlgand = Second6in1_model_tbl_cfEnlgand %>% 
+  select(time_period, OR, lowerCI, upperCI, p.value) %>% 
+  mutate (OR= round (OR, digits = 2)) %>% 
+  mutate (lowerCI= round (lowerCI, digits = 2)) %>%  
+  mutate (upperCI= round (upperCI, digits = 2))%>% 
+  mutate (p.value = round (p.value, digits =2))
+
+TblS5_Second_6in1_by_LDperiod = full_join(TblS5_Second_6in1_by_LDperiod, Second6in1_model_tbl_cfEnlgand)
+
+colnames(TblS5_Second_6in1_by_LDperiod) = c("Vaccine", "Time period", "% uptake", "% point change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI", "p-value")
+
+write_csv(TblS5_Second_6in1_by_LDperiod, file = "Exported tables/TblS5_Second6in1_byLDperiod.csv")
+
+##Third 6in1
+
+TblS5_Third_6in1_by_LDperiod = Third_6in1_by_LDperiod_cfEngland%>% 
+  mutate (mean_percent= round (mean_percent, digits = 1)) 
+TblS5_Third_6in1_by_LDperiod$time_period <- c("2019", "Pre LD", "LD", "Post LD")
+TblS5_Third_6in1_by_LDperiod = TblS5_Third_6in1_by_LDperiod %>% 
+  select(time_period, mean_percent) %>% 
+  mutate("Vaccine"="Third6in1") %>% 
+  mutate("% point change from 2019" = mean_percent-94)
+TblS5_Third_6in1_by_LDperiod = TblS5_Third_6in1_by_LDperiod[,c(3,1,2,4)]
+
+Third6in1_model_tbl_cfEnlgand$time_period <- c("Pre LD", "LD", "Post LD") 
+Third6in1_model_tbl_cfEnlgand = Third6in1_model_tbl_cfEnlgand %>% 
+  select(time_period, OR, lowerCI, upperCI, p.value) %>% 
+  mutate (OR= round (OR, digits = 2)) %>% 
+  mutate (lowerCI= round (lowerCI, digits = 2)) %>%  
+  mutate (upperCI= round (upperCI, digits = 2))%>% 
+  mutate (p.value = round (p.value, digits =2))
+
+TblS5_Third_6in1_by_LDperiod = full_join(TblS5_Third_6in1_by_LDperiod, Third6in1_model_tbl_cfEnlgand)
+
+colnames(TblS5_Third_6in1_by_LDperiod) = c("Vaccine", "Time period", "% uptake", "% point change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI", "p-value")
+
+write_csv(TblS5_Third_6in1_by_LDperiod, file = "Exported tables/TblS5_Third6in1_byLDperiod.csv")
+
+##First MMR
+
+TblS5_First_MMR_by_LDperiod = First_MMR_by_LDperiod_cfEngland%>% 
+  mutate (mean_percent= round (mean_percent, digits = 1)) 
+TblS5_First_MMR_by_LDperiod$time_period <- c("2019", "Pre LD", "LD", "Post LD")
+TblS5_First_MMR_by_LDperiod = TblS5_First_MMR_by_LDperiod %>% 
+  select(time_period, mean_percent) %>% 
+  mutate("Vaccine"="FirstMMR") %>% 
+  mutate("% point change from 2019" = mean_percent-91.1)
+TblS5_First_MMR_by_LDperiod = TblS5_First_MMR_by_LDperiod[,c(3,1,2,4)]
+
+FirstMMR_model_tbl_cfEnlgand$time_period <- c("Pre LD", "LD", "Post LD") 
+FirstMMR_model_tbl_cfEnlgand = FirstMMR_model_tbl_cfEnlgand %>% 
+  select(time_period, OR, lowerCI, upperCI, p.value) %>% 
+  mutate (OR= round (OR, digits = 2)) %>% 
+  mutate (lowerCI= round (lowerCI, digits = 2)) %>%  
+  mutate (upperCI= round (upperCI, digits = 2))%>% 
+  mutate (p.value = round (p.value, digits =2))
+
+TblS5_First_MMR_by_LDperiod = full_join(TblS5_First_MMR_by_LDperiod, FirstMMR_model_tbl_cfEnlgand)
+
+colnames(TblS5_First_MMR_by_LDperiod) = c("Vaccine", "Time period", "% uptake", "% point change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI", "p-value")
+
+write_csv(TblS5_First_MMR_by_LDperiod, file = "Exported tables/TblS5_FirstMMR_byLDperiod.csv")
+
+##Second MMR
+
+TblS5_Second_MMR_by_LDperiod = Second_MMR_by_LDperiod_cfEngland%>% 
+  mutate (mean_percent= round (mean_percent, digits = 1)) 
+TblS5_Second_MMR_by_LDperiod$time_period <- c("2019", "Pre LD", "LD", "Post LD")
+TblS5_Second_MMR_by_LDperiod = TblS5_Second_MMR_by_LDperiod %>% 
+  select(time_period, mean_percent) %>% 
+  mutate("Vaccine"="SecondMMR") %>% 
+  mutate("% point change from 2019" = mean_percent-80.8)
+TblS5_Second_MMR_by_LDperiod = TblS5_Second_MMR_by_LDperiod[,c(3,1,2,4)]
+
+SecondMMR_model_tbl_cfEnlgand$time_period <- c("Pre LD", "LD", "Post LD") 
+SecondMMR_model_tbl_cfEnlgand = SecondMMR_model_tbl_cfEnlgand %>% 
+  select(time_period, OR, lowerCI, upperCI, p.value) %>% 
+  mutate (OR= round (OR, digits = 2)) %>% 
+  mutate (lowerCI= round (lowerCI, digits = 2)) %>%  
+  mutate (upperCI= round (upperCI, digits = 2))%>% 
+  mutate (p.value = round (p.value, digits =2))
+
+TblS5_Second_MMR_by_LDperiod = full_join(TblS5_Second_MMR_by_LDperiod, SecondMMR_model_tbl_cfEnlgand)
+
+colnames(TblS5_Second_MMR_by_LDperiod) = c("Vaccine", "Time period", "% uptake", "% point change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI", "p-value")
+
+write_csv(TblS5_Second_MMR_by_LDperiod, file = "Exported tables/TblS5_SecondMMR_byLDperiod.csv")
+
+
+#Merge all tables together and export as csv
+TblS5_allvaccines = rbind(TblS5_First_6in1_by_LDperiod, TblS5_Second_6in1_by_LDperiod, TblS5_Third_6in1_by_LDperiod, TblS5_First_MMR_by_LDperiod, TblS5_Second_MMR_by_LDperiod)
+
+write_csv(TblS5_allvaccines, file = "Exported tables/TblS5_allvaccines.csv")
+
