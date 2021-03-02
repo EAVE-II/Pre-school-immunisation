@@ -12,6 +12,8 @@ library(dplyr)
 library(RColorBrewer)
 library(broom)
 library(plotrix)
+library(ggpubr)
+library(rstatix)
 
 #Loading datasets (pre load modification, removed "NHS" from Orkney, Shetland and Western Isles)
 Full_firstdose_6in1 = read.csv(here("Data", "First_dose_6in1_3_feb_21.csv"))
@@ -822,6 +824,8 @@ Line_plots_bymonth
 ###Making tablefor Section1 table 1
 ##First 6in1
 
+model_first6in1_scotland_2019
+
 Section1tbl_First_6in1_by_LDperiod = First_6in1_by_LDperiod%>% 
   mutate (mean_percent= round (mean_percent, digits = 1)) 
 Section1tbl_First_6in1_by_LDperiod$time_period <- c("2019", "Pre LD", "LD", "Post LD")
@@ -833,14 +837,15 @@ Section1tbl_First_6in1_by_LDperiod = Section1tbl_First_6in1_by_LDperiod[,c(3,1,2
 
 First6in1_model_tbl$time_period <- c("Pre LD", "LD", "Post LD") 
 First6in1_model_tbl = First6in1_model_tbl %>% 
-  select(time_period, OR, lowerCI, upperCI) %>% 
+  select(time_period, OR, lowerCI, upperCI, p.value) %>% 
   mutate (OR= round (OR, digits = 2)) %>% 
   mutate (lowerCI= round (lowerCI, digits = 2)) %>%  
-  mutate (upperCI= round (upperCI, digits = 2))
+  mutate (upperCI= round (upperCI, digits = 2))%>%  
+  mutate (p.value= round (p.value, digits = 2))
 
 Section1tbl_First_6in1_by_LDperiod = full_join(Section1tbl_First_6in1_by_LDperiod, First6in1_model_tbl)
 
-colnames(Section1tbl_First_6in1_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI")
+colnames(Section1tbl_First_6in1_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI", "p-value")
 
 write_csv(Section1tbl_First_6in1_by_LDperiod, file = "Exported tables/Section1tbl_First6in1_byLDperiod.csv")
 
@@ -858,14 +863,15 @@ Section1tbl_Second_6in1_by_LDperiod = Section1tbl_Second_6in1_by_LDperiod[,c(3,1
 
 Second6in1_model_tbl$time_period <- c("Pre LD", "LD", "Post LD") 
 Second6in1_model_tbl = Second6in1_model_tbl %>% 
-  select(time_period, OR, lowerCI, upperCI) %>% 
+  select(time_period, OR, lowerCI, upperCI, p.value) %>% 
   mutate (OR= round (OR, digits = 2)) %>% 
   mutate (lowerCI= round (lowerCI, digits = 2)) %>%  
-  mutate (upperCI= round (upperCI, digits = 2))
+  mutate (upperCI= round (upperCI, digits = 2))%>%  
+  mutate (p.value= round (p.value, digits = 2))
 
 Section1tbl_Second_6in1_by_LDperiod = full_join(Section1tbl_Second_6in1_by_LDperiod, Second6in1_model_tbl)
 
-colnames(Section1tbl_Second_6in1_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI")
+colnames(Section1tbl_Second_6in1_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI", "p-value")
 
 Section1_tbl1_allvaccines = rbind(Section1tbl_First_6in1_by_LDperiod, Section1tbl_Second_6in1_by_LDperiod)
 
@@ -883,14 +889,15 @@ Section1tbl_Third_6in1_by_LDperiod = Section1tbl_Third_6in1_by_LDperiod[,c(3,1,2
 
 Third6in1_model_tbl$time_period <- c("Pre LD", "LD", "Post LD") 
 Third6in1_model_tbl = Third6in1_model_tbl %>% 
-  select(time_period, OR, lowerCI, upperCI) %>% 
+  select(time_period, OR, lowerCI, upperCI, p.value) %>% 
   mutate (OR= round (OR, digits = 2)) %>% 
   mutate (lowerCI= round (lowerCI, digits = 2)) %>%  
-  mutate (upperCI= round (upperCI, digits = 2))
+  mutate (upperCI= round (upperCI, digits = 2))%>%  
+  mutate (p.value= round (p.value, digits = 2))
 
 Section1tbl_Third_6in1_by_LDperiod = full_join(Section1tbl_Third_6in1_by_LDperiod, Third6in1_model_tbl)
 
-colnames(Section1tbl_Third_6in1_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI")
+colnames(Section1tbl_Third_6in1_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI", "p-value")
 
 ##First MMR
 
@@ -906,14 +913,15 @@ Section1tbl_FirstMMR_by_LDperiod = Section1tbl_FirstMMR_by_LDperiod[,c(3,1,2,4)]
 
 FirstMMR_model_tbl$time_period <- c("Pre LD", "LD", "Post LD") 
 FirstMMR_model_tbl = FirstMMR_model_tbl %>% 
-  select(time_period, OR, lowerCI, upperCI) %>% 
+  select(time_period, OR, lowerCI, upperCI, p.value) %>% 
   mutate (OR= round (OR, digits = 2)) %>% 
   mutate (lowerCI= round (lowerCI, digits = 2)) %>%  
-  mutate (upperCI= round (upperCI, digits = 2))
+  mutate (upperCI= round (upperCI, digits = 2))%>%  
+  mutate (p.value= round (p.value, digits = 2))
 
 Section1tbl_FirstMMR_by_LDperiod = full_join(Section1tbl_FirstMMR_by_LDperiod, FirstMMR_model_tbl)
 
-colnames(Section1tbl_FirstMMR_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI")
+colnames(Section1tbl_FirstMMR_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI", "p-value")
 
 ##Second MMR
 
@@ -929,14 +937,15 @@ Section1tbl_SecondMMR_by_LDperiod = Section1tbl_SecondMMR_by_LDperiod[,c(3,1,2,4
 
 SecondMMR_model_tbl$time_period <- c("Pre LD", "LD", "Post LD") 
 SecondMMR_model_tbl = SecondMMR_model_tbl %>% 
-  select(time_period, OR, lowerCI, upperCI) %>% 
+  select(time_period, OR, lowerCI, upperCI, p.value) %>% 
   mutate (OR= round (OR, digits = 2)) %>% 
   mutate (lowerCI= round (lowerCI, digits = 2)) %>%  
-  mutate (upperCI= round (upperCI, digits = 2))
+  mutate (upperCI= round (upperCI, digits = 2))%>%  
+  mutate (p.value= round (p.value, digits = 2))
 
 Section1tbl_SecondMMR_by_LDperiod = full_join(Section1tbl_SecondMMR_by_LDperiod, SecondMMR_model_tbl)
 
-colnames(Section1tbl_SecondMMR_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI")
+colnames(Section1tbl_SecondMMR_by_LDperiod) = c("Vaccine", "Time period", "% uptake within 4 weeks of eligibility", "Absolute % change from 2019", "OR for uptake compared to 2019", "Lower 95% CI", "Upper 95% CI", "p-value")
 
 #Merge all tables together and export as csv
 Section1_tbl1_allvaccines = rbind(Section1tbl_First_6in1_by_LDperiod, Section1tbl_Second_6in1_by_LDperiod, Section1tbl_Third_6in1_by_LDperiod, Section1tbl_FirstMMR_by_LDperiod, Section1tbl_SecondMMR_by_LDperiod)
@@ -1178,7 +1187,7 @@ Second_MMR_by_LDperiod_cfEngland = Scotland_seconddose_MMR %>%
 
 ##LD bar plots for comparison with England
 First_6in1_LDplot_cfEngland = First_6in1_by_LDperiod_cfEngland %>% 
-  ggplot(aes(x=lockdown.factor, y=mean_percent, fill = lockdown.factor)) +
+  ggplot(aes(x=lockdown.factor, y=mean_percent, fill = lockdown.factor))+
   geom_bar(stat = "identity", width = 0.5) +
   theme_classic()+
   theme(legend.position="none")+
@@ -1188,11 +1197,18 @@ First_6in1_LDplot_cfEngland = First_6in1_by_LDperiod_cfEngland %>%
   scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
   scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))+
   scale_fill_brewer(palette="PRGn")+
-  theme(aspect.ratio = 1.5/1)
+  theme(aspect.ratio = 1.5/1)+
+  annotate("segment", x = "Baseline_2019", xend = "Pre_LD_2020", y = 100, yend = 100, colour = "black")+
+  annotate("segment", x = "Baseline_2019", xend = "LD_2020", y = 105, yend = 105, colour = "black")+
+  annotate("segment", x = "Baseline_2019", xend = "Post_LD_2020", y = 110, yend = 110, colour = "black")+
+  annotate("text", x = "Pre_LD_2020",  y = 103, label = "ns")+
+  annotate("text", x = "LD_2020",  y = 107, label = "*")+
+  annotate("text", x = "Post_LD_2020",  y = 112, label = "*")
 
-First_6in1_LDplot_cfEngland= First_6in1_LDplot_cfEngland + geom_hline(yintercept = 97.9, linetype="dashed", 
-                                                  color = "Purple", size=0.5)
+# to add line of 2019 data can add this: First_6in1_LDplot_cfEngland= First_6in1_LDplot_cfEngland + geom_hline(yintercept = 97.9, linetype="dashed", color = "Purple", size=0.5)
+
 First_6in1_LDplot_cfEngland
+
 
 #Second dose 6in1
 Second_6in1_LDplot_cfEngland = Second_6in1_by_LDperiod_cfEngland %>% 
@@ -1206,11 +1222,17 @@ Second_6in1_LDplot_cfEngland = Second_6in1_by_LDperiod_cfEngland %>%
   scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
   scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))+
   scale_fill_brewer(palette="PRGn")+
-  theme(aspect.ratio = 1.5/1)
+  theme(aspect.ratio = 1.5/1)+
+  annotate("segment", x = "Baseline_2019", xend = "Pre_LD_2020", y = 100, yend = 100, colour = "black")+
+  annotate("segment", x = "Baseline_2019", xend = "LD_2020", y = 105, yend = 105, colour = "black")+
+  annotate("segment", x = "Baseline_2019", xend = "Post_LD_2020", y = 110, yend = 110, colour = "black")+
+  annotate("text", x = "Pre_LD_2020",  y = 103, label = "ns")+
+  annotate("text", x = "LD_2020",  y = 108, label = "ns")+
+  annotate("text", x = "Post_LD_2020",  y = 113, label = "ns")
   
 
-Second_6in1_LDplot_cfEngland= Second_6in1_LDplot_cfEngland + geom_hline(yintercept = 96.7, linetype="dashed", 
-                                                    color = "purple", size=0.5)
+## to add line for 2019 add this: Second_6in1_LDplot_cfEngland= Second_6in1_LDplot_cfEngland + geom_hline(yintercept = 96.7, linetype="dashed", color = "purple", size=0.5)
+
 Second_6in1_LDplot_cfEngland
 
 #Third dose 6in1
@@ -1225,10 +1247,15 @@ Third_6in1_LDplot_cfEngland = Third_6in1_by_LDperiod_cfEngland %>%
   scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
   scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))+
   scale_fill_brewer(palette="PRGn")+
-  theme(aspect.ratio = 1.5/1)
+  theme(aspect.ratio = 1.5/1)+
+  annotate("segment", x = "Baseline_2019", xend = "Pre_LD_2020", y = 98, yend = 98, colour = "black")+
+  annotate("segment", x = "Baseline_2019", xend = "LD_2020", y = 103, yend = 103, colour = "black")+
+  annotate("segment", x = "Baseline_2019", xend = "Post_LD_2020", y = 108, yend = 108, colour = "black")+
+  annotate("text", x = "Pre_LD_2020",  y = 101, label = "ns")+
+  annotate("text", x = "LD_2020",  y = 105, label = "***")+
+  annotate("text", x = "Post_LD_2020",  y = 111, label = "ns")
 
-Third_6in1_LDplot_cfEngland= Third_6in1_LDplot_cfEngland + geom_hline(yintercept = 94, linetype="dashed", 
-                                                  color = "Purple", size=0.5)
+## to add line for 2019 add this: Third_6in1_LDplot_cfEngland= Third_6in1_LDplot_cfEngland + geom_hline(yintercept = 94, linetype="dashed", color = "Purple", size=0.5)
 Third_6in1_LDplot_cfEngland
 
 #First dose MMR
@@ -1243,10 +1270,16 @@ First_MMR_LDplot_cfEngland = First_MMR_by_LDperiod_cfEngland %>%
   scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
   scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))+
   scale_fill_brewer(palette="PRGn")+
-  theme(aspect.ratio = 1.5/1)
+  theme(aspect.ratio = 1.5/1)+
+  annotate("segment", x = "Baseline_2019", xend = "Pre_LD_2020", y = 95, yend = 95, colour = "black")+
+  annotate("segment", x = "Baseline_2019", xend = "LD_2020", y = 100, yend = 100, colour = "black")+
+  annotate("segment", x = "Baseline_2019", xend = "Post_LD_2020", y = 105, yend = 105, colour = "black")+
+  annotate("text", x = "Pre_LD_2020",  y = 98, label = "ns")+
+  annotate("text", x = "LD_2020",  y = 102, label = "***")+
+  annotate("text", x = "Post_LD_2020",  y = 108, label = "ns")
 
-First_MMR_LDplot_cfEngland= First_MMR_LDplot_cfEngland + geom_hline(yintercept = 91.1, linetype="dashed", 
-                                                color = "Purple", size=0.5)
+##To add line for 2019: First_MMR_LDplot_cfEngland= First_MMR_LDplot_cfEngland + geom_hline(yintercept = 91.1, linetype="dashed", color = "Purple", size=0.5)
+
 First_MMR_LDplot_cfEngland
 
 
@@ -1262,10 +1295,16 @@ Second_MMR_LDplot_cfEngland = Second_MMR_by_LDperiod_cfEngland %>%
   scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
   scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))+
   scale_fill_brewer(palette="PRGn")+
-  theme(aspect.ratio = 1.5/1)
+  theme(aspect.ratio = 1.5/1)+
+  annotate("segment", x = "Baseline_2019", xend = "Pre_LD_2020", y = 86, yend = 86, colour = "black")+
+  annotate("segment", x = "Baseline_2019", xend = "LD_2020", y = 91, yend = 91, colour = "black")+
+  annotate("segment", x = "Baseline_2019", xend = "Post_LD_2020", y = 96, yend = 96, colour = "black")+
+  annotate("text", x = "Pre_LD_2020",  y = 88, label = "***")+
+  annotate("text", x = "LD_2020",  y = 93, label = "***")+
+  annotate("text", x = "Post_LD_2020",  y = 98, label = "***")
 
-Second_MMR_LDplot_cfEngland= Second_MMR_LDplot_cfEngland + geom_hline(yintercept = 80.8, linetype="dashed", 
-                                                                      color = "Purple", size=0.5)
+# to add 2019 line : Second_MMR_LDplot_cfEngland= Second_MMR_LDplot_cfEngland + geom_hline(yintercept = 80.8, linetype="dashed", color = "Purple", size=0.5)
+
 Second_MMR_LDplot_cfEngland
 
 Scottishuptake_forcomaprisonwithEnlgand = ggarrange(First_6in1_LDplot_cfEngland, Second_6in1_LDplot_cfEngland, Third_6in1_LDplot_cfEngland, First_MMR_LDplot_cfEngland, Second_MMR_LDplot_cfEngland,

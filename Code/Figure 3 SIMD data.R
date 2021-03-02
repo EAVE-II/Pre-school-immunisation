@@ -2233,42 +2233,42 @@ Section3_supptbl3_first6in1 = Section3_supptbl3_first6in1 %>%
 #SIMD 1
 ORSIMD1vs2019column = First6in1_SIMDinteraction_tbl %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "1 - most deprived") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 2
 ORSIMD2vs2019column = First6in1_SIMDinteraction_tbl_BL2 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "2") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 3
 ORSIMD3vs2019column = First6in1_SIMDinteraction_tbl_BL3 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "3") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 4
 ORSIMD4vs2019column = First6in1_SIMDinteraction_tbl_BL4 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "4") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 5
 ORSIMD5vs2019column = First6in1_SIMDinteraction_tbl_BL5 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "5 - least deprived") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
   
 #Join the oR tbls together
 
@@ -2281,6 +2281,7 @@ Section3_supptbl3_first6in1_final = full_join(Section3_supptbl3_first6in1, ORall
   mutate (OR= round (OR, digits = 1)) %>%
   mutate (lowerCI = round (lowerCI, digits = 1)) %>% 
   mutate (upperCI = round (upperCI, digits = 1)) %>% 
+  mutate (p.value = round (p.value, digits = 2)) %>% 
   mutate("Immunisation" = "First 6in1")
 
 ####
@@ -2331,42 +2332,42 @@ Section3_supptbl3_second6in1 = Section3_supptbl3_second6in1 %>%
 #SIMD 1
 ORSIMD1vs2019column = Second6in1_SIMDinteraction_tbl %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "1 - most deprived") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 2
 ORSIMD2vs2019column = Second6in1_SIMDinteraction_tbl_BL2 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "2") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 3
 ORSIMD3vs2019column = Second6in1_SIMDinteraction_tbl_BL3 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "3") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 4
 ORSIMD4vs2019column = Second6in1_SIMDinteraction_tbl_BL4 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "4") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 5
 ORSIMD5vs2019column = Second6in1_SIMDinteraction_tbl_BL5 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "5 - least deprived") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #Join the oR tbls together
 
@@ -2379,6 +2380,7 @@ Section3_supptbl3_second6in1_final = full_join(Section3_supptbl3_second6in1, ORa
   mutate (OR= round (OR, digits = 1)) %>%
   mutate (lowerCI = round (lowerCI, digits = 1)) %>% 
   mutate (upperCI = round (upperCI, digits = 1)) %>% 
+  mutate (p.value = round (p.value, digits = 2)) %>%
   mutate("Immunisation" = "Second 6in1")
 
 ####
@@ -2429,42 +2431,42 @@ Section3_supptbl3_third6in1 = Section3_supptbl3_third6in1 %>%
 #SIMD 1
 ORSIMD1vs2019column = Third6in1_SIMDinteraction_tbl %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "1 - most deprived") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 2
 ORSIMD2vs2019column = Third6in1_SIMDinteraction_tbl_BL2 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "2") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 3
 ORSIMD3vs2019column = Third6in1_SIMDinteraction_tbl_BL3 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "3") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 4
 ORSIMD4vs2019column = Third6in1_SIMDinteraction_tbl_BL4 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "4") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 5
 ORSIMD5vs2019column = Third6in1_SIMDinteraction_tbl_BL5 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "5 - least deprived") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #Join the oR tbls together
 
@@ -2476,7 +2478,8 @@ ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD5vs2019column)
 Section3_supptbl3_third6in1_final = full_join(Section3_supptbl3_third6in1, ORallSIMDvs2019column) %>% 
   mutate (OR= round (OR, digits = 1)) %>%
   mutate (lowerCI = round (lowerCI, digits = 1)) %>% 
-  mutate (upperCI = round (upperCI, digits = 1)) %>% 
+  mutate (upperCI = round (upperCI, digits = 1)) %>%
+  mutate (p.value = round (p.value, digits = 2)) %>% 
   mutate("Immunisation" = "Third 6in1")
 
 ##First MMR
@@ -2526,43 +2529,43 @@ Section3_supptbl3_firstMMR = Section3_supptbl3_firstMMR %>%
 #SIMD 1
 ORSIMD1vs2019column = FirstMMR_SIMDinteraction_tbl %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "1 - most deprived") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 2
 ORSIMD2vs2019column = FirstMMR_SIMDinteraction_tbl_BL2 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "2") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 
 #SIMD 3
 ORSIMD3vs2019column = FirstMMR_SIMDinteraction_tbl_BL3 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "3") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 4
 ORSIMD4vs2019column = FirstMMR_SIMDinteraction_tbl_BL4 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "4") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 5
 ORSIMD5vs2019column = FirstMMR_SIMDinteraction_tbl_BL5 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "5 - least deprived") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #Join the oR tbls together
 
@@ -2574,7 +2577,8 @@ ORallSIMDvs2019column = rbind(ORallSIMDvs2019column, ORSIMD5vs2019column)
 Section3_supptbl3_firstMMR_final = full_join(Section3_supptbl3_firstMMR, ORallSIMDvs2019column) %>% 
   mutate (OR= round (OR, digits = 1)) %>%
   mutate (lowerCI = round (lowerCI, digits = 1)) %>% 
-  mutate (upperCI = round (upperCI, digits = 1)) %>% 
+  mutate (upperCI = round (upperCI, digits = 1)) %>%
+  mutate (p.value = round (p.value, digits = 2)) %>%
   mutate("Immunisation" = "First MMR")
 
 ##Second MMR
@@ -2624,43 +2628,43 @@ Section3_supptbl3_secondMMR = Section3_supptbl3_secondMMR %>%
 #SIMD 1
 ORSIMD1vs2019column = SecondMMR_SIMDinteraction_tbl %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "1 - most deprived") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 2
 ORSIMD2vs2019column = SecondMMR_SIMDinteraction_tbl_BL2 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "2") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 
 #SIMD 3
 ORSIMD3vs2019column = FirstMMR_SIMDinteraction_tbl_BL3 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "3") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 4
 ORSIMD4vs2019column = SecondMMR_SIMDinteraction_tbl_BL4 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "4") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #SIMD 5
 ORSIMD5vs2019column = SecondMMR_SIMDinteraction_tbl_BL5 %>% 
   filter(term == c("tpPreLD", "tpLD", "tpPostLD")) %>% 
-  select(term, OR, lowerCI, upperCI) %>% 
+  select(term, OR, lowerCI, upperCI, p.value) %>% 
   mutate(deprivation_quintile = "5 - least deprived") %>% 
   mutate(time_period = c("PreLD", "LD", "PostLD")) %>% 
-  select(deprivation_quintile, OR, lowerCI, upperCI, time_period) 
+  select(deprivation_quintile, OR, lowerCI, upperCI, time_period, p.value) 
 
 #Join the oR tbls together
 
@@ -2673,19 +2677,20 @@ Section3_supptbl3_secondMMR_final = full_join(Section3_supptbl3_secondMMR, ORall
   mutate (OR= round (OR, digits = 1)) %>%
   mutate (lowerCI = round (lowerCI, digits = 1)) %>% 
   mutate (upperCI = round (upperCI, digits = 1)) %>% 
+  mutate (p.value = round (p.value, digits = 2)) %>% 
   mutate("Immunisation" = "Second MMR")
 
 ##########
 ##Join tables together for giant table
-colnames(Section3_supptbl3_first6in1_final) = c("Deprivation quintile", "number eligable", "number received within 4 weeks", "% received within 4 weeks", "Absolute % change from 2019", "time period", "OR", "lowerCI", "upperCI", "Immunisation")
-colnames(Section3_supptbl3_second6in1_final) = c("Deprivation quintile", "number eligable", "number received within 4 weeks", "% received within 4 weeks", "Absolute % change from 2019", "time period", "OR", "lowerCI", "upperCI", "Immunisation")
-colnames(Section3_supptbl3_third6in1_final) = c("Deprivation quintile", "number eligable", "number received within 4 weeks", "% received within 4 weeks", "Absolute % change from 2019", "time period", "OR", "lowerCI", "upperCI", "Immunisation")
-colnames(Section3_supptbl3_firstMMR_final) = c("Deprivation quintile", "number eligable", "number received within 4 weeks", "% received within 4 weeks", "Absolute % change from 2019", "time period", "OR", "lowerCI", "upperCI", "Immunisation")
-colnames(Section3_supptbl3_secondMMR_final) = c("Deprivation quintile", "number eligable", "number received within 4 weeks", "% received within 4 weeks", "Absolute % change from 2019", "time period", "OR", "lowerCI", "upperCI", "Immunisation")
+colnames(Section3_supptbl3_first6in1_final) = c("Deprivation quintile", "number eligable", "number received within 4 weeks", "% received within 4 weeks", "Absolute % change from 2019", "time period", "OR", "lowerCI", "upperCI", "p-value", "Immunisation")
+colnames(Section3_supptbl3_second6in1_final) = c("Deprivation quintile", "number eligable", "number received within 4 weeks", "% received within 4 weeks", "Absolute % change from 2019", "time period", "OR", "lowerCI", "upperCI","p-value", "Immunisation")
+colnames(Section3_supptbl3_third6in1_final) = c("Deprivation quintile", "number eligable", "number received within 4 weeks", "% received within 4 weeks", "Absolute % change from 2019", "time period", "OR", "lowerCI", "upperCI","p-value", "Immunisation")
+colnames(Section3_supptbl3_firstMMR_final) = c("Deprivation quintile", "number eligable", "number received within 4 weeks", "% received within 4 weeks", "Absolute % change from 2019", "time period", "OR", "lowerCI", "upperCI", "p-value", "Immunisation")
+colnames(Section3_supptbl3_secondMMR_final) = c("Deprivation quintile", "number eligable", "number received within 4 weeks", "% received within 4 weeks", "Absolute % change from 2019", "time period", "OR", "lowerCI", "upperCI", "p-value", "Immunisation")
 
 Section3_supptbl3_allvaccine= rbind(Section3_supptbl3_first6in1_final, Section3_supptbl3_second6in1_final, Section3_supptbl3_third6in1_final, Section3_supptbl3_firstMMR_final, Section3_supptbl3_secondMMR_final)
 
-Section3_supptbl3_allvaccine = Section3_supptbl3_allvaccine[,c(10,1,6,2,3,4,5,7,8,9)]
+Section3_supptbl3_allvaccine = Section3_supptbl3_allvaccine[,c(11,1,2,3,4,5,6,7,8,9,10)]
 write.csv(Section3_supptbl3_allvaccine, file = "Exported tables/Section3_supptbl3_allvaccine.csv")
 
 ###Experimental graphs- scatter of %change from 2019 by LD for section 3 supp
