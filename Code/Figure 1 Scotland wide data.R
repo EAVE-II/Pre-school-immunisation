@@ -1018,7 +1018,7 @@ Combined_weekly_6in1_no2019_line = Combined_weekly_6in1_no2019 %>%
   geom_line(size = 0.6) +
   scale_color_brewer(palette="Set2", name = NULL, labels=c("First dose  6in1", "Second dose 6in1", "Third dose 6in1"))+
   theme_classic()+
-  labs(x = NULL,
+  labs(x = "Date child became eligable for immunisation",
        y = "% vaccinated (4 weeks)",
        title = "6in1 vaccine")+
   expand_limits(y=70)+
@@ -1062,7 +1062,7 @@ Combined_weekly_MMR_no2019_line = Combined_weekly_MMR_no2019 %>%
   geom_line(size = 0.6) +
   scale_color_brewer(palette="Set2", name = NULL, labels=c("First dose MMR", "Second dose MMR"))+
   theme_classic()+
-  labs(x = NULL,
+  labs(x = "Date child became eligable for immunisation",
        y = "% vaccinated (4 weeks)",
        title = "MMR vaccine")+
   expand_limits(y=45)+
