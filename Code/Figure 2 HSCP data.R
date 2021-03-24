@@ -371,7 +371,7 @@ FirstMMR_percentchange_poly <- merge(x=HSCP_map, y=FirstMMR_HSPC_percentchange_2
 
 First_MMR_percentchange_map = tm_shape(FirstMMR_percentchange_poly)+
   tm_fill(col= "percent_change", palette = "YlGn", title = "% point change LD vs 2019")+
-  tm_layout(frame = FALSE, main.title = "First MMR % change from 2019",
+  tm_layout(frame = FALSE, main.title = "First MMR % change from 2019 (stat sig)",
             main.title.size = 1, main.title.position="left",legend.position=c("left","top"))
 
 First_MMR_percentchange_map ##NOte change in pallet as none fell. Cross checked for Moray +++++all theses results were sigfnicant 
