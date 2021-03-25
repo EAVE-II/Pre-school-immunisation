@@ -1290,7 +1290,7 @@ Second_MMR_LDplot_cfEngland = Second_MMR_by_LDperiod_cfEngland %>%
   theme_classic()+
   theme(legend.position="none")+
   labs(x = "Lockdown period",
-       y = "% vaccinated by 16 months",
+       y = "% vaccinated by 3y 8 months",
        title = "Second dose MMR")+
   scale_y_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100))+
   scale_x_discrete(labels=c("2019", "PreLD", "LD", "Post LD"))+
@@ -1308,7 +1308,7 @@ Second_MMR_LDplot_cfEngland = Second_MMR_by_LDperiod_cfEngland %>%
 Second_MMR_LDplot_cfEngland
 
 Scottishuptake_forcomaprisonwithEnlgand = ggarrange(First_6in1_LDplot_cfEngland, Second_6in1_LDplot_cfEngland, Third_6in1_LDplot_cfEngland, First_MMR_LDplot_cfEngland, Second_MMR_LDplot_cfEngland,
-                                                    labels = "Scotland",
+                                                    labels = "A",
                                                     legend = NULL,
                                                     ncol = 3, nrow = 2)
 Scottishuptake_forcomaprisonwithEnlgand
